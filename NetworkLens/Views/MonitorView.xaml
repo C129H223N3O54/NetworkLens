@@ -128,8 +128,23 @@
                                             CornerRadius="6" Padding="12,10" Margin="0,0,0,12">
                                         <Grid>
                                             <StackPanel HorizontalAlignment="Left">
-                                                <TextBlock Text="AKTUELL" Style="{StaticResource Label}"
-                                                           Margin="0,0,0,2"/>
+                                                <TextBlock Style="{StaticResource Label}" Margin="0,0,0,2">
+                                                    <TextBlock.ToolTip>
+                                                        <ToolTip MaxWidth="260">
+                                                            <StackPanel>
+                                                                <TextBlock Text="Was ist Ping?" FontWeight="Bold"
+                                                                           Foreground="{StaticResource AccentBrush}"
+                                                                           Margin="0,0,0,4"/>
+                                                                <TextBlock TextWrapping="Wrap"
+                                                                           Text="Der Ping misst die Zeit in Millisekunden (ms), die ein Datenpaket braucht um zum Zielgerät zu reisen und wieder zurückzukommen (Round-Trip Time)."/>
+                                                                <TextBlock TextWrapping="Wrap" Margin="0,6,0,0"
+                                                                           Foreground="{StaticResource TextSecondaryBrush}">
+                                                                    🟢 &lt;30ms  Sehr gut (Gaming, VoIP)&#x0a;🟡 30–100ms  Normal (Surfen)&#x0a;🔴 &gt;200ms  Langsam (spürbare Verzögerung)
+                                                                </TextBlock>
+                                                            </StackPanel>
+                                                        </ToolTip>
+                                                    </TextBlock.ToolTip>
+                                                    PING (?)</TextBlock>
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBlock Text="{Binding LastPing}"
                                                                FontFamily="Cascadia Code, Consolas"
@@ -142,8 +157,27 @@
                                                 </StackPanel>
                                             </StackPanel>
                                             <StackPanel HorizontalAlignment="Right">
-                                                <TextBlock Text="JITTER" Style="{StaticResource Label}"
-                                                           Margin="0,0,0,2" HorizontalAlignment="Right"/>
+                                                <TextBlock Style="{StaticResource Label}"
+                                                           Margin="0,0,0,2" HorizontalAlignment="Right">
+                                                    <TextBlock.ToolTip>
+                                                        <ToolTip MaxWidth="270">
+                                                            <StackPanel>
+                                                                <TextBlock Text="Was ist Jitter?" FontWeight="Bold"
+                                                                           Foreground="{StaticResource StatusWarningBrush}"
+                                                                           Margin="0,0,0,4"/>
+                                                                <TextBlock TextWrapping="Wrap"
+                                                                           Text="Jitter ist die Schwankung des Pings über die Zeit. Wenn der Ping mal 10ms und mal 80ms ist, beträgt der Jitter ~70ms."/>
+                                                                <TextBlock TextWrapping="Wrap" Margin="0,6,0,0"
+                                                                           Foreground="{StaticResource TextSecondaryBrush}">
+                                                                    🟢 &lt;5ms   Stabil (ideal für VoIP/Gaming)&#x0a;🟡 5–20ms  Leichte Schwankungen&#x0a;🔴 &gt;20ms  Instabile Verbindung
+                                                                </TextBlock>
+                                                                <TextBlock TextWrapping="Wrap" Margin="0,6,0,0"
+                                                                           Foreground="{StaticResource TextSecondaryBrush}"
+                                                                           Text="Hoher Jitter verursacht Aussetzer bei Videocalls und Lags beim Gaming — auch wenn der Ping an sich niedrig ist."/>
+                                                            </StackPanel>
+                                                        </ToolTip>
+                                                    </TextBlock.ToolTip>
+                                                    JITTER (?)</TextBlock>
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBlock Text="{Binding JitterIcon}" FontSize="12"
                                                                VerticalAlignment="Center" Margin="0,0,4,0"/>
@@ -159,7 +193,7 @@
                                         </Grid>
                                     </Border>
 
-                                    <!-- Stats row -->
+                                    <!-- Stats row: Min / Avg / Max -->
                                     <Grid Margin="0,0,0,12">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
@@ -167,8 +201,10 @@
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
                                         <StackPanel Grid.Column="0" HorizontalAlignment="Center">
-                                            <TextBlock Text="MIN" Style="{StaticResource Label}"
-                                                       HorizontalAlignment="Center" Margin="0,0,0,2"/>
+                                            <TextBlock Style="{StaticResource Label}"
+                                                       HorizontalAlignment="Center" Margin="0,0,0,2"
+                                                       ToolTip="Niedrigster gemessener Ping-Wert seit Start des Monitors.">
+                                                MIN</TextBlock>
                                             <TextBlock FontFamily="Cascadia Code, Consolas" FontSize="14"
                                                        HorizontalAlignment="Center"
                                                        Foreground="{StaticResource StatusOnlineBrush}">
@@ -176,8 +212,10 @@
                                             </TextBlock>
                                         </StackPanel>
                                         <StackPanel Grid.Column="1" HorizontalAlignment="Center">
-                                            <TextBlock Text="AVG" Style="{StaticResource Label}"
-                                                       HorizontalAlignment="Center" Margin="0,0,0,2"/>
+                                            <TextBlock Style="{StaticResource Label}"
+                                                       HorizontalAlignment="Center" Margin="0,0,0,2"
+                                                       ToolTip="Durchschnittlicher Ping über alle bisherigen Messungen. Aussagekräftiger als ein einzelner Messwert.">
+                                                AVG</TextBlock>
                                             <TextBlock FontFamily="Cascadia Code, Consolas" FontSize="14"
                                                        HorizontalAlignment="Center"
                                                        Foreground="{StaticResource AccentBrush}">
@@ -185,8 +223,10 @@
                                             </TextBlock>
                                         </StackPanel>
                                         <StackPanel Grid.Column="2" HorizontalAlignment="Center">
-                                            <TextBlock Text="MAX" Style="{StaticResource Label}"
-                                                       HorizontalAlignment="Center" Margin="0,0,0,2"/>
+                                            <TextBlock Style="{StaticResource Label}"
+                                                       HorizontalAlignment="Center" Margin="0,0,0,2"
+                                                       ToolTip="Höchster gemessener Ping-Wert. Gibt an wie schlecht die Verbindung im schlimmsten Fall war.">
+                                                MAX</TextBlock>
                                             <TextBlock FontFamily="Cascadia Code, Consolas" FontSize="14"
                                                        HorizontalAlignment="Center"
                                                        Foreground="{StaticResource StatusWarningBrush}">
@@ -196,26 +236,61 @@
                                     </Grid>
 
                                     <!-- Packet loss -->
-                                    <Grid Margin="0,0,0,12">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <StackPanel>
-                                            <TextBlock Text="PACKET LOSS" Style="{StaticResource Label}"
-                                                       Margin="0,0,0,3"/>
-                                            <ProgressBar Height="4" Minimum="0" Maximum="100"
+                                    <Border Background="{StaticResource BgDeepBrush}"
+                                            CornerRadius="6" Padding="10,8" Margin="0,0,0,8">
+                                        <Border.ToolTip>
+                                            <ToolTip MaxWidth="270">
+                                                <StackPanel>
+                                                    <TextBlock Text="Was ist Packet Loss?" FontWeight="Bold"
+                                                               Foreground="{StaticResource StatusOfflineBrush}"
+                                                               Margin="0,0,0,4"/>
+                                                    <TextBlock TextWrapping="Wrap"
+                                                               Text="Packet Loss zeigt wie viele Ping-Pakete verloren gingen — also keine Antwort vom Gerät kam. Jedes verlorene Paket zählt als Ausfall."/>
+                                                    <TextBlock TextWrapping="Wrap" Margin="0,6,0,0"
+                                                               Foreground="{StaticResource TextSecondaryBrush}">
+                                                        🟢 0%        Perfekt&#x0a;🟡 1–5%     Leichte Probleme&#x0a;🔴 &gt;5%     Ernsthafte Verbindungsprobleme
+                                                    </TextBlock>
+                                                    <TextBlock TextWrapping="Wrap" Margin="0,6,0,0"
+                                                               Foreground="{StaticResource TextSecondaryBrush}"
+                                                               Text="Packet Loss verursacht Ruckler bei Videos, abgebrochene Downloads und unterbrochene VoIP-Gespräche."/>
+                                                </StackPanel>
+                                            </ToolTip>
+                                        </Border.ToolTip>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="6"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <!-- Label + Percent + Counter -->
+                                            <Grid Grid.Row="0" Margin="0,0,0,5">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="PACKET LOSS (?)"
+                                                               Style="{StaticResource Label}"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <TextBlock FontFamily="Cascadia Code, Consolas" FontSize="13"
+                                                               Foreground="{StaticResource StatusOfflineBrush}">
+                                                        <Run Text="{Binding PacketLoss, StringFormat={}{0:F1}}"/>
+                                                        <Run Text="%"/>
+                                                    </TextBlock>
+                                                    <TextBlock FontFamily="Segoe UI" FontSize="11"
+                                                               Foreground="{StaticResource TextMutedBrush}"
+                                                               VerticalAlignment="Center" Margin="6,0,0,0">
+                                                        <Run Text="("/>
+                                                        <Run Text="{Binding LostPings, Mode=OneWay}"/>
+                                                        <Run Text=" / "/>
+                                                        <Run Text="{Binding TotalPings, Mode=OneWay}"/>
+                                                        <Run Text=" Pakete)"/>
+                                                    </TextBlock>
+                                                </StackPanel>
+                                            </Grid>
+                                            <!-- Progress bar -->
+                                            <ProgressBar Grid.Row="1" Minimum="0" Maximum="100"
                                                          Value="{Binding PacketLoss}"
                                                          Foreground="{StaticResource StatusOfflineBrush}"/>
-                                        </StackPanel>
-                                        <TextBlock Grid.Column="1" Margin="10,0,0,0"
-                                                   VerticalAlignment="Bottom"
-                                                   FontFamily="Cascadia Code, Consolas" FontSize="13"
-                                                   Foreground="{StaticResource TextSecondaryBrush}">
-                                            <Run Text="{Binding PacketLoss, StringFormat={}{0:F1}}"/>
-                                            <Run Text="%"/>
-                                        </TextBlock>
-                                    </Grid>
+                                        </Grid>
+                                    </Border>
 
                                     <!-- Live Graph: Ping + Jitter -->
                                     <Border Background="{StaticResource BgDeepBrush}"
