@@ -215,17 +215,38 @@
                                         </TextBlock>
                                     </Grid>
 
-                                    <!-- Sparkline -->
+                                    <!-- Live Graph: Ping + Jitter -->
                                     <Border Background="{StaticResource BgDeepBrush}"
-                                            CornerRadius="4" Height="48" ClipToBounds="True">
-                                        <Canvas x:Name="SparkCanvas"
-                                                Tag="{Binding PingHistory}"
-                                                SizeChanged="SparkCanvas_SizeChanged"
-                                                Loaded="SparkCanvas_Loaded">
-                                            <Canvas.Background>
-                                                <SolidColorBrush Color="Transparent"/>
-                                            </Canvas.Background>
-                                        </Canvas>
+                                            CornerRadius="6" Padding="8,6" Margin="0,0,0,8">
+                                        <StackPanel>
+                                            <Grid Margin="0,0,0,4">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Ellipse Width="7" Height="7"
+                                                             Fill="{StaticResource AccentBrush}"
+                                                             VerticalAlignment="Center" Margin="0,0,4,0"/>
+                                                    <TextBlock Text="Ping" FontSize="10"
+                                                               Foreground="{StaticResource AccentBrush}"
+                                                               VerticalAlignment="Center" FontFamily="Segoe UI"/>
+                                                    <Ellipse Width="7" Height="7"
+                                                             Fill="{StaticResource StatusWarningBrush}"
+                                                             VerticalAlignment="Center" Margin="10,0,4,0"/>
+                                                    <TextBlock Text="Jitter" FontSize="10"
+                                                               Foreground="{StaticResource StatusWarningBrush}"
+                                                               VerticalAlignment="Center" FontFamily="Segoe UI"/>
+                                                </StackPanel>
+                                                <TextBlock HorizontalAlignment="Right" FontSize="10"
+                                                           Foreground="{StaticResource TextMutedBrush}"
+                                                           VerticalAlignment="Center" FontFamily="Segoe UI">
+                                                    <Run Text="{Binding PingHistory.Count}"/>
+                                                    <Run Text=" Messpunkte"/>
+                                                </TextBlock>
+                                            </Grid>
+                                            <Canvas x:Name="SparkCanvas"
+                                                    Height="64" ClipToBounds="True"
+                                                    Tag="{Binding}"
+                                                    Loaded="SparkCanvas_Loaded"
+                                                    SizeChanged="SparkCanvas_SizeChanged"/>
+                                        </StackPanel>
                                     </Border>
 
                                     <!-- Pings counter -->

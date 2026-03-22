@@ -38,8 +38,19 @@ public partial class ScanView : UserControl
 
     private void WireViewModel()
     {
+        // Auto-detect subnet on startup
+        var detected = Services.IpHelper.GetLocalSubnetCidr();
+        if (!string.IsNullOrEmpty(detected))
+        {
+            TxtSubnet.Text  = detected;
+            _vm.Subnet      = detected;
+        }
+        else
+        {
+            TxtSubnet.Text = _vm.Subnet;
+        }
+
         // Subnet textbox → VM
-        TxtSubnet.Text = _vm.Subnet;
         TxtSubnet.TextChanged += (_, _) => _vm.Subnet = TxtSubnet.Text;
 
         // Bind device grid to VM's filtered view

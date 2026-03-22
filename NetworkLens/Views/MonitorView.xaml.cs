@@ -115,84 +115,149 @@ public partial class MonitorView : UserControl
         CardsScroll.Visibility = hasEntries ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    // ── Sparkline drawing ─────────────────────────
+    // ── Live Graph drawing ────────────────────────
     private void SparkCanvas_Loaded(object sender, RoutedEventArgs e)
-        => DrawSparkline(sender as Canvas);
+        => DrawGraph(sender as Canvas);
 
     private void SparkCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
-        => DrawSparkline(sender as Canvas);
+        => DrawGraph(sender as Canvas);
 
-    private static void DrawSparkline(Canvas? canvas)
+    private static void DrawGraph(Canvas? canvas)
     {
         if (canvas == null) return;
         canvas.Children.Clear();
 
-        if (canvas.Tag is not System.Collections.ObjectModel.ObservableCollection<long> history
-            || history.Count < 2) return;
+        // The Tag is now the MonitorEntry, not the collection directly
+        MonitorEntry? entry = canvas.Tag as MonitorEntry;
+        if (entry == null) return;
+
+        var pingHistory = entry.PingHistory.ToList();
+        if (pingHistory.Count < 2) return;
 
         double w = canvas.ActualWidth;
         double h = canvas.ActualHeight;
-        if (w < 2 || h < 2) return;
+        if (w < 4 || h < 4) return;
 
-        var values = history.ToList();
-        double max = Math.Max(values.Max(), 1);
-        double min = values.Min();
-        double range = Math.Max(max - min, 1);
+        // Compute jitter history from ping history
+        var jitterHistory = new List<double>();
+        for (int i = 1; i < pingHistory.Count; i++)
+            jitterHistory.Add(Math.Abs(pingHistory[i] - pingHistory[i - 1]));
 
-        // Build polyline points
-        var pts = new PointCollection();
-        for (int i = 0; i < values.Count; i++)
+        double pingMax  = Math.Max(pingHistory.Max(), 1);
+        double pingMin  = Math.Max(pingHistory.Min() - 5, 0);
+        double pingRange = Math.Max(pingMax - pingMin, 1);
+
+        double jitterMax = jitterHistory.Count > 0
+            ? Math.Max(jitterHistory.Max(), 1) : 1;
+
+        // ── Grid lines ──────────────────────────
+        int gridLines = 3;
+        for (int i = 0; i <= gridLines; i++)
         {
-            double x = i / (double)(values.Count - 1) * w;
-            double y = h - ((values[i] - min) / range * (h - 8) + 4);
-            pts.Add(new Point(x, y));
+            double y = h / gridLines * i;
+            var line = new System.Windows.Shapes.Line
+            {
+                X1 = 0, X2 = w, Y1 = y, Y2 = y,
+                Stroke = new SolidColorBrush(Color.FromArgb(0x18, 0xFF, 0xFF, 0xFF)),
+                StrokeThickness = 1,
+                StrokeDashArray = new System.Windows.Media.DoubleCollection { 3, 3 }
+            };
+            canvas.Children.Add(line);
+
+            // Y-axis label
+            double val = pingMax - (pingMax - pingMin) / gridLines * i;
+            var lbl = new System.Windows.Controls.TextBlock
+            {
+                Text       = $"{val:F0}ms",
+                FontSize   = 9,
+                Foreground = new SolidColorBrush(Color.FromArgb(0x55, 0xFF, 0xFF, 0xFF)),
+                FontFamily = new System.Windows.Media.FontFamily("Segoe UI")
+            };
+            Canvas.SetLeft(lbl, 2);
+            Canvas.SetTop(lbl, y + 1);
+            canvas.Children.Add(lbl);
         }
 
-        // Fill polygon (area under curve)
-        var fillPts = new PointCollection(pts) { new Point(w, h), new Point(0, h) };
-        var fill = new Polygon
+        // ── Helper: build point list ─────────────
+        static PointCollection BuildPoints(IList<double> values, double min, double range,
+            double w, double h, double vPad = 6)
+        {
+            var pts = new PointCollection();
+            int n = values.Count;
+            for (int i = 0; i < n; i++)
+            {
+                double x = i / (double)(n - 1) * w;
+                double y = h - vPad - ((values[i] - min) / range * (h - vPad * 2));
+                y = Math.Max(vPad, Math.Min(h - vPad, y));
+                pts.Add(new Point(x, y));
+            }
+            return pts;
+        }
+
+        // ── Ping area fill ───────────────────────
+        var pingVals = pingHistory.Select(p => (double)p).ToList();
+        var pingPts  = BuildPoints(pingVals, pingMin, pingRange, w, h);
+
+        var fillPts = new PointCollection(pingPts)
+        {
+            new Point(w, h),
+            new Point(0, h)
+        };
+        var pingFill = new System.Windows.Shapes.Polygon
         {
             Points = fillPts,
-            Fill = new LinearGradientBrush(
-                Color.FromArgb(0x44, 0x00, 0xB4, 0xD8),
-                Color.FromArgb(0x04, 0x00, 0xB4, 0xD8),
+            Fill   = new LinearGradientBrush(
+                Color.FromArgb(0x50, 0x00, 0xB4, 0xD8),
+                Color.FromArgb(0x05, 0x00, 0xB4, 0xD8),
                 new Point(0, 0), new Point(0, 1)),
             Stroke = null
         };
-        canvas.Children.Add(fill);
+        canvas.Children.Add(pingFill);
 
-        // Line
-        var line = new Polyline
+        // ── Ping line ────────────────────────────
+        var pingLine = new System.Windows.Shapes.Polyline
         {
-            Points = pts,
-            Stroke = new SolidColorBrush(Color.FromRgb(0x00, 0xB4, 0xD8)),
-            StrokeThickness = 1.5,
-            StrokeLineJoin = PenLineJoin.Round
+            Points          = pingPts,
+            Stroke          = new SolidColorBrush(Color.FromRgb(0x00, 0xB4, 0xD8)),
+            StrokeThickness = 1.8,
+            StrokeLineJoin  = PenLineJoin.Round
         };
-        canvas.Children.Add(line);
+        canvas.Children.Add(pingLine);
 
-        // Last point dot
-        if (pts.Count > 0)
+        // ── Jitter line (scaled to same canvas) ──
+        if (jitterHistory.Count >= 2)
         {
-            var last = pts[^1];
-            var dot = new Ellipse
+            var jPts = BuildPoints(jitterHistory, 0, jitterMax, w, h);
+            var jLine = new System.Windows.Shapes.Polyline
             {
-                Width = 6, Height = 6,
-                Fill = new SolidColorBrush(Color.FromRgb(0x00, 0xB4, 0xD8))
+                Points          = jPts,
+                Stroke          = new SolidColorBrush(Color.FromArgb(0xCC, 0xFF, 0xD6, 0x00)),
+                StrokeThickness = 1.2,
+                StrokeLineJoin  = PenLineJoin.Round,
+                StrokeDashArray = new System.Windows.Media.DoubleCollection { 4, 2 }
             };
-            Canvas.SetLeft(dot, last.X - 3);
-            Canvas.SetTop(dot, last.Y - 3);
-            canvas.Children.Add(dot);
+            canvas.Children.Add(jLine);
         }
-    }
 
-    private void RedrawAllSparklines()
-    {
-        // Walk visual tree to find all spark canvases and redraw
-        foreach (var entry in _vm.Entries)
+        // ── Last ping dot ────────────────────────
+        if (pingPts.Count > 0)
         {
-            // Entries are re-bound through ItemsControl; sparklines redraw on SizeChanged / Loaded
-            // For live updates we hook into ObservableCollection via entry
+            var last = pingPts[^1];
+            var dot  = new System.Windows.Shapes.Ellipse
+            {
+                Width  = 7, Height = 7,
+                Fill   = new SolidColorBrush(Color.FromRgb(0x00, 0xB4, 0xD8)),
+                Effect = new System.Windows.Media.Effects.DropShadowEffect
+                {
+                    Color       = Color.FromRgb(0x00, 0xB4, 0xD8),
+                    BlurRadius  = 8,
+                    ShadowDepth = 0,
+                    Opacity     = 0.8
+                }
+            };
+            Canvas.SetLeft(dot, last.X - 3.5);
+            Canvas.SetTop(dot,  last.Y - 3.5);
+            canvas.Children.Add(dot);
         }
     }
 }

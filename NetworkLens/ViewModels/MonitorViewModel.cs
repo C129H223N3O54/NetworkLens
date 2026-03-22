@@ -111,6 +111,8 @@ public class MonitorEntry : BaseViewModel
             {
                 PingHistory.Clear();
                 foreach (var h in history) PingHistory.Add(h);
+                // Notify graph to redraw
+                OnPropertyChanged(nameof(PingHistory));
             });
 
             if (history.Count > 1)
