@@ -237,7 +237,7 @@
                                                 <TextBlock HorizontalAlignment="Right" FontSize="10"
                                                            Foreground="{StaticResource TextMutedBrush}"
                                                            VerticalAlignment="Center" FontFamily="Segoe UI">
-                                                    <Run Text="{Binding PingHistory.Count}"/>
+                                                    <Run Text="{Binding PingHistory.Count, Mode=OneWay}"/>
                                                     <Run Text=" Messpunkte"/>
                                                 </TextBlock>
                                             </Grid>
