@@ -1,7 +1,7 @@
 // GlobalUsings.cs
 // Löst alle Namespace-Konflikte zwischen WPF und Windows Forms auf.
-// Diese Datei gilt für das gesamte Projekt.
 
+global using System.IO;
 global using System.Windows;
 global using System.Windows.Controls;
 global using System.Windows.Media;
