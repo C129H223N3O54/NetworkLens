@@ -122,6 +122,12 @@ public class ScanViewModel : BaseViewModel
         DevicesView = CollectionViewSource.GetDefaultView(Devices);
         DevicesView.Filter = FilterDevice;
 
+        // Default sort: IP ascending
+        DevicesView.SortDescriptions.Add(
+            new System.ComponentModel.SortDescription(
+                nameof(NetworkDevice.IpSort),
+                System.ComponentModel.ListSortDirection.Ascending));
+
         StartScanCommand = new AsyncRelayCommand(StartScanAsync, () => CanScan);
         StopScanCommand = new RelayCommand(StopScan, () => CanStop);
         AutoDetectSubnetCommand = new RelayCommand(AutoDetectSubnet);

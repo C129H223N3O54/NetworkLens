@@ -28,8 +28,9 @@
                     <TextBlock Text="Intervall:" VerticalAlignment="Center" Margin="0,0,8,0"
                                FontFamily="Segoe UI" FontSize="13"
                                Foreground="{StaticResource TextSecondaryBrush}"/>
-                    <ComboBox x:Name="CmbInterval" Width="110"
+                    <ComboBox x:Name="CmbInterval" Width="120"
                               SelectionChanged="CmbInterval_SelectionChanged">
+                        <ComboBoxItem Content="1s"/>
                         <ComboBoxItem Content="5s"/>
                         <ComboBoxItem Content="10s" IsSelected="True"/>
                         <ComboBoxItem Content="30s"/>
@@ -218,7 +219,10 @@
 
                                     <!-- Live Graph: Ping + Jitter -->
                                     <Border Background="{StaticResource BgDeepBrush}"
-                                            CornerRadius="6" Padding="8,6" Margin="0,0,0,8">
+                                            CornerRadius="6" Padding="8,6" Margin="0,0,0,8"
+                                            Cursor="Hand"
+                                            MouseLeftButtonDown="SparkCanvas_DoubleClick"
+                                            ToolTip="Doppelklick zum Vergr&#246;&#223;ern">
                                         <StackPanel>
                                             <Grid Margin="0,0,0,4">
                                                 <StackPanel Orientation="Horizontal">

@@ -113,11 +113,12 @@ public partial class MonitorView : UserControl
         if (_vm == null) return;
         _vm.IntervalSeconds = CmbInterval.SelectedIndex switch
         {
-            0 => 5,
-            2 => 30,
-            3 => 60,
-            4 => 0,    // Dauerhaft
-            _ => 10
+            0 => 1,    // 1s
+            1 => 5,    // 5s
+            3 => 30,   // 30s
+            4 => 60,   // 60s
+            5 => 0,    // Dauerhaft
+            _ => 10    // 10s (default, index 2)
         };
     }
 
@@ -141,8 +142,19 @@ public partial class MonitorView : UserControl
 
     private void SparkCanvas_DoubleClick(object sender, MouseButtonEventArgs e)
     {
-        if (e.ClickCount == 2 && sender is Canvas c && c.Tag is MonitorEntry entry)
-            ShowGraphPopup(entry);
+        if (e.ClickCount < 2) return;
+        // Walk up to find the Canvas with the MonitorEntry tag
+        var el = e.OriginalSource as DependencyObject;
+        while (el != null)
+        {
+            if (el is Canvas c && c.Tag is MonitorEntry entry)
+            {
+                ShowGraphPopup(entry);
+                e.Handled = true;
+                return;
+            }
+            el = System.Windows.Media.VisualTreeHelper.GetParent(el);
+        }
     }
 
     private void RedrawEntryGraph(MonitorEntry entry)
