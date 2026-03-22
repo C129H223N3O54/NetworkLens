@@ -57,7 +57,7 @@
                             <Button Style="{StaticResource SecondaryButton}"
                                     Click="BtnExportJson_Click">
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{ }" Margin="0,0,6,0"
+                                    <TextBlock Text="JSON" Margin="0,0,6,0"
                                                FontFamily="Cascadia Code, Consolas" FontSize="12"/>
                                     <TextBlock Text="JSON exportieren"/>
                                 </StackPanel>

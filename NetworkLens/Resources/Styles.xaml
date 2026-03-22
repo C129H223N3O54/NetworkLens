@@ -710,11 +710,11 @@
                         <Track x:Name="PART_Track">
                             <Track.DecreaseRepeatButton>
                                 <RepeatButton Background="{StaticResource AccentBrush}"
-                                              BorderThickness="0" Height="4" CornerRadius="2"/>
+                                              BorderThickness="0" Height="4"/>
                             </Track.DecreaseRepeatButton>
                             <Track.IncreaseRepeatButton>
                                 <RepeatButton Background="{StaticResource BgDeepBrush}"
-                                              BorderThickness="0" Height="4" CornerRadius="2"/>
+                                              BorderThickness="0" Height="4"/>
                             </Track.IncreaseRepeatButton>
                             <Track.Thumb>
                                 <Thumb Width="14" Height="14">
