@@ -247,7 +247,7 @@
                                                     Tag="{Binding}"
                                                     Loaded="SparkCanvas_Loaded"
                                                     SizeChanged="SparkCanvas_SizeChanged"
-                                                    MouseDoubleClick="SparkCanvas_DoubleClick"
+                                                    MouseLeftButtonDown="SparkCanvas_DoubleClick"
                                                     Cursor="Hand"
                                                     ToolTip="Doppelklick zum Vergr&#246;&#223;ern"/>
                                         </StackPanel>

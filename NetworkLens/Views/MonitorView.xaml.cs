@@ -141,7 +141,8 @@ public partial class MonitorView : UserControl
 
     private void SparkCanvas_DoubleClick(object sender, MouseButtonEventArgs e)
     {
-        if (sender is Canvas c && c.Tag is MonitorEntry entry) ShowGraphPopup(entry);
+        if (e.ClickCount == 2 && sender is Canvas c && c.Tag is MonitorEntry entry)
+            ShowGraphPopup(entry);
     }
 
     private void RedrawEntryGraph(MonitorEntry entry)
