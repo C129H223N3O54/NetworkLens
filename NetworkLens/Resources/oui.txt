@@ -1,0 +1,36 @@
+# NetworkLens OUI Database
+# Format: AA-BB-CC   (hex)   Manufacturer Name
+#
+# Diese Datei enthält die MAC-Hersteller-Datenbank (IEEE OUI).
+# Für die vollständige Datenbank (~5 MB, ~30.000 Einträge) bitte herunterladen:
+#
+#   https://standards-oui.ieee.org/oui/oui.txt
+#
+# Die heruntergeladene Datei anstelle dieser hier ablegen:
+#   NetworkLens/Resources/oui.txt
+#
+# Ohne vollständige DB verwendet die App den eingebauten Fallback
+# mit den häufigsten Herstellern (Apple, Dell, Cisco, etc.)
+#
+# === MINIMAL SAMPLE ===
+00-00-0C   (hex)		Cisco Systems, Inc
+00-00-5E   (hex)		ICANN, IANA Department
+00-0C-29   (hex)		VMware, Inc.
+00-50-56   (hex)		VMware, Inc.
+B8-27-EB   (hex)		Raspberry Pi Foundation
+DC-A6-32   (hex)		Raspberry Pi Trading Ltd
+E4-5F-01   (hex)		Raspberry Pi Trading Ltd
+00-1B-63   (hex)		Apple, Inc.
+00-26-B9   (hex)		Dell Inc.
+00-1A-A0   (hex)		Dell Inc.
+3C-D9-2B   (hex)		Hewlett Packard
+00-11-32   (hex)		Synology Incorporated
+18-C0-4D   (hex)		Synology Incorporated
+00-08-9B   (hex)		QNAP Systems, Inc.
+24-5E-BE   (hex)		QNAP Systems, Inc.
+A4-C3-F0   (hex)		Google, Inc.
+54-60-09   (hex)		Google, Inc.
+F4-F5-D8   (hex)		Google, Inc.
+00-1D-7E   (hex)		Cisco-Linksys, LLC
+00-0D-B9   (hex)		PC Engines GmbH
+00-E0-4C   (hex)		Realtek Semiconductor Corp.

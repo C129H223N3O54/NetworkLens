@@ -1,0 +1,264 @@
+<UserControl x:Class="NetworkLens.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{StaticResource BgMainBrush}"
+             Loaded="UserControl_Loaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Padding="28,24,28,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="Einstellungen" Style="{StaticResource H1}"/>
+                    <TextBlock Text="NetworkLens konfigurieren"
+                               Margin="0,4,0,0" Foreground="{StaticResource TextSecondaryBrush}"
+                               FontFamily="Segoe UI" FontSize="13"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="↺ Zurücksetzen" Style="{StaticResource DangerButton}"
+                            Margin="0,0,8,0" Click="BtnReset_Click"/>
+                    <Button Content="💾 Speichern" Style="{StaticResource PrimaryButton}"
+                            Click="BtnSave_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <ScrollViewer Grid.Row="1" Padding="28,0,28,24">
+            <StackPanel>
+
+                <!-- Scan Settings -->
+                <Border Style="{StaticResource CardBorder}" Margin="0,0,0,16">
+                    <StackPanel>
+                        <TextBlock Text="SCAN-EINSTELLUNGEN" Style="{StaticResource Label}"
+                                   Margin="0,0,0,16"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Ping-Timeout pro Host" Style="{StaticResource Label}"
+                                           Margin="0,0,0,6"/>
+                                <ComboBox x:Name="CmbScanTimeout" SelectedIndex="1">
+                                    <ComboBoxItem Content="500 ms"/>
+                                    <ComboBoxItem Content="1000 ms (Standard)"/>
+                                    <ComboBoxItem Content="2000 ms"/>
+                                    <ComboBoxItem Content="3000 ms"/>
+                                </ComboBox>
+                                <TextBlock Text="Kürzere Timeouts = schnellere Scans, aber evtl. mehr Fehlalarme"
+                                           FontFamily="Segoe UI" FontSize="11"
+                                           Foreground="{StaticResource TextMutedBrush}" Margin="0,6,0,0"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Maximale parallele Threads" Style="{StaticResource Label}"
+                                           Margin="0,0,0,6"/>
+                                <ComboBox x:Name="CmbMaxThreads" SelectedIndex="1">
+                                    <ComboBoxItem Content="50"/>
+                                    <ComboBoxItem Content="100 (Standard)"/>
+                                    <ComboBoxItem Content="200"/>
+                                    <ComboBoxItem Content="500 (aggressiv)"/>
+                                </ComboBox>
+                                <TextBlock Text="Mehr Threads = schnellerer Scan, aber höhere CPU-Last"
+                                           FontFamily="Segoe UI" FontSize="11"
+                                           Foreground="{StaticResource TextMutedBrush}" Margin="0,6,0,0"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Border Height="1" Background="{StaticResource BorderBrush}" Margin="0,16"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Port-Scan Timeout" Style="{StaticResource Label}"
+                                           Margin="0,0,0,6"/>
+                                <ComboBox x:Name="CmbPortTimeout" SelectedIndex="1">
+                                    <ComboBoxItem Content="200 ms"/>
+                                    <ComboBoxItem Content="500 ms (Standard)"/>
+                                    <ComboBoxItem Content="1000 ms"/>
+                                    <ComboBoxItem Content="2000 ms"/>
+                                </ComboBox>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Auto-Scan beim Start" Style="{StaticResource Label}"
+                                           Margin="0,0,0,6"/>
+                                <CheckBox x:Name="ChkAutoScan"
+                                          Content="Netzwerk-Scan beim Programmstart ausführen"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Monitor Settings -->
+                <Border Style="{StaticResource CardBorder}" Margin="0,0,0,16">
+                    <StackPanel>
+                        <TextBlock Text="LIVE-MONITOR" Style="{StaticResource Label}"
+                                   Margin="0,0,0,16"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Standard-Intervall" Style="{StaticResource Label}"
+                                           Margin="0,0,0,6"/>
+                                <ComboBox x:Name="CmbMonitorInterval" SelectedIndex="1">
+                                    <ComboBoxItem Content="5 Sekunden"/>
+                                    <ComboBoxItem Content="10 Sekunden (Standard)"/>
+                                    <ComboBoxItem Content="30 Sekunden"/>
+                                    <ComboBoxItem Content="60 Sekunden"/>
+                                </ComboBox>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Notifications -->
+                <Border Style="{StaticResource CardBorder}" Margin="0,0,0,16">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,16">
+                            <TextBlock Text="BENACHRICHTIGUNGEN" Style="{StaticResource Label}"/>
+                            <CheckBox x:Name="ChkNotifications" HorizontalAlignment="Right"
+                                      Content="Benachrichtigungen aktiv"/>
+                        </Grid>
+                        <StackPanel x:Name="AlertPanel">
+                            <CheckBox x:Name="ChkAlertNewDevice" Margin="0,0,0,10"
+                                      Content="⚠  Neues unbekanntes Gerät im Netzwerk erkannt"/>
+                            <CheckBox x:Name="ChkAlertOffline" Margin="0,0,0,10"
+                                      Content="🔴 Überwachtes Gerät offline gegangen"/>
+                            <CheckBox x:Name="ChkAlertOnline" Margin="0,0,0,10"
+                                      Content="🟢 Gerät wieder online gegangen"/>
+                            <CheckBox x:Name="ChkAlertNewPort" Margin="0,0,0,10"
+                                      Content="⚡ Neuer offener Port erkannt"/>
+                            <CheckBox x:Name="ChkAlertSound"
+                                      Content="🔔 Sound bei Alert abspielen"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Output / Paths -->
+                <Border Style="{StaticResource CardBorder}" Margin="0,0,0,16">
+                    <StackPanel>
+                        <TextBlock Text="AUSGABE-PFAD" Style="{StaticResource Label}"
+                                   Margin="0,0,0,16"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0" x:Name="TxtOutputPath"
+                                     FontFamily="Cascadia Code, Consolas" FontSize="12"
+                                     Margin="0,0,8,0"/>
+                            <Button Grid.Column="1" Content="📁 Durchsuchen"
+                                    Style="{StaticResource SecondaryButton}"
+                                    Click="BtnBrowseOutput_Click"/>
+                        </Grid>
+                        <TextBlock Text="HTML-, CSV- und JSON-Reports werden hier gespeichert."
+                                   FontFamily="Segoe UI" FontSize="11"
+                                   Foreground="{StaticResource TextMutedBrush}" Margin="0,6,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- App Data paths info -->
+                <Border Style="{StaticResource CardBorder}" Margin="0,0,0,16">
+                    <StackPanel>
+                        <TextBlock Text="APP-DATEN" Style="{StaticResource Label}" Margin="0,0,0,16"/>
+                        <StackPanel>
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Konfiguration" FontFamily="Segoe UI" FontSize="12"
+                                           Foreground="{StaticResource TextSecondaryBrush}"
+                                           VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" x:Name="TxtPathConfig"
+                                           FontFamily="Cascadia Code, Consolas" FontSize="11"
+                                           Foreground="{StaticResource TextMutedBrush}"
+                                           TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                            </Grid>
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Geräte-Daten" FontFamily="Segoe UI" FontSize="12"
+                                           Foreground="{StaticResource TextSecondaryBrush}"
+                                           VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" x:Name="TxtPathDevices"
+                                           FontFamily="Cascadia Code, Consolas" FontSize="11"
+                                           Foreground="{StaticResource TextMutedBrush}"
+                                           TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                            </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Scan-Verlauf" FontFamily="Segoe UI" FontSize="12"
+                                           Foreground="{StaticResource TextSecondaryBrush}"
+                                           VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" x:Name="TxtPathScans"
+                                           FontFamily="Cascadia Code, Consolas" FontSize="11"
+                                           Foreground="{StaticResource TextMutedBrush}"
+                                           TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                            </Grid>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
+                            <Button Content="📂 App-Ordner öffnen"
+                                    Style="{StaticResource SecondaryButton}"
+                                    Padding="10,6" FontSize="12"
+                                    Click="BtnOpenAppData_Click"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- About -->
+                <Border Style="{StaticResource CardBorder}">
+                    <StackPanel>
+                        <TextBlock Text="ÜBER" Style="{StaticResource Label}" Margin="0,0,0,16"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="◈" FontSize="28" Foreground="{StaticResource AccentBrush}"
+                                       VerticalAlignment="Center" Margin="0,0,12,0"/>
+                            <StackPanel>
+                                <TextBlock Text="NetworkLens" FontFamily="Segoe UI"
+                                           FontSize="16" FontWeight="SemiBold"
+                                           Foreground="{StaticResource TextPrimaryBrush}"/>
+                                <TextBlock Text="v0.1.0 — .NET 8 / WPF / Windows"
+                                           FontFamily="Segoe UI" FontSize="12"
+                                           Foreground="{StaticResource TextSecondaryBrush}"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <TextBlock Text="Portabler Netzwerkscanner — keine Installation erforderlich."
+                                   FontFamily="Segoe UI" FontSize="13"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   Margin="0,0,0,12"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="GitHub" Style="{StaticResource SecondaryButton}"
+                                    Padding="10,6" FontSize="12" Margin="0,0,8,0"
+                                    Click="BtnGitHub_Click"/>
+                            <Button Content="Releases" Style="{StaticResource SecondaryButton}"
+                                    Padding="10,6" FontSize="12"
+                                    Click="BtnReleases_Click"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

@@ -1,0 +1,242 @@
+<UserControl x:Class="NetworkLens.Views.PortScanView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{StaticResource BgMainBrush}"
+             Loaded="UserControl_Loaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Padding="28,24,28,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="Port-Scanner" Style="{StaticResource H1}"/>
+                    <TextBlock Text="TCP Connect Scan — offene Ports und Dienste erkennen"
+                               Margin="0,4,0,0" Foreground="{StaticResource TextSecondaryBrush}"
+                               FontFamily="Segoe UI" FontSize="13"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button x:Name="BtnStop" Content="⏹ Stop" Style="{StaticResource SecondaryButton}"
+                            Margin="0,0,8,0" IsEnabled="False" Click="BtnStop_Click"/>
+                    <Button x:Name="BtnScan" Content="▶ Scan starten" Style="{StaticResource PrimaryButton}"
+                            Click="BtnScan_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Config Bar -->
+        <Border Grid.Row="1" Margin="28,0,28,12">
+            <Border Style="{StaticResource CardBorder}" Padding="16,14">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" Text="Ziel-IP:" VerticalAlignment="Center"
+                               FontFamily="Segoe UI" FontSize="13"
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,10,0"/>
+                    <TextBox Grid.Column="1" x:Name="TxtTargetIp"
+                             FontFamily="Cascadia Code, Consolas" FontSize="13"/>
+
+                    <TextBlock Grid.Column="3" Text="Profil:" VerticalAlignment="Center"
+                               FontFamily="Segoe UI" FontSize="13"
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,10,0"/>
+                    <ComboBox Grid.Column="4" x:Name="CmbProfile"
+                              SelectionChanged="CmbProfile_SelectionChanged">
+                        <ComboBoxItem Content="⚡ Quick (Top 20)"/>
+                        <ComboBoxItem Content="📋 Standard (Top 100)" IsSelected="True"/>
+                        <ComboBoxItem Content="🔍 Full (1–65535)"/>
+                        <ComboBoxItem Content="✏ Custom"/>
+                    </ComboBox>
+
+                    <TextBlock Grid.Column="6" Text="Ports:" VerticalAlignment="Center"
+                               FontFamily="Segoe UI" FontSize="13"
+                               Foreground="{StaticResource TextSecondaryBrush}"
+                               Margin="20,0,10,0" x:Name="LblCustomPorts" Visibility="Collapsed"/>
+                    <TextBox Grid.Column="7" x:Name="TxtCustomPorts"
+                             Text="80,443,8080,22,3389" Visibility="Collapsed"
+                             FontFamily="Cascadia Code, Consolas" FontSize="12"
+                             ToolTip="Kommagetrennt: 80,443 oder Bereich: 8000-8100"/>
+                </Grid>
+            </Border>
+        </Border>
+
+        <!-- Progress -->
+        <Border Grid.Row="2" x:Name="ProgressPanel" Margin="28,0,28,12"
+                Style="{StaticResource CardBorder}" Padding="16,12" Visibility="Collapsed">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" Margin="0,0,0,8">
+                    <TextBlock x:Name="TxtProgressLabel" Text="Scanne …"
+                               FontFamily="Segoe UI" Foreground="{StaticResource TextSecondaryBrush}"/>
+                    <TextBlock x:Name="TxtProgressPct" HorizontalAlignment="Right"
+                               FontFamily="Segoe UI" FontWeight="SemiBold"
+                               Foreground="{StaticResource AccentBrush}"/>
+                </Grid>
+                <ProgressBar Grid.Row="1" x:Name="ScanProgress" Height="6" Value="0" Maximum="100"/>
+                <TextBlock Grid.Row="2" x:Name="TxtProgressDetail" Margin="0,6,0,0"
+                           FontFamily="Segoe UI" FontSize="11.5"
+                           Foreground="{StaticResource TextMutedBrush}"/>
+            </Grid>
+        </Border>
+
+        <!-- Results -->
+        <Border Grid.Row="3" Margin="28,0,28,24" Style="{StaticResource CardBorder}" Padding="0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Toolbar -->
+                <Grid Grid.Row="0" Margin="16,12">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Name="TxtOpenCount" Text="—"
+                                   FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                        <!-- Filter pills -->
+                        <Border x:Name="PillAll" Margin="12,0,0,0" CornerRadius="12" Padding="10,3"
+                                Background="{StaticResource AccentBrush}" Cursor="Hand">
+                            <TextBlock Text="Alle" FontSize="11" FontWeight="Bold" Foreground="#FF000000"/>
+                        </Border>
+                        <Border x:Name="PillOpen" Margin="6,0,0,0" CornerRadius="12" Padding="10,3"
+                                Background="{StaticResource BgDeepBrush}" Cursor="Hand"
+                                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                            <TextBlock Text="Offen" FontSize="11"
+                                       Foreground="{StaticResource StatusOnlineBrush}"/>
+                        </Border>
+                        <Border x:Name="PillFiltered" Margin="6,0,0,0" CornerRadius="12" Padding="10,3"
+                                Background="{StaticResource BgDeepBrush}" Cursor="Hand"
+                                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                            <TextBlock Text="Gefiltert" FontSize="11"
+                                       Foreground="{StaticResource StatusWarningBrush}"/>
+                        </Border>
+                    </StackPanel>
+                    <Button HorizontalAlignment="Right" Content="📋 Als Text kopieren"
+                            Style="{StaticResource SecondaryButton}" Padding="10,5" FontSize="12"
+                            Click="BtnCopyResults_Click"/>
+                </Grid>
+
+                <Border Grid.Row="1" Height="1" Background="{StaticResource BorderBrush}"/>
+
+                <!-- Empty state -->
+                <StackPanel x:Name="EmptyState" Grid.Row="2"
+                            VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <TextBlock Text="⬡" FontSize="48" Foreground="{StaticResource TextMutedBrush}"
+                               HorizontalAlignment="Center" Margin="0,0,0,12"/>
+                    <TextBlock Text="Kein Port-Scan durchgeführt"
+                               FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold"
+                               Foreground="{StaticResource TextSecondaryBrush}"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="IP eingeben und Scan starten."
+                               FontFamily="Segoe UI" FontSize="12"
+                               Foreground="{StaticResource TextMutedBrush}"
+                               HorizontalAlignment="Center" Margin="0,6,0,0"/>
+                </StackPanel>
+
+                <!-- Port grid -->
+                <DataGrid Grid.Row="2" x:Name="PortGrid"
+                          IsReadOnly="True" CanUserSortColumns="True"
+                          Visibility="Collapsed">
+                    <DataGrid.Columns>
+                        <!-- Status dot -->
+                        <DataGridTemplateColumn Header="●" Width="44" SortMemberPath="Status">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Ellipse Width="8" Height="8" Fill="{Binding StatusColor}"
+                                             HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <!-- Port -->
+                        <DataGridTextColumn Header="Port" Binding="{Binding Port}" Width="80"
+                                           SortMemberPath="Port">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontFamily" Value="Cascadia Code, Consolas"/>
+                                    <Setter Property="FontSize" Value="13"/>
+                                    <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <!-- Status Text -->
+                        <DataGridTemplateColumn Header="Status" Width="100" SortMemberPath="StatusText">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border CornerRadius="4" Padding="7,2"
+                                            Background="{Binding StatusBgColor}"
+                                            HorizontalAlignment="Left" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding StatusText}" FontSize="11"
+                                                   FontWeight="Bold" Foreground="{Binding StatusColor}"/>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <!-- Service -->
+                        <DataGridTextColumn Header="Dienst" Binding="{Binding DisplayService}" Width="140">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontFamily" Value="Segoe UI"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <!-- Banner -->
+                        <DataGridTextColumn Header="Banner / Antwort" Binding="{Binding Banner}" Width="*">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontFamily" Value="Cascadia Code, Consolas"/>
+                                    <Setter Property="FontSize" Value="11.5"/>
+                                    <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <!-- Ping -->
+                        <DataGridTextColumn Header="ms" Width="60" SortMemberPath="ResponseTime">
+                            <DataGridTextColumn.Binding>
+                                <Binding Path="ResponseTime" StringFormat="{}{0}"/>
+                            </DataGridTextColumn.Binding>
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

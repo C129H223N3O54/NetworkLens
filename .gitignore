@@ -1,0 +1,55 @@
+## .gitignore für NetworkLens (.NET 8 / WPF)
+
+# Build outputs
+bin/
+obj/
+publish/
+out/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.vcxproj.filters
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# NuGet
+*.nupkg
+*.snupkg
+*.nuspec
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# OS
+Thumbs.db
+.DS_Store
+desktop.ini
+ehthumbs.db
+
+# App user data (don't commit personal scan data)
+AppData/
+*.scan.json
+scans/
+
+# Logs
+*.log
+logs/
+
+# Release artifacts
+*.zip
+*.tar.gz
+NetworkLens.exe
