@@ -1,8 +1,9 @@
-using System.Net.NetworkInformation;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using System.Windows.Shapes;
 using NetworkLens.Models;
 using NetworkLens.ViewModels;
@@ -12,13 +13,12 @@ namespace NetworkLens.Views;
 public partial class MonitorView : UserControl
 {
     private MonitorViewModel _vm = null!;
+    private Popup?       _graphPopup;
+    private Canvas?      _popupCanvas;
+    private MonitorEntry? _popupEntry;
 
-    public MonitorView()
-    {
-        InitializeComponent();
-    }
+    public MonitorView() => InitializeComponent();
 
-    // ── Called by MainWindow with shared VM ───────
     public void SetViewModel(MonitorViewModel vm)
     {
         _vm = vm;
@@ -34,7 +34,12 @@ public partial class MonitorView : UserControl
     private void BindVm()
     {
         MonitorCards.ItemsSource = _vm.Entries;
-        _vm.Entries.CollectionChanged += (_, _) => UpdateVisibility();
+        _vm.Entries.CollectionChanged += (_, args) =>
+        {
+            Dispatcher.Invoke(UpdateVisibility);
+            if (args.NewItems == null) return;
+            foreach (MonitorEntry e in args.NewItems) HookEntryRedraw(e);
+        };
         _vm.PropertyChanged += (_, pe) =>
         {
             if (pe.PropertyName == nameof(MonitorViewModel.IsRunning))
@@ -44,27 +49,34 @@ public partial class MonitorView : UserControl
                     BtnStop.IsEnabled  = _vm.IsRunning;
                 });
         };
+        foreach (var entry in _vm.Entries) HookEntryRedraw(entry);
         UpdateVisibility();
     }
 
-    // ── Add / Remove devices ─────────────────────
+    private void HookEntryRedraw(MonitorEntry entry)
+    {
+        entry.PropertyChanged += (_, pe) =>
+        {
+            if (pe.PropertyName == nameof(MonitorEntry.PingHistory))
+                Dispatcher.Invoke(() => RedrawEntryGraph(entry));
+        };
+    }
+
+    // Add / Remove
     private void BtnAddDevice_Click(object sender, RoutedEventArgs e)
     {
         var ip = TxtAddIp.Text.Trim();
-        if (!string.IsNullOrEmpty(ip)) AddDevice(ip);
+        if (!string.IsNullOrEmpty(ip))
+        {
+            _vm.AddDevice(new NetworkDevice { IpAddress = ip, Hostname = ip });
+            TxtAddIp.Clear();
+            UpdateVisibility();
+        }
     }
 
     private void TxtAddIp_KeyDown(object sender, KeyEventArgs e)
     {
         if (e.Key == Key.Enter) BtnAddDevice_Click(sender, new RoutedEventArgs());
-    }
-
-    private void AddDevice(string ip)
-    {
-        var device = new NetworkDevice { IpAddress = ip, Hostname = ip };
-        _vm.AddDevice(device);
-        TxtAddIp.Clear();
-        UpdateVisibility();
     }
 
     public void AddDeviceExternal(NetworkDevice device)
@@ -82,13 +94,13 @@ public partial class MonitorView : UserControl
         }
     }
 
-    // ── Monitor control ───────────────────────────
+    // Monitor control
     private async void BtnStart_Click(object sender, RoutedEventArgs e)
     {
         if (_vm.Entries.Count == 0)
         {
-            MessageBox.Show("Bitte zuerst Geräte zur Überwachung hinzufügen.",
-                "Monitor", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show("Bitte zuerst Geraete hinzufuegen.", "Monitor",
+                MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
         await _vm.StartAsync();
@@ -104,32 +116,158 @@ public partial class MonitorView : UserControl
             0 => 5,
             2 => 30,
             3 => 60,
+            4 => 0,    // Dauerhaft
             _ => 10
         };
     }
 
     private void UpdateVisibility()
     {
-        bool hasEntries = _vm.Entries.Count > 0;
-        EmptyState.Visibility = hasEntries ? Visibility.Collapsed : Visibility.Visible;
-        CardsScroll.Visibility = hasEntries ? Visibility.Visible : Visibility.Collapsed;
+        bool has = _vm.Entries.Count > 0;
+        EmptyState.Visibility  = has ? Visibility.Collapsed : Visibility.Visible;
+        CardsScroll.Visibility = has ? Visibility.Visible   : Visibility.Collapsed;
     }
 
-    // ── Live Graph drawing ────────────────────────
+    // Graph events
     private void SparkCanvas_Loaded(object sender, RoutedEventArgs e)
-        => DrawGraph(sender as Canvas);
+    {
+        if (sender is Canvas c && c.Tag is MonitorEntry entry) DrawGraph(c, entry);
+    }
 
     private void SparkCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
-        => DrawGraph(sender as Canvas);
-
-    private static void DrawGraph(Canvas? canvas)
     {
-        if (canvas == null) return;
-        canvas.Children.Clear();
+        if (sender is Canvas c && c.Tag is MonitorEntry entry) DrawGraph(c, entry);
+    }
 
-        // The Tag is now the MonitorEntry, not the collection directly
-        MonitorEntry? entry = canvas.Tag as MonitorEntry;
-        if (entry == null) return;
+    private void SparkCanvas_DoubleClick(object sender, MouseButtonEventArgs e)
+    {
+        if (sender is Canvas c && c.Tag is MonitorEntry entry) ShowGraphPopup(entry);
+    }
+
+    private void RedrawEntryGraph(MonitorEntry entry)
+    {
+        for (int i = 0; i < _vm.Entries.Count; i++)
+        {
+            if (_vm.Entries[i] != entry) continue;
+            var container = MonitorCards.ItemContainerGenerator
+                .ContainerFromIndex(i) as FrameworkElement;
+            if (container == null) break;
+            var canvas = FindChild<Canvas>(container, "SparkCanvas");
+            if (canvas != null) DrawGraph(canvas, entry);
+            break;
+        }
+        // Also update popup if open for this entry
+        if (_popupEntry == entry && _popupCanvas != null)
+            DrawGraph(_popupCanvas, entry, large: true);
+    }
+
+    private static T? FindChild<T>(DependencyObject parent, string name) where T : FrameworkElement
+    {
+        int n = System.Windows.Media.VisualTreeHelper.GetChildrenCount(parent);
+        for (int i = 0; i < n; i++)
+        {
+            var child = System.Windows.Media.VisualTreeHelper.GetChild(parent, i);
+            if (child is T fe && fe.Name == name) return fe;
+            var result = FindChild<T>(child, name);
+            if (result != null) return result;
+        }
+        return null;
+    }
+
+    // Popup
+    private void ShowGraphPopup(MonitorEntry entry)
+    {
+        _popupEntry = entry;
+
+        var innerCanvas = new Canvas { Height = 260 };
+        _popupCanvas = innerCanvas;
+
+        var legend = new StackPanel { Orientation = Orientation.Horizontal,
+            Margin = new Thickness(0, 0, 0, 8) };
+        AddLegendItem(legend, Color.FromRgb(0x00, 0xB4, 0xD8), "Ping");
+        AddLegendItem(legend, Color.FromRgb(0xFF, 0xD6, 0x00), "Jitter", 12);
+
+        var panel = new StackPanel { Margin = new Thickness(16) };
+        panel.Children.Add(new TextBlock
+        {
+            Text = $"{entry.Device.DisplayName}  ({entry.Device.IpAddress})",
+            FontSize = 15, FontWeight = FontWeights.SemiBold,
+            Foreground = new SolidColorBrush(Color.FromRgb(0xF0, 0xF2, 0xF5)),
+            Margin = new Thickness(0, 0, 0, 6)
+        });
+        panel.Children.Add(legend);
+        panel.Children.Add(new Border
+        {
+            Background = new SolidColorBrush(Color.FromRgb(0x11, 0x14, 0x16)),
+            CornerRadius = new CornerRadius(6),
+            Child = innerCanvas,
+            Margin = new Thickness(0, 0, 0, 10)
+        });
+        panel.Children.Add(new TextBlock
+        {
+            Text = "Klicken zum Schlie\u00dfen",
+            FontSize = 11,
+            Foreground = new SolidColorBrush(Color.FromRgb(0x4A, 0x55, 0x68)),
+            HorizontalAlignment = HorizontalAlignment.Center
+        });
+
+        var border = new Border
+        {
+            Background = new SolidColorBrush(Color.FromRgb(0x16, 0x1A, 0x1F)),
+            BorderBrush = new SolidColorBrush(Color.FromRgb(0x00, 0xB4, 0xD8)),
+            BorderThickness = new Thickness(1),
+            CornerRadius = new CornerRadius(10),
+            Width = 620,
+            Child = panel,
+            Effect = new DropShadowEffect { Color = Colors.Black,
+                BlurRadius = 32, ShadowDepth = 0, Opacity = 0.85 }
+        };
+
+        _graphPopup = new Popup
+        {
+            Child = border, IsOpen = false,
+            Placement = PlacementMode.Center,
+            PlacementTarget = this,
+            AllowsTransparency = true,
+            StaysOpen = false,
+            PopupAnimation = PopupAnimation.Fade
+        };
+
+        _graphPopup.Opened += (_, _) =>
+        {
+            border.UpdateLayout();
+            DrawGraph(innerCanvas, entry, large: true);
+        };
+        _graphPopup.IsOpen = true;
+        border.MouseLeftButtonUp += (_, _) => _graphPopup.IsOpen = false;
+    }
+
+    private static void AddLegendItem(StackPanel panel, Color c, string label, double leftMargin = 0)
+    {
+        if (leftMargin > 0)
+            panel.Children.Add(new System.Windows.Shapes.Ellipse
+            {
+                Width = 0, Margin = new Thickness(leftMargin, 0, 0, 0)
+            });
+        panel.Children.Add(new System.Windows.Shapes.Ellipse
+        {
+            Width = 8, Height = 8,
+            Fill = new SolidColorBrush(c),
+            VerticalAlignment = VerticalAlignment.Center,
+            Margin = new Thickness(leftMargin, 0, 4, 0)
+        });
+        panel.Children.Add(new TextBlock
+        {
+            Text = label, FontSize = 11,
+            Foreground = new SolidColorBrush(c),
+            VerticalAlignment = VerticalAlignment.Center
+        });
+    }
+
+    // Core graph renderer
+    public static void DrawGraph(Canvas canvas, MonitorEntry entry, bool large = false)
+    {
+        canvas.Children.Clear();
 
         var pingHistory = entry.PingHistory.ToList();
         if (pingHistory.Count < 2) return;
@@ -138,125 +276,104 @@ public partial class MonitorView : UserControl
         double h = canvas.ActualHeight;
         if (w < 4 || h < 4) return;
 
-        // Compute jitter history from ping history
-        var jitterHistory = new List<double>();
+        var jitter = new List<double>();
         for (int i = 1; i < pingHistory.Count; i++)
-            jitterHistory.Add(Math.Abs(pingHistory[i] - pingHistory[i - 1]));
+            jitter.Add(Math.Abs(pingHistory[i] - pingHistory[i - 1]));
 
-        double pingMax  = Math.Max(pingHistory.Max(), 1);
-        double pingMin  = Math.Max(pingHistory.Min() - 5, 0);
+        double pingMax   = Math.Max(pingHistory.Max(), 1);
+        double pingMin   = Math.Max(pingHistory.Min() - 5, 0);
         double pingRange = Math.Max(pingMax - pingMin, 1);
+        double jMax      = jitter.Count > 0 ? Math.Max(jitter.Max(), 1) : 1;
 
-        double jitterMax = jitterHistory.Count > 0
-            ? Math.Max(jitterHistory.Max(), 1) : 1;
-
-        // ── Grid lines ──────────────────────────
-        int gridLines = 3;
-        for (int i = 0; i <= gridLines; i++)
+        int grid = large ? 5 : 3;
+        for (int i = 0; i <= grid; i++)
         {
-            double y = h / gridLines * i;
-            var line = new System.Windows.Shapes.Line
+            double y = h / grid * i;
+            canvas.Children.Add(new Line
             {
                 X1 = 0, X2 = w, Y1 = y, Y2 = y,
-                Stroke = new SolidColorBrush(Color.FromArgb(0x18, 0xFF, 0xFF, 0xFF)),
+                Stroke = new SolidColorBrush(Color.FromArgb(0x22, 0xFF, 0xFF, 0xFF)),
                 StrokeThickness = 1,
-                StrokeDashArray = new System.Windows.Media.DoubleCollection { 3, 3 }
-            };
-            canvas.Children.Add(line);
-
-            // Y-axis label
-            double val = pingMax - (pingMax - pingMin) / gridLines * i;
-            var lbl = new System.Windows.Controls.TextBlock
+                StrokeDashArray = new DoubleCollection { 3, 3 }
+            });
+            double val = pingMax - (pingMax - pingMin) / grid * i;
+            var lbl = new TextBlock
             {
-                Text       = $"{val:F0}ms",
-                FontSize   = 9,
-                Foreground = new SolidColorBrush(Color.FromArgb(0x55, 0xFF, 0xFF, 0xFF)),
-                FontFamily = new System.Windows.Media.FontFamily("Segoe UI")
+                Text = $"{val:F0}ms", FontSize = large ? 10 : 9,
+                Foreground = new SolidColorBrush(Color.FromArgb(0x66, 0xFF, 0xFF, 0xFF)),
+                FontFamily = new FontFamily("Segoe UI")
             };
-            Canvas.SetLeft(lbl, 2);
-            Canvas.SetTop(lbl, y + 1);
+            Canvas.SetLeft(lbl, 3); Canvas.SetTop(lbl, y + 1);
             canvas.Children.Add(lbl);
         }
 
-        // ── Helper: build point list ─────────────
-        static PointCollection BuildPoints(IList<double> values, double min, double range,
-            double w, double h, double vPad = 6)
+        static PointCollection Pts(IList<double> vals, double min, double range,
+            double w, double h, double pad = 8)
         {
-            var pts = new PointCollection();
-            int n = values.Count;
+            var pc = new PointCollection();
+            int n = vals.Count;
             for (int i = 0; i < n; i++)
             {
                 double x = i / (double)(n - 1) * w;
-                double y = h - vPad - ((values[i] - min) / range * (h - vPad * 2));
-                y = Math.Max(vPad, Math.Min(h - vPad, y));
-                pts.Add(new Point(x, y));
+                double y = h - pad - (vals[i] - min) / range * (h - pad * 2);
+                pc.Add(new Point(x, Math.Max(pad, Math.Min(h - pad, y))));
             }
-            return pts;
+            return pc;
         }
 
-        // ── Ping area fill ───────────────────────
-        var pingVals = pingHistory.Select(p => (double)p).ToList();
-        var pingPts  = BuildPoints(pingVals, pingMin, pingRange, w, h);
+        var pVals = pingHistory.Select(p => (double)p).ToList();
+        var pPts  = Pts(pVals, pingMin, pingRange, w, h);
 
-        var fillPts = new PointCollection(pingPts)
+        // Filled area
+        var fp = new PointCollection(pPts) { new Point(w, h), new Point(0, h) };
+        canvas.Children.Add(new Polygon
         {
-            new Point(w, h),
-            new Point(0, h)
-        };
-        var pingFill = new System.Windows.Shapes.Polygon
-        {
-            Points = fillPts,
-            Fill   = new LinearGradientBrush(
-                Color.FromArgb(0x50, 0x00, 0xB4, 0xD8),
+            Points = fp,
+            Fill = new LinearGradientBrush(
+                Color.FromArgb(0x55, 0x00, 0xB4, 0xD8),
                 Color.FromArgb(0x05, 0x00, 0xB4, 0xD8),
-                new Point(0, 0), new Point(0, 1)),
-            Stroke = null
-        };
-        canvas.Children.Add(pingFill);
+                new Point(0, 0), new Point(0, 1))
+        });
 
-        // ── Ping line ────────────────────────────
-        var pingLine = new System.Windows.Shapes.Polyline
+        // Ping line
+        canvas.Children.Add(new Polyline
         {
-            Points          = pingPts,
-            Stroke          = new SolidColorBrush(Color.FromRgb(0x00, 0xB4, 0xD8)),
-            StrokeThickness = 1.8,
-            StrokeLineJoin  = PenLineJoin.Round
-        };
-        canvas.Children.Add(pingLine);
+            Points = pPts,
+            Stroke = new SolidColorBrush(Color.FromRgb(0x00, 0xB4, 0xD8)),
+            StrokeThickness = large ? 2 : 1.8,
+            StrokeLineJoin = PenLineJoin.Round
+        });
 
-        // ── Jitter line (scaled to same canvas) ──
-        if (jitterHistory.Count >= 2)
+        // Jitter line
+        if (jitter.Count >= 2)
         {
-            var jPts = BuildPoints(jitterHistory, 0, jitterMax, w, h);
-            var jLine = new System.Windows.Shapes.Polyline
+            canvas.Children.Add(new Polyline
             {
-                Points          = jPts,
-                Stroke          = new SolidColorBrush(Color.FromArgb(0xCC, 0xFF, 0xD6, 0x00)),
-                StrokeThickness = 1.2,
-                StrokeLineJoin  = PenLineJoin.Round,
-                StrokeDashArray = new System.Windows.Media.DoubleCollection { 4, 2 }
-            };
-            canvas.Children.Add(jLine);
+                Points = Pts(jitter, 0, jMax, w, h),
+                Stroke = new SolidColorBrush(Color.FromArgb(0xDD, 0xFF, 0xD6, 0x00)),
+                StrokeThickness = large ? 1.5 : 1.2,
+                StrokeLineJoin = PenLineJoin.Round,
+                StrokeDashArray = new DoubleCollection { 4, 2 }
+            });
         }
 
-        // ── Last ping dot ────────────────────────
-        if (pingPts.Count > 0)
+        // Last point dot
+        if (pPts.Count > 0)
         {
-            var last = pingPts[^1];
-            var dot  = new System.Windows.Shapes.Ellipse
+            var last = pPts[^1];
+            double r = large ? 5 : 3.5;
+            var dot = new Ellipse
             {
-                Width  = 7, Height = 7,
-                Fill   = new SolidColorBrush(Color.FromRgb(0x00, 0xB4, 0xD8)),
-                Effect = new System.Windows.Media.Effects.DropShadowEffect
+                Width = r * 2, Height = r * 2,
+                Fill = new SolidColorBrush(Color.FromRgb(0x00, 0xB4, 0xD8)),
+                Effect = new DropShadowEffect
                 {
-                    Color       = Color.FromRgb(0x00, 0xB4, 0xD8),
-                    BlurRadius  = 8,
-                    ShadowDepth = 0,
-                    Opacity     = 0.8
+                    Color = Color.FromRgb(0x00, 0xB4, 0xD8),
+                    BlurRadius = 8, ShadowDepth = 0, Opacity = 0.9
                 }
             };
-            Canvas.SetLeft(dot, last.X - 3.5);
-            Canvas.SetTop(dot,  last.Y - 3.5);
+            Canvas.SetLeft(dot, last.X - r);
+            Canvas.SetTop(dot,  last.Y - r);
             canvas.Children.Add(dot);
         }
     }

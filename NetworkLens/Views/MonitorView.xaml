@@ -34,6 +34,7 @@
                         <ComboBoxItem Content="10s" IsSelected="True"/>
                         <ComboBoxItem Content="30s"/>
                         <ComboBoxItem Content="60s"/>
+                        <ComboBoxItem Content="Dauerhaft"/>
                     </ComboBox>
                     <Button x:Name="BtnStop" Content="⏹ Stop" Style="{StaticResource SecondaryButton}"
                             Margin="12,0,8,0" IsEnabled="False" Click="BtnStop_Click"/>
@@ -245,7 +246,10 @@
                                                     Height="64" ClipToBounds="True"
                                                     Tag="{Binding}"
                                                     Loaded="SparkCanvas_Loaded"
-                                                    SizeChanged="SparkCanvas_SizeChanged"/>
+                                                    SizeChanged="SparkCanvas_SizeChanged"
+                                                    MouseDoubleClick="SparkCanvas_DoubleClick"
+                                                    Cursor="Hand"
+                                                    ToolTip="Doppelklick zum Vergr&#246;&#223;ern"/>
                                         </StackPanel>
                                     </Border>
 
