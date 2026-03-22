@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows.Data;
 using NetworkLens.Models;
 using NetworkLens.Services;

@@ -148,7 +148,7 @@ public partial class SettingsView : UserControl
     {
         using var dlg = new System.Windows.Forms.FolderBrowserDialog
         {
-            Description = "Ausgabe-Ordner für Reports auswählen",
+            Description  = "Ausgabe-Ordner für Reports auswählen",
             SelectedPath = TxtOutputPath.Text
         };
         if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
