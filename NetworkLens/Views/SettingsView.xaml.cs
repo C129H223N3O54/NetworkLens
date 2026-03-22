@@ -146,13 +146,18 @@ public partial class SettingsView : UserControl
 
     private void BtnBrowseOutput_Click(object sender, RoutedEventArgs e)
     {
-        using var dlg = new System.Windows.Forms.FolderBrowserDialog
+        // WPF-nativer Ordner-Dialog über SaveFileDialog-Trick
+        var dlg = new Microsoft.Win32.SaveFileDialog
         {
-            Description  = "Ausgabe-Ordner für Reports auswählen",
-            SelectedPath = TxtOutputPath.Text
+            Title            = "Ausgabe-Ordner für Reports wählen",
+            FileName         = "Ordner wählen",
+            Filter           = "Ordner|*.thisDoesNotExist",
+            CheckFileExists  = false,
+            CheckPathExists  = true,
+            InitialDirectory = TxtOutputPath.Text
         };
-        if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            TxtOutputPath.Text = dlg.SelectedPath;
+        if (dlg.ShowDialog() == true)
+            TxtOutputPath.Text = System.IO.Path.GetDirectoryName(dlg.FileName) ?? TxtOutputPath.Text;
     }
 
     private void BtnOpenAppData_Click(object sender, RoutedEventArgs e)
