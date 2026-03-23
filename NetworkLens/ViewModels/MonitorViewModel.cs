@@ -179,9 +179,10 @@ public class MonitorViewModel : BaseViewModel
             while (!_cts.Token.IsCancellationRequested)
             {
                 await PingAllAsync(_cts.Token);
-                // IntervalSeconds = 0 means continuous (no delay)
                 if (IntervalSeconds > 0)
                     await Task.Delay(TimeSpan.FromSeconds(IntervalSeconds), _cts.Token);
+                else
+                    await Task.Yield(); // Dauerhaft: yield to UI thread between pings
             }
         }
         catch (OperationCanceledException) { }

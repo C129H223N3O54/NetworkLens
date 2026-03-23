@@ -41,7 +41,7 @@
                             Margin="12,0,8,0" IsEnabled="False" Click="BtnStop_Click"/>
                     <Button x:Name="BtnStart" Content="▶ Starten" Style="{StaticResource PrimaryButton}"
                             Click="BtnStart_Click"/>
-                    <Button Content="? Erklärungen" Style="{StaticResource SecondaryButton}"
+                    <Button Content="Erklärungen" Style="{StaticResource SecondaryButton}"
                             Margin="12,0,0,0" Click="BtnShowInfo_Click"/>
                 </StackPanel>
             </Grid>
@@ -88,6 +88,12 @@
                                        Foreground="#FF4A5568" Margin="0,8,0,0" LineHeight="17">
                                 🟢 &lt;30ms — Sehr gut&#x0a;🟡 30–100ms — Normal&#x0a;🔴 &gt;200ms — Langsam
                             </TextBlock>
+                            <Button Content="🔗 Ping – Wikipedia"
+                                    Style="{StaticResource SecondaryButton}"
+                                    Padding="6,3" FontSize="11" Margin="0,8,0,0"
+                                    HorizontalAlignment="Left"
+                                    Tag="https://de.wikipedia.org/wiki/Ping_(Daten%C3%BCbertragung)"
+                                    Click="BtnWikiLink_Click"/>
                         </StackPanel>
                     </Border>
                     <Border Grid.Column="2" Background="#FF22262C" CornerRadius="6" Padding="12,10">
@@ -101,6 +107,12 @@
                                        Foreground="#FF4A5568" Margin="0,8,0,0" LineHeight="17">
                                 🟢 &lt;5ms — Stabil&#x0a;🟡 5–20ms — Leichte Schwankungen&#x0a;🔴 &gt;20ms — Instabil
                             </TextBlock>
+                            <Button Content="🔗 Jitter – Wikipedia"
+                                    Style="{StaticResource SecondaryButton}"
+                                    Padding="6,3" FontSize="11" Margin="0,8,0,0"
+                                    HorizontalAlignment="Left"
+                                    Tag="https://de.wikipedia.org/wiki/Jitter"
+                                    Click="BtnWikiLink_Click"/>
                         </StackPanel>
                     </Border>
                     <Border Grid.Column="4" Background="#FF22262C" CornerRadius="6" Padding="12,10">
@@ -114,6 +126,12 @@
                                        Foreground="#FF4A5568" Margin="0,8,0,0" LineHeight="17">
                                 🟢 0% — Perfekt&#x0a;🟡 1–5% — Leichte Probleme&#x0a;🔴 &gt;5% — Ernsthafte Störung
                             </TextBlock>
+                            <Button Content="🔗 Paketverlust – Wikipedia"
+                                    Style="{StaticResource SecondaryButton}"
+                                    Padding="6,3" FontSize="11" Margin="0,8,0,0"
+                                    HorizontalAlignment="Left"
+                                    Tag="https://de.wikipedia.org/wiki/Paketverlust"
+                                    Click="BtnWikiLink_Click"/>
                         </StackPanel>
                     </Border>
                 </Grid>

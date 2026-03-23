@@ -111,6 +111,13 @@ public partial class MonitorView : UserControl
 
     private void BtnStop_Click(object sender, RoutedEventArgs e) => _vm.Stop();
 
+    private void BtnWikiLink_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is System.Windows.Controls.Button btn && btn.Tag is string url)
+            System.Diagnostics.Process.Start(
+                new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
+    }
+
     private void BtnShowInfo_Click(object sender, RoutedEventArgs e)
     {
         InfoPanel.Visibility = InfoPanel.Visibility == Visibility.Visible
