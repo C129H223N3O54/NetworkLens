@@ -201,23 +201,8 @@
                                             CornerRadius="6" Padding="12,10" Margin="0,0,0,12">
                                         <Grid>
                                             <StackPanel HorizontalAlignment="Left">
-                                                <TextBlock Style="{StaticResource Label}" Margin="0,0,0,2">
-                                                    <TextBlock.ToolTip>
-                                                        <ToolTip MaxWidth="260">
-                                                            <StackPanel>
-                                                                <TextBlock Text="Was ist Ping?" FontWeight="Bold"
-                                                                           Foreground="{StaticResource AccentBrush}"
-                                                                           Margin="0,0,0,4"/>
-                                                                <TextBlock TextWrapping="Wrap"
-                                                                           Text="Der Ping misst die Zeit in Millisekunden (ms), die ein Datenpaket braucht um zum Zielgerät zu reisen und wieder zurückzukommen (Round-Trip Time)."/>
-                                                                <TextBlock TextWrapping="Wrap" Margin="0,6,0,0"
-                                                                           Foreground="{StaticResource TextSecondaryBrush}">
-                                                                    🟢 &lt;30ms  Sehr gut (Gaming, VoIP)&#x0a;🟡 30–100ms  Normal (Surfen)&#x0a;🔴 &gt;200ms  Langsam (spürbare Verzögerung)
-                                                                </TextBlock>
-                                                            </StackPanel>
-                                                        </ToolTip>
-                                                    </TextBlock.ToolTip>
-                                                    PING (?)</TextBlock>
+                                                <TextBlock Style="{StaticResource Label}"
+                                                           Margin="0,0,0,2">PING</TextBlock>
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBlock Text="{Binding LastPing}"
                                                                FontFamily="Cascadia Code, Consolas"
@@ -231,26 +216,8 @@
                                             </StackPanel>
                                             <StackPanel HorizontalAlignment="Right">
                                                 <TextBlock Style="{StaticResource Label}"
-                                                           Margin="0,0,0,2" HorizontalAlignment="Right">
-                                                    <TextBlock.ToolTip>
-                                                        <ToolTip MaxWidth="270">
-                                                            <StackPanel>
-                                                                <TextBlock Text="Was ist Jitter?" FontWeight="Bold"
-                                                                           Foreground="{StaticResource StatusWarningBrush}"
-                                                                           Margin="0,0,0,4"/>
-                                                                <TextBlock TextWrapping="Wrap"
-                                                                           Text="Jitter ist die Schwankung des Pings über die Zeit. Wenn der Ping mal 10ms und mal 80ms ist, beträgt der Jitter ~70ms."/>
-                                                                <TextBlock TextWrapping="Wrap" Margin="0,6,0,0"
-                                                                           Foreground="{StaticResource TextSecondaryBrush}">
-                                                                    🟢 &lt;5ms   Stabil (ideal für VoIP/Gaming)&#x0a;🟡 5–20ms  Leichte Schwankungen&#x0a;🔴 &gt;20ms  Instabile Verbindung
-                                                                </TextBlock>
-                                                                <TextBlock TextWrapping="Wrap" Margin="0,6,0,0"
-                                                                           Foreground="{StaticResource TextSecondaryBrush}"
-                                                                           Text="Hoher Jitter verursacht Aussetzer bei Videocalls und Lags beim Gaming — auch wenn der Ping an sich niedrig ist."/>
-                                                            </StackPanel>
-                                                        </ToolTip>
-                                                    </TextBlock.ToolTip>
-                                                    JITTER (?)</TextBlock>
+                                                           Margin="0,0,0,2"
+                                                           HorizontalAlignment="Right">JITTER</TextBlock>
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBlock Text="{Binding JitterIcon}" FontSize="12"
                                                                VerticalAlignment="Center" Margin="0,0,4,0"/>
@@ -311,24 +278,6 @@
                                     <!-- Packet loss -->
                                     <Border Background="{StaticResource BgDeepBrush}"
                                             CornerRadius="6" Padding="10,8" Margin="0,0,0,8">
-                                        <Border.ToolTip>
-                                            <ToolTip MaxWidth="270">
-                                                <StackPanel>
-                                                    <TextBlock Text="Was ist Packet Loss?" FontWeight="Bold"
-                                                               Foreground="{StaticResource StatusOfflineBrush}"
-                                                               Margin="0,0,0,4"/>
-                                                    <TextBlock TextWrapping="Wrap"
-                                                               Text="Packet Loss zeigt wie viele Ping-Pakete verloren gingen — also keine Antwort vom Gerät kam. Jedes verlorene Paket zählt als Ausfall."/>
-                                                    <TextBlock TextWrapping="Wrap" Margin="0,6,0,0"
-                                                               Foreground="{StaticResource TextSecondaryBrush}">
-                                                        🟢 0%        Perfekt&#x0a;🟡 1–5%     Leichte Probleme&#x0a;🔴 &gt;5%     Ernsthafte Verbindungsprobleme
-                                                    </TextBlock>
-                                                    <TextBlock TextWrapping="Wrap" Margin="0,6,0,0"
-                                                               Foreground="{StaticResource TextSecondaryBrush}"
-                                                               Text="Packet Loss verursacht Ruckler bei Videos, abgebrochene Downloads und unterbrochene VoIP-Gespräche."/>
-                                                </StackPanel>
-                                            </ToolTip>
-                                        </Border.ToolTip>
                                         <Grid>
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto"/>
@@ -338,7 +287,7 @@
                                             <!-- Label + Percent + Counter -->
                                             <Grid Grid.Row="0" Margin="0,0,0,5">
                                                 <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="PACKET LOSS (?)"
+                                                    <TextBlock Text="PACKET LOSS"
                                                                Style="{StaticResource Label}"/>
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">

@@ -250,39 +250,41 @@
                         <!-- Credits -->
                         <Border Background="{StaticResource BgDeepBrush}" CornerRadius="6"
                                 Padding="14,12" Margin="0,0,0,12">
-                            <StackPanel>
-                                <Grid Margin="0,0,0,8">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="💡 Idee &amp; Konzept"
-                                               FontFamily="Segoe UI" FontSize="12"
-                                               Foreground="{StaticResource TextSecondaryBrush}"
-                                               VerticalAlignment="Center" Margin="0,0,12,0"/>
-                                    <TextBlock Grid.Column="1" Text="Jan Erik Mueller"
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="130"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="8"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Grid.Column="0"
+                                           Text="💡 Idee &amp; Konzept"
+                                           FontFamily="Segoe UI" FontSize="12"
+                                           Foreground="{StaticResource TextSecondaryBrush}"
+                                           VerticalAlignment="Center"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1"
+                                           Text="Jan Erik Mueller"
+                                           FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
+                                           Foreground="{StaticResource TextPrimaryBrush}"
+                                           VerticalAlignment="Center"/>
+                                <TextBlock Grid.Row="2" Grid.Column="0"
+                                           Text="🤖 Entwicklung"
+                                           FontFamily="Segoe UI" FontSize="12"
+                                           Foreground="{StaticResource TextSecondaryBrush}"
+                                           VerticalAlignment="Center"/>
+                                <StackPanel Grid.Row="2" Grid.Column="1"
+                                            Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="Claude (Anthropic)"
                                                FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
-                                               Foreground="{StaticResource TextPrimaryBrush}"
-                                               VerticalAlignment="Center"/>
-                                </Grid>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="🤖 Entwicklung"
+                                               Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    <TextBlock Text=" — KI-Assistent von Anthropic"
                                                FontFamily="Segoe UI" FontSize="12"
-                                               Foreground="{StaticResource TextSecondaryBrush}"
-                                               VerticalAlignment="Center" Margin="0,0,12,0"/>
-                                    <TextBlock Grid.Column="1"
-                                               FontFamily="Segoe UI" FontSize="12"
-                                               Foreground="{StaticResource TextSecondaryBrush}"
-                                               VerticalAlignment="Center">
-                                        <Run Text="Claude (Anthropic)" Foreground="{StaticResource TextPrimaryBrush}" FontWeight="SemiBold"/>
-                                        <Run Text=" — KI-Assistent von Anthropic"/>
-                                    </TextBlock>
-                                </Grid>
-                            </StackPanel>
+                                               Foreground="{StaticResource TextSecondaryBrush}"/>
+                                </StackPanel>
+                            </Grid>
                         </Border>
 
                         <!-- License -->
@@ -305,14 +307,10 @@
                                    FontFamily="Segoe UI" FontSize="12"
                                    Foreground="{StaticResource TextSecondaryBrush}"
                                    Margin="0,0,0,12"/>
-                        <StackPanel Orientation="Horizontal">
-                            <Button Content="GitHub" Style="{StaticResource SecondaryButton}"
-                                    Padding="10,6" FontSize="12" Margin="0,0,8,0"
-                                    Click="BtnGitHub_Click"/>
-                            <Button Content="Releases" Style="{StaticResource SecondaryButton}"
-                                    Padding="10,6" FontSize="12"
-                                    Click="BtnReleases_Click"/>
-                        </StackPanel>
+                        <Button Content="🔗 GitHub öffnen"
+                                Style="{StaticResource SecondaryButton}"
+                                Padding="10,6" FontSize="12"
+                                Click="BtnGitHub_Click"/>
                     </StackPanel>
                 </Border>
 

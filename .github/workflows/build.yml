@@ -4,7 +4,7 @@ on:
   push:
     tags:
       - 'v*'
-  workflow_dispatch:   # Manual trigger for testing
+  workflow_dispatch:
 
 jobs:
   build:
@@ -12,25 +12,20 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      # ── Checkout ─────────────────────────────────
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # ── .NET Setup ───────────────────────────────
       - name: Setup .NET 8
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
 
-      # ── Restore ──────────────────────────────────
       - name: Restore dependencies
         run: dotnet restore NetworkLens/NetworkLens.csproj
 
-      # ── Build ────────────────────────────────────
       - name: Build (Debug check)
         run: dotnet build NetworkLens/NetworkLens.csproj -c Debug --no-restore
 
-      # ── Publish Single-File EXE ──────────────────
       - name: Publish self-contained single-file exe
         run: |
           dotnet publish NetworkLens/NetworkLens.csproj `
@@ -44,11 +39,39 @@ jobs:
             --no-restore `
             -o ./publish
 
-      # ── List output ──────────────────────────────
+      - name: Create self-signed certificate and sign exe
+        shell: pwsh
+        run: |
+          # Create self-signed code signing certificate
+          $cert = New-SelfSignedCertificate `
+            -Type CodeSigningCert `
+            -Subject "CN=NetworkLens, O=Jan Erik Mueller, C=DE" `
+            -KeyUsage DigitalSignature `
+            -FriendlyName "NetworkLens Code Signing" `
+            -CertStoreLocation Cert:\CurrentUser\My `
+            -TextExtension @("2.5.29.37={text}1.3.6.1.5.5.7.3.3") `
+            -NotAfter (Get-Date).AddYears(5)
+
+          # Export to PFX
+          $pwd = ConvertTo-SecureString -String "NetworkLens2024!" -Force -AsPlainText
+          Export-PfxCertificate -Cert $cert -FilePath cert.pfx -Password $pwd
+
+          # Sign the exe
+          $signtool = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" `
+            -Recurse -Filter "signtool.exe" | Select-Object -First 1 -ExpandProperty FullName
+
+          if ($signtool) {
+            & $signtool sign /f cert.pfx /p "NetworkLens2024!" `
+              /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 `
+              ./publish/NetworkLens.exe
+            Write-Host "Signed successfully"
+          } else {
+            Write-Host "signtool not found, skipping signing"
+          }
+
       - name: List publish output
         run: dir ./publish
 
-      # ── Upload artifact (always, even without tag) ──
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
@@ -56,7 +79,6 @@ jobs:
           path: ./publish/NetworkLens.exe
           retention-days: 30
 
-      # ── Create GitHub Release (only on tag push) ─
       - name: Create GitHub Release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
@@ -68,17 +90,18 @@ jobs:
             ### Installation
             1. `NetworkLens.exe` herunterladen
             2. Direkt starten — kein .NET-Install nötig
-            3. Optional: Als Administrator starten für vollen Funktionsumfang (ARP, alle MACs)
-
-            ### Änderungen
-            _Siehe Commit-History_
+            3. Optional: Als Administrator starten für vollen Funktionsumfang
 
             ### Systemanforderungen
             - Windows 10 / 11 (x64)
             - Kein .NET erforderlich (self-contained)
-          files: |
-            ./publish/NetworkLens.exe
+
+            ### Hinweis zur Sicherheitswarnung
+            Die App ist mit einem selbst-signierten Zertifikat signiert.
+            Falls Windows Smart App Control die App blockiert:
+            Rechtsklick auf die .exe → Eigenschaften → "Zulassen" → OK
+          files: ./publish/NetworkLens.exe
           draft: false
-          prerelease: ${{ contains(github.ref_name, 'alpha') || contains(github.ref_name, 'beta') || contains(github.ref_name, 'rc') }}
+          prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

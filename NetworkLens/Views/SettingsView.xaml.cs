@@ -168,8 +168,8 @@ public partial class SettingsView : UserControl
         => ExportHelper.OpenFolder(App.AppDataPath);
 
     private void BtnGitHub_Click(object sender, RoutedEventArgs e)
-        => ExportHelper.OpenUrl("https://github.com/YOUR_USERNAME/NetworkLens");
+        => ExportHelper.OpenUrl("https://github.com/C129H223N3O54/NetworkLens");
 
     private void BtnReleases_Click(object sender, RoutedEventArgs e)
-        => ExportHelper.OpenUrl("https://github.com/YOUR_USERNAME/NetworkLens/releases");
+        => ExportHelper.OpenUrl("https://github.com/C129H223N3O54/NetworkLens/releases");
 }
