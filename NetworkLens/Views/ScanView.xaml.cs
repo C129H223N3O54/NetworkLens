@@ -250,27 +250,138 @@ public partial class ScanView : UserControl
         if (d != null) Clipboard.SetText(d.MacAddress ?? "");
     }
 
-    private void CtxPing_Click(object sender, RoutedEventArgs e)
+    // ── Show submenu ──────────────────────────────
+    private void CtxShowHostname_Click(object sender, RoutedEventArgs e)
+    {
+        var d = GetSelectedDevice();
+        if (d == null) return;
+        ShowInfo("Hostname", d.Hostname ?? "Nicht verfügbar", d.IpAddress);
+    }
+
+    private void CtxShowMac_Click(object sender, RoutedEventArgs e)
+    {
+        var d = GetSelectedDevice();
+        if (d == null) return;
+        ShowInfo("MAC-Adresse", d.MacAddress ?? "Nicht verfügbar\n(Admin-Rechte erforderlich)", d.IpAddress);
+    }
+
+    private void CtxShowVendor_Click(object sender, RoutedEventArgs e)
+    {
+        var d = GetSelectedDevice();
+        if (d == null) return;
+        ShowInfo("Hersteller", d.Manufacturer ?? "Unbekannt", d.IpAddress);
+    }
+
+    private void CtxShowTtl_Click(object sender, RoutedEventArgs e)
+    {
+        var d = GetSelectedDevice();
+        if (d == null) return;
+        // Get TTL via ping
+        Task.Run(async () =>
+        {
+            try
+            {
+                using var ping = new System.Net.NetworkInformation.Ping();
+                var reply = await ping.SendPingAsync(d.IpAddress!, 1000);
+                string ttlInfo = reply.Status == System.Net.NetworkInformation.IPStatus.Success
+                    ? $"TTL: {reply.Options?.Ttl ?? 0}\n\nTypischer Rückschluss:\n64  → Linux/macOS\n128 → Windows\n255 → Router/Network"
+                    : "Keine Antwort erhalten";
+                Dispatcher.Invoke(() => ShowInfo("TTL", ttlInfo, d.IpAddress));
+            }
+            catch { Dispatcher.Invoke(() => ShowInfo("TTL", "Fehler beim Abrufen", d.IpAddress)); }
+        });
+    }
+
+    private void CtxShowAll_Click(object sender, RoutedEventArgs e)
+    {
+        var d = GetSelectedDevice();
+        if (d == null) return;
+        var info = $"IP-Adresse:   {d.IpAddress}\n" +
+                   $"Hostname:     {d.Hostname ?? "—"}\n" +
+                   $"Alias:        {d.Alias ?? "—"}\n" +
+                   $"MAC-Adresse:  {d.MacAddress ?? "—"}\n" +
+                   $"Hersteller:   {d.Manufacturer ?? "—"}\n" +
+                   $"Ping:         {(d.ResponseTime >= 0 ? d.ResponseTime + " ms" : "—")}\n" +
+                   $"Kategorie:    {d.Category}\n" +
+                   $"Offene Ports: {d.OpenPortCount}\n" +
+                   $"Zuletzt ges.: {d.LastSeen:dd.MM.yyyy HH:mm:ss}\n" +
+                   $"Neu erkannt:  {(d.IsNew ? "Ja" : "Nein")}";
+        ShowInfo("Alle Details", info, d.IpAddress);
+    }
+
+    private static void ShowInfo(string title, string content, string? ip)
+    {
+        MessageBox.Show(content, $"{title}  —  {ip}",
+            MessageBoxButton.OK, MessageBoxImage.Information);
+    }
+
+    // ── Open computer submenu ─────────────────────
+    private void CtxOpenHttp_Click(object sender, RoutedEventArgs e)
+    {
+        var d = GetSelectedDevice();
+        if (d != null) OpenUrl($"http://{d.IpAddress}");
+    }
+
+    private void CtxOpenHttps_Click(object sender, RoutedEventArgs e)
+    {
+        var d = GetSelectedDevice();
+        if (d != null) OpenUrl($"https://{d.IpAddress}");
+    }
+
+    private void CtxOpenExplorer_Click(object sender, RoutedEventArgs e)
     {
         var d = GetSelectedDevice();
         if (d == null) return;
         System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
         {
-            FileName = "cmd.exe",
-            Arguments = $"/k ping {d.IpAddress} -t",
+            FileName         = "explorer.exe",
+            Arguments        = $@"\\{d.IpAddress}",
+            UseShellExecute  = true
+        });
+    }
+
+    private void CtxOpenFtp_Click(object sender, RoutedEventArgs e)
+    {
+        var d = GetSelectedDevice();
+        if (d != null) OpenUrl($"ftp://{d.IpAddress}");
+    }
+
+    private void CtxOpenTelnet_Click(object sender, RoutedEventArgs e)
+    {
+        var d = GetSelectedDevice();
+        if (d == null) return;
+        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+        {
+            FileName        = "cmd.exe",
+            Arguments       = $"/k telnet {d.IpAddress}",
             UseShellExecute = true
         });
     }
 
-    private void CtxTraceroute_Click(object sender, RoutedEventArgs e)
+    private void CtxOpenSsh_Click(object sender, RoutedEventArgs e)
     {
         var d = GetSelectedDevice();
         if (d == null) return;
         System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
         {
-            FileName = "cmd.exe",
-            Arguments = $"/k tracert {d.IpAddress}",
+            FileName        = "cmd.exe",
+            Arguments       = $"/k ssh {d.IpAddress}",
             UseShellExecute = true
         });
     }
-}
+
+    private void CtxGeoLocate_Click(object sender, RoutedEventArgs e)
+    {
+        var d = GetSelectedDevice();
+        if (d != null) OpenUrl($"https://www.iplocation.net/?query={d.IpAddress}");
+    }
+
+    private static void OpenUrl(string url)
+    {
+        try
+        {
+            System.Diagnostics.Process.Start(
+                new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
+        }
+        catch { }
+    }
