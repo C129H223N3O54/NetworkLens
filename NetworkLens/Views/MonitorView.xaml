@@ -7,6 +7,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -24,7 +25,6 @@
                                FontFamily="Segoe UI" FontSize="13"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                    <!-- Interval selector -->
                     <TextBlock Text="Intervall:" VerticalAlignment="Center" Margin="0,0,8,0"
                                FontFamily="Segoe UI" FontSize="13"
                                Foreground="{StaticResource TextSecondaryBrush}"/>
@@ -42,14 +42,13 @@
                     <Button x:Name="BtnStart" Content="▶ Starten" Style="{StaticResource PrimaryButton}"
                             Click="BtnStart_Click"/>
                     <Button Content="? Erklärungen" Style="{StaticResource SecondaryButton}"
-                            Margin="12,0,0,0" Click="BtnShowInfo_Click"
-                            ToolTip="Ping, Jitter und Packet Loss erklärt"/>
+                            Margin="12,0,0,0" Click="BtnShowInfo_Click"/>
                 </StackPanel>
             </Grid>
         </Border>
 
         <!-- Info Panel (aufklappbar) -->
-        <Border x:Name="InfoPanel" Margin="28,0,28,12"
+        <Border Grid.Row="1" x:Name="InfoPanel" Margin="28,0,28,12"
                 Background="#FF1A1D21" CornerRadius="8"
                 BorderBrush="#FF00B4D8" BorderThickness="1"
                 Visibility="Collapsed">
@@ -58,10 +57,9 @@
                     <TextBlock Text="BEGRIFFSERKLÄRUNGEN" FontSize="10" FontWeight="Bold"
                                Foreground="#FF4A5568" FontFamily="Segoe UI"/>
                     <Button x:Name="BtnCloseInfo" Content="✕ Schließen"
-                            HorizontalAlignment="Right"
-                            Background="Transparent" BorderThickness="0"
-                            Foreground="#FF8A9BB0" FontSize="11" Cursor="Hand"
-                            Click="BtnCloseInfo_Click">
+                            HorizontalAlignment="Right" Foreground="#FF8A9BB0"
+                            FontSize="11" Cursor="Hand" Click="BtnCloseInfo_Click"
+                            Background="Transparent" BorderThickness="0">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
                                 <TextBlock Text="{TemplateBinding Content}"
@@ -79,8 +77,6 @@
                         <ColumnDefinition Width="12"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-
-                    <!-- Ping -->
                     <Border Grid.Column="0" Background="#FF22262C" CornerRadius="6" Padding="12,10">
                         <StackPanel>
                             <TextBlock Text="📡 Ping" FontFamily="Segoe UI" FontSize="13"
@@ -94,30 +90,26 @@
                             </TextBlock>
                         </StackPanel>
                     </Border>
-
-                    <!-- Jitter -->
                     <Border Grid.Column="2" Background="#FF22262C" CornerRadius="6" Padding="12,10">
                         <StackPanel>
                             <TextBlock Text="📊 Jitter" FontFamily="Segoe UI" FontSize="13"
                                        FontWeight="SemiBold" Foreground="#FFFFD600" Margin="0,0,0,6"/>
                             <TextBlock TextWrapping="Wrap" FontFamily="Segoe UI" FontSize="12"
                                        Foreground="#FF8A9BB0" LineHeight="18"
-                                       Text="Schwankung des Pings über Zeit. Hoher Jitter = unzuverlässige Verbindung, auch wenn der Ping-Durchschnitt gut ist."/>
+                                       Text="Schwankung des Pings. Hoher Jitter = unzuverlässige Verbindung, auch wenn der Durchschnitt gut ist."/>
                             <TextBlock TextWrapping="Wrap" FontFamily="Segoe UI" FontSize="11"
                                        Foreground="#FF4A5568" Margin="0,8,0,0" LineHeight="17">
-                                🟢 &lt;5ms — Stabil&#x0a;🟡 5–20ms — Leichte Schwankungen&#x0a;🔴 &gt;20ms — Instabil (VoIP/Gaming)
+                                🟢 &lt;5ms — Stabil&#x0a;🟡 5–20ms — Leichte Schwankungen&#x0a;🔴 &gt;20ms — Instabil
                             </TextBlock>
                         </StackPanel>
                     </Border>
-
-                    <!-- Packet Loss -->
                     <Border Grid.Column="4" Background="#FF22262C" CornerRadius="6" Padding="12,10">
                         <StackPanel>
                             <TextBlock Text="📦 Packet Loss" FontFamily="Segoe UI" FontSize="13"
                                        FontWeight="SemiBold" Foreground="#FFFF1744" Margin="0,0,0,6"/>
                             <TextBlock TextWrapping="Wrap" FontFamily="Segoe UI" FontSize="12"
                                        Foreground="#FF8A9BB0" LineHeight="18"
-                                       Text="Anteil der Pakete ohne Antwort. Verursacht Ruckler bei Videos, Abbrüche bei Downloads und Aussetzer bei Gesprächen."/>
+                                       Text="Pakete ohne Antwort. Verursacht Ruckler, Abbrüche und Aussetzer."/>
                             <TextBlock TextWrapping="Wrap" FontFamily="Segoe UI" FontSize="11"
                                        Foreground="#FF4A5568" Margin="0,8,0,0" LineHeight="17">
                                 🟢 0% — Perfekt&#x0a;🟡 1–5% — Leichte Probleme&#x0a;🔴 &gt;5% — Ernsthafte Störung
@@ -127,6 +119,9 @@
                 </Grid>
             </StackPanel>
         </Border>
+
+        <!-- Add IP bar -->
+        <Border Grid.Row="2" Margin="28,0,28,16">
             <Border Style="{StaticResource CardBorder}" Padding="16,12">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -148,8 +143,7 @@
         </Border>
 
         <!-- Monitor entries or empty state -->
-        <Grid Grid.Row="2" Margin="28,0,28,24">
-            <!-- Empty State -->
+        <Grid Grid.Row="3" Margin="28,0,28,24">
             <Border x:Name="EmptyState" Style="{StaticResource CardBorder}">
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                     <TextBlock Text="📡" FontSize="52" HorizontalAlignment="Center" Margin="0,0,0,16"/>
@@ -163,7 +157,6 @@
                 </StackPanel>
             </Border>
 
-            <!-- Device cards -->
             <ScrollViewer x:Name="CardsScroll" VerticalScrollBarVisibility="Auto"
                           Visibility="Collapsed">
                 <ItemsControl x:Name="MonitorCards">
@@ -426,6 +419,7 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+            </ScrollViewer>
             </ScrollViewer>
         </Grid>
     </Grid>

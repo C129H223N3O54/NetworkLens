@@ -54,10 +54,12 @@ public partial class SettingsView : UserControl
         };
         CmbMonitorInterval.SelectedIndex = _settings.MonitorIntervalSeconds switch
         {
-            5  => 0,
-            30 => 2,
-            60 => 3,
-            _  => 1
+            1  => 0,
+            5  => 1,
+            30 => 3,
+            60 => 4,
+            0  => 5,   // Dauerhaft
+            _  => 2    // 10s default
         };
 
         ChkAutoScan.IsChecked    = _settings.AutoScanOnStart;
@@ -98,10 +100,12 @@ public partial class SettingsView : UserControl
         };
         _settings.MonitorIntervalSeconds = CmbMonitorInterval.SelectedIndex switch
         {
-            0 => 5,
-            2 => 30,
-            3 => 60,
-            _ => 10
+            0 => 1,
+            1 => 5,
+            3 => 30,
+            4 => 60,
+            5 => 0,    // Dauerhaft
+            _ => 10    // 10s default
         };
 
         _settings.AutoScanOnStart    = ChkAutoScan.IsChecked == true;
