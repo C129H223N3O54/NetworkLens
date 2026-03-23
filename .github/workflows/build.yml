@@ -56,13 +56,24 @@ jobs:
           $pwd = ConvertTo-SecureString -String "NetworkLens2024!" -Force -AsPlainText
           Export-PfxCertificate -Cert $cert -FilePath cert.pfx -Password $pwd
 
-          # Sign the exe
+          # Find signtool.exe - prefer x64 version explicitly
           $signtool = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" `
-            -Recurse -Filter "signtool.exe" | Select-Object -First 1 -ExpandProperty FullName
+            -Recurse -Filter "signtool.exe" |
+            Where-Object { $_.FullName -match "x64" } |
+            Select-Object -First 1 -ExpandProperty FullName
+
+          if (-not $signtool) {
+            # Fallback: any signtool that is NOT arm64
+            $signtool = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" `
+              -Recurse -Filter "signtool.exe" |
+              Where-Object { $_.FullName -notmatch "arm" } |
+              Select-Object -First 1 -ExpandProperty FullName
+          }
 
           if ($signtool) {
+            Write-Host "Using signtool: $signtool"
             & $signtool sign /f cert.pfx /p "NetworkLens2024!" `
-              /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 `
+              /fd SHA256 /t http://timestamp.digicert.com `
               ./publish/NetworkLens.exe
             Write-Host "Signed successfully"
           } else {
