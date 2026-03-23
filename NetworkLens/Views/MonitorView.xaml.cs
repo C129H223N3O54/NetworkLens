@@ -1,6 +1,5 @@
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
@@ -13,9 +12,8 @@ namespace NetworkLens.Views;
 public partial class MonitorView : UserControl
 {
     private MonitorViewModel _vm = null!;
-    private Popup?       _graphPopup;
-    private Canvas?      _popupCanvas;
-    private MonitorEntry? _popupEntry;
+    // Track open graph windows per entry
+    private readonly Dictionary<MonitorEntry, GraphWindow> _graphWindows = new();
 
     public MonitorView() => InitializeComponent();
 
@@ -57,8 +55,14 @@ public partial class MonitorView : UserControl
     {
         entry.PropertyChanged += (_, pe) =>
         {
-            if (pe.PropertyName == nameof(MonitorEntry.PingHistory))
-                Dispatcher.Invoke(() => RedrawEntryGraph(entry));
+            if (pe.PropertyName != nameof(MonitorEntry.PingHistory)) return;
+            Dispatcher.Invoke(() =>
+            {
+                RedrawEntryGraph(entry);
+                // Update graph window if open
+                if (_graphWindows.TryGetValue(entry, out var win) && win.IsVisible)
+                    win.Redraw();
+            });
         };
     }
 
@@ -66,12 +70,10 @@ public partial class MonitorView : UserControl
     private void BtnAddDevice_Click(object sender, RoutedEventArgs e)
     {
         var ip = TxtAddIp.Text.Trim();
-        if (!string.IsNullOrEmpty(ip))
-        {
-            _vm.AddDevice(new NetworkDevice { IpAddress = ip, Hostname = ip });
-            TxtAddIp.Clear();
-            UpdateVisibility();
-        }
+        if (string.IsNullOrEmpty(ip)) return;
+        _vm.AddDevice(new NetworkDevice { IpAddress = ip, Hostname = ip });
+        TxtAddIp.Clear();
+        UpdateVisibility();
     }
 
     private void TxtAddIp_KeyDown(object sender, KeyEventArgs e)
@@ -90,6 +92,7 @@ public partial class MonitorView : UserControl
         if (sender is Button btn && btn.Tag is MonitorEntry entry)
         {
             _vm.Entries.Remove(entry);
+            if (_graphWindows.TryGetValue(entry, out var win)) win.Close();
             UpdateVisibility();
         }
     }
@@ -99,7 +102,7 @@ public partial class MonitorView : UserControl
     {
         if (_vm.Entries.Count == 0)
         {
-            MessageBox.Show("Bitte zuerst Geraete hinzufuegen.", "Monitor",
+            MessageBox.Show("Bitte zuerst Geräte hinzufügen.", "Monitor",
                 MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
@@ -108,17 +111,29 @@ public partial class MonitorView : UserControl
 
     private void BtnStop_Click(object sender, RoutedEventArgs e) => _vm.Stop();
 
+    private void BtnShowInfo_Click(object sender, RoutedEventArgs e)
+    {
+        InfoPanel.Visibility = InfoPanel.Visibility == Visibility.Visible
+            ? Visibility.Collapsed
+            : Visibility.Visible;
+    }
+
+    private void BtnCloseInfo_Click(object sender, RoutedEventArgs e)
+    {
+        InfoPanel.Visibility = Visibility.Collapsed;
+    }
+
     private void CmbInterval_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (_vm == null) return;
         _vm.IntervalSeconds = CmbInterval.SelectedIndex switch
         {
-            0 => 1,    // 1s
-            1 => 5,    // 5s
-            3 => 30,   // 30s
-            4 => 60,   // 60s
-            5 => 0,    // Dauerhaft
-            _ => 10    // 10s (default, index 2)
+            0 => 1,
+            1 => 5,
+            3 => 30,
+            4 => 60,
+            5 => 0,
+            _ => 10
         };
     }
 
@@ -129,7 +144,7 @@ public partial class MonitorView : UserControl
         CardsScroll.Visibility = has ? Visibility.Visible   : Visibility.Collapsed;
     }
 
-    // Graph events
+    // Graph canvas events
     private void SparkCanvas_Loaded(object sender, RoutedEventArgs e)
     {
         if (sender is Canvas c && c.Tag is MonitorEntry entry) DrawGraph(c, entry);
@@ -140,21 +155,44 @@ public partial class MonitorView : UserControl
         if (sender is Canvas c && c.Tag is MonitorEntry entry) DrawGraph(c, entry);
     }
 
+    // Double-click on graph border -> open resizable window
     private void SparkCanvas_DoubleClick(object sender, MouseButtonEventArgs e)
     {
         if (e.ClickCount < 2) return;
-        // Walk up to find the Canvas with the MonitorEntry tag
-        var el = e.OriginalSource as DependencyObject;
-        while (el != null)
+        e.Handled = true;
+
+        // Find the MonitorEntry by walking up the visual tree
+        var el = sender as DependencyObject;
+        MonitorEntry? entry = null;
+
+        // Try Tag on sender first
+        if (sender is FrameworkElement fe && fe.Tag is MonitorEntry me)
+            entry = me;
+
+        // Walk visual tree as fallback
+        if (entry == null)
         {
-            if (el is Canvas c && c.Tag is MonitorEntry entry)
+            var current = e.OriginalSource as DependencyObject;
+            while (current != null && entry == null)
             {
-                ShowGraphPopup(entry);
-                e.Handled = true;
-                return;
+                if (current is Canvas c && c.Tag is MonitorEntry me2) entry = me2;
+                if (current is Border b && b.Tag is MonitorEntry me3) entry = me3;
+                current = VisualTreeHelper.GetParent(current);
             }
-            el = System.Windows.Media.VisualTreeHelper.GetParent(el);
         }
+
+        if (entry == null) return;
+
+        // Reuse existing window or create new
+        if (_graphWindows.TryGetValue(entry, out var existing) && existing.IsVisible)
+        {
+            existing.Activate();
+            return;
+        }
+
+        var win = new GraphWindow(entry);
+        _graphWindows[entry] = win;
+        win.Show();
     }
 
     private void RedrawEntryGraph(MonitorEntry entry)
@@ -169,17 +207,14 @@ public partial class MonitorView : UserControl
             if (canvas != null) DrawGraph(canvas, entry);
             break;
         }
-        // Also update popup if open for this entry
-        if (_popupEntry == entry && _popupCanvas != null)
-            DrawGraph(_popupCanvas, entry, large: true);
     }
 
     private static T? FindChild<T>(DependencyObject parent, string name) where T : FrameworkElement
     {
-        int n = System.Windows.Media.VisualTreeHelper.GetChildrenCount(parent);
+        int n = VisualTreeHelper.GetChildrenCount(parent);
         for (int i = 0; i < n; i++)
         {
-            var child = System.Windows.Media.VisualTreeHelper.GetChild(parent, i);
+            var child = VisualTreeHelper.GetChild(parent, i);
             if (child is T fe && fe.Name == name) return fe;
             var result = FindChild<T>(child, name);
             if (result != null) return result;
@@ -187,116 +222,26 @@ public partial class MonitorView : UserControl
         return null;
     }
 
-    // Popup
-    private void ShowGraphPopup(MonitorEntry entry)
-    {
-        _popupEntry = entry;
-
-        var innerCanvas = new Canvas { Height = 260 };
-        _popupCanvas = innerCanvas;
-
-        var legend = new StackPanel { Orientation = Orientation.Horizontal,
-            Margin = new Thickness(0, 0, 0, 8) };
-        AddLegendItem(legend, Color.FromRgb(0x00, 0xB4, 0xD8), "Ping");
-        AddLegendItem(legend, Color.FromRgb(0xFF, 0xD6, 0x00), "Jitter", 12);
-
-        var panel = new StackPanel { Margin = new Thickness(16) };
-        panel.Children.Add(new TextBlock
-        {
-            Text = $"{entry.Device.DisplayName}  ({entry.Device.IpAddress})",
-            FontSize = 15, FontWeight = FontWeights.SemiBold,
-            Foreground = new SolidColorBrush(Color.FromRgb(0xF0, 0xF2, 0xF5)),
-            Margin = new Thickness(0, 0, 0, 6)
-        });
-        panel.Children.Add(legend);
-        panel.Children.Add(new Border
-        {
-            Background = new SolidColorBrush(Color.FromRgb(0x11, 0x14, 0x16)),
-            CornerRadius = new CornerRadius(6),
-            Child = innerCanvas,
-            Margin = new Thickness(0, 0, 0, 10)
-        });
-        panel.Children.Add(new TextBlock
-        {
-            Text = "Klicken zum Schlie\u00dfen",
-            FontSize = 11,
-            Foreground = new SolidColorBrush(Color.FromRgb(0x4A, 0x55, 0x68)),
-            HorizontalAlignment = HorizontalAlignment.Center
-        });
-
-        var border = new Border
-        {
-            Background = new SolidColorBrush(Color.FromRgb(0x16, 0x1A, 0x1F)),
-            BorderBrush = new SolidColorBrush(Color.FromRgb(0x00, 0xB4, 0xD8)),
-            BorderThickness = new Thickness(1),
-            CornerRadius = new CornerRadius(10),
-            Width = 620,
-            Child = panel,
-            Effect = new DropShadowEffect { Color = Colors.Black,
-                BlurRadius = 32, ShadowDepth = 0, Opacity = 0.85 }
-        };
-
-        _graphPopup = new Popup
-        {
-            Child = border, IsOpen = false,
-            Placement = PlacementMode.Center,
-            PlacementTarget = this,
-            AllowsTransparency = true,
-            StaysOpen = false,
-            PopupAnimation = PopupAnimation.Fade
-        };
-
-        _graphPopup.Opened += (_, _) =>
-        {
-            border.UpdateLayout();
-            DrawGraph(innerCanvas, entry, large: true);
-        };
-        _graphPopup.IsOpen = true;
-        border.MouseLeftButtonUp += (_, _) => _graphPopup.IsOpen = false;
-    }
-
-    private static void AddLegendItem(StackPanel panel, Color c, string label, double leftMargin = 0)
-    {
-        if (leftMargin > 0)
-            panel.Children.Add(new System.Windows.Shapes.Ellipse
-            {
-                Width = 0, Margin = new Thickness(leftMargin, 0, 0, 0)
-            });
-        panel.Children.Add(new System.Windows.Shapes.Ellipse
-        {
-            Width = 8, Height = 8,
-            Fill = new SolidColorBrush(c),
-            VerticalAlignment = VerticalAlignment.Center,
-            Margin = new Thickness(leftMargin, 0, 4, 0)
-        });
-        panel.Children.Add(new TextBlock
-        {
-            Text = label, FontSize = 11,
-            Foreground = new SolidColorBrush(c),
-            VerticalAlignment = VerticalAlignment.Center
-        });
-    }
-
-    // Core graph renderer
+    // Core graph drawing (static, reused by GraphWindow too)
     public static void DrawGraph(Canvas canvas, MonitorEntry entry, bool large = false)
     {
         canvas.Children.Clear();
 
-        var pingHistory = entry.PingHistory.ToList();
-        if (pingHistory.Count < 2) return;
+        var ping = entry.PingHistory.ToList();
+        if (ping.Count < 2) return;
 
         double w = canvas.ActualWidth;
         double h = canvas.ActualHeight;
         if (w < 4 || h < 4) return;
 
         var jitter = new List<double>();
-        for (int i = 1; i < pingHistory.Count; i++)
-            jitter.Add(Math.Abs(pingHistory[i] - pingHistory[i - 1]));
+        for (int i = 1; i < ping.Count; i++)
+            jitter.Add(Math.Abs(ping[i] - ping[i - 1]));
 
-        double pingMax   = Math.Max(pingHistory.Max(), 1);
-        double pingMin   = Math.Max(pingHistory.Min() - 5, 0);
-        double pingRange = Math.Max(pingMax - pingMin, 1);
-        double jMax      = jitter.Count > 0 ? Math.Max(jitter.Max(), 1) : 1;
+        double pMax   = Math.Max(ping.Max(), 1);
+        double pMin   = Math.Max(ping.Min() - 5, 0);
+        double pRange = Math.Max(pMax - pMin, 1);
+        double jMax   = jitter.Count > 0 ? Math.Max(jitter.Max(), 1) : 1;
 
         int grid = large ? 5 : 3;
         for (int i = 0; i <= grid; i++)
@@ -309,11 +254,11 @@ public partial class MonitorView : UserControl
                 StrokeThickness = 1,
                 StrokeDashArray = new DoubleCollection { 3, 3 }
             });
-            double val = pingMax - (pingMax - pingMin) / grid * i;
+            double val = pMax - (pMax - pMin) / grid * i;
             var lbl = new TextBlock
             {
                 Text = $"{val:F0}ms", FontSize = large ? 10 : 9,
-                Foreground = new SolidColorBrush(Color.FromArgb(0x66, 0xFF, 0xFF, 0xFF)),
+                Foreground = new SolidColorBrush(Color.FromArgb(0x77, 0xFF, 0xFF, 0xFF)),
                 FontFamily = new FontFamily("Segoe UI")
             };
             Canvas.SetLeft(lbl, 3); Canvas.SetTop(lbl, y + 1);
@@ -334,21 +279,17 @@ public partial class MonitorView : UserControl
             return pc;
         }
 
-        var pVals = pingHistory.Select(p => (double)p).ToList();
-        var pPts  = Pts(pVals, pingMin, pingRange, w, h);
+        var pVals = ping.Select(p => (double)p).ToList();
+        var pPts  = Pts(pVals, pMin, pRange, w, h);
 
-        // Filled area
-        var fp = new PointCollection(pPts) { new Point(w, h), new Point(0, h) };
         canvas.Children.Add(new Polygon
         {
-            Points = fp,
+            Points = new PointCollection(pPts) { new Point(w, h), new Point(0, h) },
             Fill = new LinearGradientBrush(
                 Color.FromArgb(0x55, 0x00, 0xB4, 0xD8),
                 Color.FromArgb(0x05, 0x00, 0xB4, 0xD8),
                 new Point(0, 0), new Point(0, 1))
         });
-
-        // Ping line
         canvas.Children.Add(new Polyline
         {
             Points = pPts,
@@ -357,7 +298,6 @@ public partial class MonitorView : UserControl
             StrokeLineJoin = PenLineJoin.Round
         });
 
-        // Jitter line
         if (jitter.Count >= 2)
         {
             canvas.Children.Add(new Polyline
@@ -370,11 +310,10 @@ public partial class MonitorView : UserControl
             });
         }
 
-        // Last point dot
         if (pPts.Count > 0)
         {
-            var last = pPts[^1];
             double r = large ? 5 : 3.5;
+            var last = pPts[^1];
             var dot = new Ellipse
             {
                 Width = r * 2, Height = r * 2,
@@ -386,7 +325,7 @@ public partial class MonitorView : UserControl
                 }
             };
             Canvas.SetLeft(dot, last.X - r);
-            Canvas.SetTop(dot,  last.Y - r);
+            Canvas.SetTop(dot, last.Y - r);
             canvas.Children.Add(dot);
         }
     }
