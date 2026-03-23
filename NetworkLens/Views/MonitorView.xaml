@@ -420,7 +420,6 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
-            </ScrollViewer>
         </Grid>
     </Grid>
 </UserControl>
