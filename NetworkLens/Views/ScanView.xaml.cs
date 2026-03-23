@@ -385,3 +385,4 @@ public partial class ScanView : UserControl
         }
         catch { }
     }
+}
