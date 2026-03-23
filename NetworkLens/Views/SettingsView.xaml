@@ -241,7 +241,7 @@
                                            FontSize="16" FontWeight="SemiBold"
                                            Foreground="{StaticResource TextPrimaryBrush}"/>
                                 <TextBlock x:Name="TxtVersion"
-                                           Text="v0.2.1 — .NET 8 / WPF / Windows x64"
+                                           Text="v0.2.3 — .NET 8 / WPF / Windows x64"
                                            FontFamily="Segoe UI" FontSize="12"
                                            Foreground="{StaticResource AccentBrush}"/>
                             </StackPanel>
@@ -321,12 +321,33 @@
                     <StackPanel>
                         <TextBlock Text="CHANGELOG" Style="{StaticResource Label}" Margin="0,0,0,16"/>
 
+                        <!-- v0.2.3 -->
+                        <StackPanel Margin="0,0,0,14">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                <Border Background="{StaticResource AccentBrush}" CornerRadius="4"
+                                        Padding="7,2" Margin="0,0,10,0">
+                                    <TextBlock Text="v0.2.3" FontSize="11" FontWeight="Bold"
+                                               Foreground="#FF000000" FontFamily="Cascadia Code, Consolas"/>
+                                </Border>
+                                <TextBlock Text="Credits + MIT License + Changelog"
+                                           FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
+                                           Foreground="{StaticResource TextPrimaryBrush}"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <TextBlock FontFamily="Segoe UI" FontSize="12" LineHeight="20"
+                                       Foreground="{StaticResource TextSecondaryBrush}">
+                                • Über-Seite: Idee Jan Erik Mueller, Entwicklung Claude (Anthropic)&#x0a;• MIT License Hinweis&#x0a;• Changelog in Einstellungen&#x0a;• MonitorView XML-Fehler behoben
+                            </TextBlock>
+                        </StackPanel>
+
+                        <Border Height="1" Background="{StaticResource BorderBrush}" Margin="0,0,0,14"/>
+
                         <!-- v0.2.1 -->
                         <StackPanel Margin="0,0,0,14">
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
                                 <Border Background="{StaticResource AccentBrush}" CornerRadius="4"
                                         Padding="7,2" Margin="0,0,10,0">
-                                    <TextBlock Text="v0.2.1" FontSize="11" FontWeight="Bold"
+                                    <TextBlock Text="v0.2.3" FontSize="11" FontWeight="Bold"
                                                Foreground="#FF000000" FontFamily="Cascadia Code, Consolas"/>
                                 </Border>
                                 <TextBlock Text="Graph-Fenster + Info-Panel"
