@@ -376,6 +376,30 @@ public partial class ScanView : UserControl
         if (d != null) OpenUrl($"https://www.iplocation.net/?query={d.IpAddress}");
     }
 
+    private void CtxPing_Click(object sender, RoutedEventArgs e)
+    {
+        var d = GetSelectedDevice();
+        if (d == null) return;
+        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+        {
+            FileName        = "cmd.exe",
+            Arguments       = $"/k ping {d.IpAddress} -t",
+            UseShellExecute = true
+        });
+    }
+
+    private void CtxTraceroute_Click(object sender, RoutedEventArgs e)
+    {
+        var d = GetSelectedDevice();
+        if (d == null) return;
+        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+        {
+            FileName        = "cmd.exe",
+            Arguments       = $"/k tracert {d.IpAddress}",
+            UseShellExecute = true
+        });
+    }
+
     private static void OpenUrl(string url)
     {
         try
