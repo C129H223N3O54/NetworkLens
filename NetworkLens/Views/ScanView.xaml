@@ -153,7 +153,8 @@
                     <!-- Device Data Grid -->
                     <DataGrid Grid.Row="1" x:Name="DeviceGrid"
                               CanUserSortColumns="True"
-                              SelectionChanged="DeviceGrid_SelectionChanged">
+                              SelectionChanged="DeviceGrid_SelectionChanged"
+                              PreviewMouseRightButtonDown="DeviceGrid_PreviewMouseRightButtonDown">
                         <DataGrid.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="🔌 Port-Scan" Click="CtxPortScan_Click"/>

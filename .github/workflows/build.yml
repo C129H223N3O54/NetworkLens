@@ -114,5 +114,8 @@ jobs:
           files: ./publish/NetworkLens.exe
           draft: false
           prerelease: false
+          make_latest: true
+          fail_on_unmatched_files: false
+          overwrite_existing_release: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

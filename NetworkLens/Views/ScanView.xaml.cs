@@ -179,8 +179,42 @@ public partial class ScanView : UserControl
     // ── Grid ──────────────────────────────────────
     private void DeviceGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
 
+    // Select row on right-click so GetSelectedDevice() always works
+    private void DeviceGrid_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        var row = FindVisualParent<DataGridRow>(e.OriginalSource as DependencyObject);
+        if (row != null)
+        {
+            DeviceGrid.SelectedItem = row.Item;
+            row.IsSelected = true;
+        }
+    }
+
     private NetworkDevice? GetSelectedDevice()
-        => DeviceGrid.SelectedItem as NetworkDevice;
+    {
+        // Primary: use SelectedItem
+        if (DeviceGrid.SelectedItem is NetworkDevice d) return d;
+
+        // Fallback: find item under mouse via ContextMenu PlacementTarget
+        if (DeviceGrid.ContextMenu?.PlacementTarget is DataGrid grid)
+        {
+            var row = FindVisualParent<DataGridRow>(
+                Mouse.DirectlyOver as DependencyObject);
+            if (row?.Item is NetworkDevice rd) return rd;
+        }
+        return null;
+    }
+
+    private static T? FindVisualParent<T>(DependencyObject? child)
+        where T : DependencyObject
+    {
+        while (child != null)
+        {
+            if (child is T t) return t;
+            child = System.Windows.Media.VisualTreeHelper.GetParent(child);
+        }
+        return null;
+    }
 
     // ── Context Menu ──────────────────────────────
     private void CtxPortScan_Click(object sender, RoutedEventArgs e)
