@@ -1,3 +1,4 @@
+using System.Windows.Media;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -195,89 +196,58 @@ public partial class ScanView : UserControl
     private void ShowContextMenu(NetworkDevice device)
     {
         var menu = new ContextMenu();
+        menu.Background = new SolidColorBrush(Color.FromRgb(0x22, 0x26, 0x2C));
+        menu.BorderBrush = new SolidColorBrush(Color.FromRgb(0x2D, 0x37, 0x48));
 
-        // Helper to create MenuItem
-        MenuItem Item(string header, Action action)
+        void Add(string header, Action action)
         {
             var mi = new MenuItem { Header = header };
+            mi.Background  = new SolidColorBrush(Color.FromRgb(0x22, 0x26, 0x2C));
+            mi.Foreground  = new SolidColorBrush(Color.FromRgb(0xF0, 0xF2, 0xF5));
             mi.Click += (_, _) => action();
-            return mi;
+            menu.Items.Add(mi);
         }
 
-        // Helper to create submenu
-        MenuItem Sub(string header, params object[] items)
-        {
-            var mi = new MenuItem { Header = header };
-            foreach (var item in items) mi.Items.Add(item);
-            return mi;
-        }
+        void Sep() => menu.Items.Add(new Separator());
 
-        menu.Items.Add(Item("🔌 Port-Scan", () =>
-        {
-            if (Window.GetWindow(this) is MainWindow mw) mw.NavigateToPortScan(device);
-        }));
-        menu.Items.Add(Item("📡 In Monitor aufnehmen", () =>
-        {
-            if (Window.GetWindow(this) is MainWindow mw) mw.NavigateToMonitor(device);
-        }));
-        menu.Items.Add(new Separator());
-        menu.Items.Add(Item("✏ Alias setzen...", async () =>
-        {
-            var dialog = new AliasDialog(device.Alias ?? "", device.DisplayName)
-                { Owner = Window.GetWindow(this) };
-            if (dialog.ShowDialog() == true)
-            {
-                device.Alias = dialog.AliasText;
-                await new Services.DeviceManager().SaveDeviceAsync(device);
-            }
-        }));
-        menu.Items.Add(Item("🏷 Kategorie...", () =>
-        {
-            var dialog = new CategoryDialog(device.Category) { Owner = Window.GetWindow(this) };
-            if (dialog.ShowDialog() == true)
-            {
-                device.Category = dialog.SelectedCategory;
-                _ = new Services.DeviceManager().SaveDeviceAsync(device);
-            }
-        }));
-        menu.Items.Add(Item("⭐ Favorit", async () =>
-        {
-            device.IsFavorite = !device.IsFavorite;
-            await new Services.DeviceManager().SaveDeviceAsync(device);
-        }));
-        menu.Items.Add(new Separator());
-
-        // Anzeigen submenu
-        menu.Items.Add(Sub("👁 Anzeigen",
-            Item("Hostname",     () => ShowInfo("Hostname",    device.Hostname    ?? "—", device.IpAddress)),
-            Item("MAC-Adresse",  () => ShowInfo("MAC-Adresse", device.MacAddress  ?? "Nicht verfügbar\n(Admin-Rechte erforderlich)", device.IpAddress)),
-            Item("Hersteller",   () => ShowInfo("Hersteller",  device.Manufacturer ?? "Unbekannt", device.IpAddress)),
-            Item("TTL",          () => FetchAndShowTtl(device)),
-            new Separator(),
-            Item("Alle Details", () => ShowAll(device))
-        ));
-
-        // Öffnen mit submenu
-        menu.Items.Add(Sub("🖥 Öffnen mit",
-            Item("🌐 Web Browser (HTTP)",  () => OpenUrl($"http://{device.IpAddress}")),
-            Item("🔒 Web Browser (HTTPS)", () => OpenUrl($"https://{device.IpAddress}")),
-            Item("📁 Explorer (Netzwerk)", () => OpenExplorer(device.IpAddress)),
-            Item("🔧 FTP",                 () => OpenUrl($"ftp://{device.IpAddress}")),
-            Item("💻 Telnet",              () => OpenTerminal($"telnet {device.IpAddress}")),
-            Item("📡 SSH",                 () => OpenTerminal($"ssh {device.IpAddress}")),
-            new Separator(),
-            Item("📶 Ping (Terminal)",     () => OpenTerminal($"ping {device.IpAddress} -t")),
-            Item("🗺 Traceroute",          () => OpenTerminal($"tracert {device.IpAddress}")),
-            Item("🌍 GeoLocate (Web)",     () => OpenUrl($"https://www.iplocation.net/?query={device.IpAddress}"))
-        ));
-
-        menu.Items.Add(new Separator());
-        menu.Items.Add(Item("📋 IP kopieren",  () => Clipboard.SetText(device.IpAddress  ?? "")));
-        menu.Items.Add(Item("📋 MAC kopieren", () => Clipboard.SetText(device.MacAddress ?? "")));
+        Add("🔌 Port-Scan",            () => { if (Window.GetWindow(this) is MainWindow mw) mw.NavigateToPortScan(device); });
+        Add("📡 In Monitor aufnehmen", () => { if (Window.GetWindow(this) is MainWindow mw) mw.NavigateToMonitor(device); });
+        Sep();
+        Add("✏  Alias setzen...",      async () => {
+            var dlg = new AliasDialog(device.Alias ?? "", device.DisplayName) { Owner = Window.GetWindow(this) };
+            if (dlg.ShowDialog() == true) { device.Alias = dlg.AliasText; await new Services.DeviceManager().SaveDeviceAsync(device); }
+        });
+        Add("🏷  Kategorie...",         () => {
+            var dlg = new CategoryDialog(device.Category) { Owner = Window.GetWindow(this) };
+            if (dlg.ShowDialog() == true) { device.Category = dlg.SelectedCategory; _ = new Services.DeviceManager().SaveDeviceAsync(device); }
+        });
+        Add("⭐ Favorit",              async () => { device.IsFavorite = !device.IsFavorite; await new Services.DeviceManager().SaveDeviceAsync(device); });
+        Sep();
+        // ── Anzeigen ──
+        Add("👁  Hostname anzeigen",    () => ShowInfo("Hostname",    device.Hostname    ?? "—",              device.IpAddress));
+        Add("👁  MAC anzeigen",         () => ShowInfo("MAC-Adresse", device.MacAddress  ?? "— (Admin nötig)", device.IpAddress));
+        Add("👁  Hersteller anzeigen",  () => ShowInfo("Hersteller",  device.Manufacturer ?? "Unbekannt",     device.IpAddress));
+        Add("👁  TTL anzeigen",         () => FetchAndShowTtl(device));
+        Add("👁  Alle Details",         () => ShowAll(device));
+        Sep();
+        // ── Öffnen mit ──
+        Add("🌐 HTTP öffnen",           () => OpenUrl($"http://{device.IpAddress}"));
+        Add("🔒 HTTPS öffnen",          () => OpenUrl($"https://{device.IpAddress}"));
+        Add("📁 Explorer (Netzwerk)",   () => OpenExplorer(device.IpAddress));
+        Add("🔧 FTP öffnen",            () => OpenUrl($"ftp://{device.IpAddress}"));
+        Add("💻 Telnet",                () => OpenTerminal($"telnet {device.IpAddress}"));
+        Add("📡 SSH",                   () => OpenTerminal($"ssh {device.IpAddress}"));
+        Add("📶 Ping (Terminal)",       () => OpenTerminal($"ping {device.IpAddress} -t"));
+        Add("🗺  Traceroute",            () => OpenTerminal($"tracert {device.IpAddress}"));
+        Add("🌍 GeoLocate",             () => OpenUrl($"https://www.iplocation.net/?query={device.IpAddress}"));
+        Sep();
+        Add("📋 IP kopieren",           () => Clipboard.SetText(device.IpAddress  ?? ""));
+        Add("📋 MAC kopieren",          () => Clipboard.SetText(device.MacAddress ?? ""));
 
         menu.PlacementTarget = DeviceGrid;
         menu.IsOpen = true;
     }
+
 
     private static void OpenExplorer(string? ip)
     {
