@@ -57,13 +57,20 @@ public partial class ScanView : UserControl
         // Bind device grid to VM's filtered view
         DeviceGrid.ItemsSource = _vm.DevicesView;
 
-        // Re-bind if already has devices (e.g. auto-scan ran before Loaded)
-        if (_vm.Devices.Count > 0)
+        // Show results immediately when first device found
+        _vm.Devices.CollectionChanged += (_, _) =>
         {
-            EmptyState.Visibility   = Visibility.Collapsed;
-            ResultsPanel.Visibility = Visibility.Visible;
-            UpdateResultCount();
-        }
+            Dispatcher.Invoke(() =>
+            {
+                if (_vm.Devices.Count > 0 && ResultsPanel.Visibility != Visibility.Visible)
+                {
+                    EmptyState.Visibility   = Visibility.Collapsed;
+                    ResultsPanel.Visibility = Visibility.Visible;
+                }
+                UpdateResultCount();
+                UpdateMainWindowStatus();
+            });
+        };
 
         _vm.PropertyChanged += Vm_PropertyChanged;
     }
@@ -222,13 +229,6 @@ public partial class ScanView : UserControl
             if (dlg.ShowDialog() == true) { device.Category = dlg.SelectedCategory; _ = new Services.DeviceManager().SaveDeviceAsync(device); }
         });
         Add("⭐ Favorit",              async () => { device.IsFavorite = !device.IsFavorite; await new Services.DeviceManager().SaveDeviceAsync(device); });
-        Sep();
-        // ── Anzeigen ──
-        Add("👁  Hostname anzeigen",    () => ShowInfo("Hostname",    device.Hostname    ?? "—",              device.IpAddress));
-        Add("👁  MAC anzeigen",         () => ShowInfo("MAC-Adresse", device.MacAddress  ?? "— (Admin nötig)", device.IpAddress));
-        Add("👁  Hersteller anzeigen",  () => ShowInfo("Hersteller",  device.Manufacturer ?? "Unbekannt",     device.IpAddress));
-        Add("👁  TTL anzeigen",         () => FetchAndShowTtl(device));
-        Add("👁  Alle Details",         () => ShowAll(device));
         Sep();
         // ── Öffnen mit ──
         Add("🌐 HTTP öffnen",           () => OpenUrl($"http://{device.IpAddress}"));
