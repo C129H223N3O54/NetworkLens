@@ -179,15 +179,155 @@ public partial class ScanView : UserControl
     // ── Grid ──────────────────────────────────────
     private void DeviceGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
 
-    // Select row on right-click so GetSelectedDevice() always works
+    // Select row on right-click and show programmatic context menu
     private void DeviceGrid_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
     {
         var row = FindVisualParent<DataGridRow>(e.OriginalSource as DependencyObject);
-        if (row != null)
+        if (row?.Item is not NetworkDevice device) return;
+
+        DeviceGrid.SelectedItem = device;
+        row.IsSelected = true;
+
+        e.Handled = true;
+        ShowContextMenu(device);
+    }
+
+    private void ShowContextMenu(NetworkDevice device)
+    {
+        var menu = new ContextMenu();
+
+        // Helper to create MenuItem
+        MenuItem Item(string header, Action action)
         {
-            DeviceGrid.SelectedItem = row.Item;
-            row.IsSelected = true;
+            var mi = new MenuItem { Header = header };
+            mi.Click += (_, _) => action();
+            return mi;
         }
+
+        // Helper to create submenu
+        MenuItem Sub(string header, params MenuItem[] items)
+        {
+            var mi = new MenuItem { Header = header };
+            foreach (var item in items) mi.Items.Add(item);
+            return mi;
+        }
+
+        menu.Items.Add(Item("🔌 Port-Scan", () =>
+        {
+            if (Window.GetWindow(this) is MainWindow mw) mw.NavigateToPortScan(device);
+        }));
+        menu.Items.Add(Item("📡 In Monitor aufnehmen", () =>
+        {
+            if (Window.GetWindow(this) is MainWindow mw) mw.NavigateToMonitor(device);
+        }));
+        menu.Items.Add(new Separator());
+        menu.Items.Add(Item("✏ Alias setzen...", async () =>
+        {
+            var dialog = new AliasDialog(device.Alias ?? "", device.DisplayName)
+                { Owner = Window.GetWindow(this) };
+            if (dialog.ShowDialog() == true)
+            {
+                device.Alias = dialog.AliasText;
+                await new Services.DeviceManager().SaveDeviceAsync(device);
+            }
+        }));
+        menu.Items.Add(Item("🏷 Kategorie...", () =>
+        {
+            var dialog = new CategoryDialog(device.Category) { Owner = Window.GetWindow(this) };
+            if (dialog.ShowDialog() == true)
+            {
+                device.Category = dialog.SelectedCategory;
+                _ = new Services.DeviceManager().SaveDeviceAsync(device);
+            }
+        }));
+        menu.Items.Add(Item("⭐ Favorit", async () =>
+        {
+            device.IsFavorite = !device.IsFavorite;
+            await new Services.DeviceManager().SaveDeviceAsync(device);
+        }));
+        menu.Items.Add(new Separator());
+
+        // Anzeigen submenu
+        menu.Items.Add(Sub("👁 Anzeigen",
+            Item("Hostname",     () => ShowInfo("Hostname",    device.Hostname    ?? "—", device.IpAddress)),
+            Item("MAC-Adresse",  () => ShowInfo("MAC-Adresse", device.MacAddress  ?? "Nicht verfügbar\n(Admin-Rechte erforderlich)", device.IpAddress)),
+            Item("Hersteller",   () => ShowInfo("Hersteller",  device.Manufacturer ?? "Unbekannt", device.IpAddress)),
+            Item("TTL",          () => FetchAndShowTtl(device)),
+            new Separator(),
+            Item("Alle Details", () => ShowAll(device))
+        ));
+
+        // Öffnen mit submenu
+        menu.Items.Add(Sub("🖥 Öffnen mit",
+            Item("🌐 Web Browser (HTTP)",  () => OpenUrl($"http://{device.IpAddress}")),
+            Item("🔒 Web Browser (HTTPS)", () => OpenUrl($"https://{device.IpAddress}")),
+            Item("📁 Explorer (Netzwerk)", () => OpenExplorer(device.IpAddress)),
+            Item("🔧 FTP",                 () => OpenUrl($"ftp://{device.IpAddress}")),
+            Item("💻 Telnet",              () => OpenTerminal($"telnet {device.IpAddress}")),
+            Item("📡 SSH",                 () => OpenTerminal($"ssh {device.IpAddress}")),
+            new Separator(),
+            Item("📶 Ping (Terminal)",     () => OpenTerminal($"ping {device.IpAddress} -t")),
+            Item("🗺 Traceroute",          () => OpenTerminal($"tracert {device.IpAddress}")),
+            Item("🌍 GeoLocate (Web)",     () => OpenUrl($"https://www.iplocation.net/?query={device.IpAddress}"))
+        ));
+
+        menu.Items.Add(new Separator());
+        menu.Items.Add(Item("📋 IP kopieren",  () => Clipboard.SetText(device.IpAddress  ?? "")));
+        menu.Items.Add(Item("📋 MAC kopieren", () => Clipboard.SetText(device.MacAddress ?? "")));
+
+        menu.PlacementTarget = DeviceGrid;
+        menu.IsOpen = true;
+    }
+
+    private static void OpenExplorer(string? ip)
+    {
+        if (ip == null) return;
+        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+        {
+            FileName = "explorer.exe", Arguments = $@"\\{ip}", UseShellExecute = true
+        });
+    }
+
+    private static void OpenTerminal(string command)
+    {
+        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+        {
+            FileName = "cmd.exe", Arguments = $"/k {command}", UseShellExecute = true
+        });
+    }
+
+    private static void FetchAndShowTtl(NetworkDevice device)
+    {
+        Task.Run(async () =>
+        {
+            try
+            {
+                using var ping = new System.Net.NetworkInformation.Ping();
+                var reply = await ping.SendPingAsync(device.IpAddress!, 1000);
+                string info = reply.Status == System.Net.NetworkInformation.IPStatus.Success
+                    ? $"TTL: {reply.Options?.Ttl ?? 0}\n\nTypischer Rückschluss:\n64  → Linux / macOS\n128 → Windows\n255 → Router / Switch"
+                    : "Keine Antwort erhalten";
+                System.Windows.Application.Current.Dispatcher.Invoke(
+                    () => ShowInfo("TTL", info, device.IpAddress));
+            }
+            catch { System.Windows.Application.Current.Dispatcher.Invoke(
+                    () => ShowInfo("TTL", "Fehler beim Abrufen", device.IpAddress)); }
+        });
+    }
+
+    private static void ShowAll(NetworkDevice d)
+    {
+        var info = $"IP-Adresse:   {d.IpAddress}\n" +
+                   $"Hostname:     {d.Hostname     ?? "—"}\n" +
+                   $"Alias:        {d.Alias        ?? "—"}\n" +
+                   $"MAC-Adresse:  {d.MacAddress   ?? "—"}\n" +
+                   $"Hersteller:   {d.Manufacturer ?? "—"}\n" +
+                   $"Ping:         {(d.ResponseTime >= 0 ? d.ResponseTime + " ms" : "—")}\n" +
+                   $"Kategorie:    {d.Category}\n" +
+                   $"Offene Ports: {d.OpenPortCount}\n" +
+                   $"Zuletzt ges.: {d.LastSeen:dd.MM.yyyy HH:mm:ss}\n" +
+                   $"Neu erkannt:  {(d.IsNew ? "Ja" : "Nein")}";
+        ShowInfo("Alle Details", info, d.IpAddress);
     }
 
     private NetworkDevice? GetSelectedDevice()
@@ -214,133 +354,6 @@ public partial class ScanView : UserControl
             child = System.Windows.Media.VisualTreeHelper.GetParent(child);
         }
         return null;
-    }
-
-    // ── Context Menu ──────────────────────────────
-    private void CtxPortScan_Click(object sender, RoutedEventArgs e)
-    {
-        var d = GetSelectedDevice();
-        if (d == null) return;
-        if (Window.GetWindow(this) is MainWindow mw)
-            mw.NavigateToPortScan(d);
-    }
-
-    private void CtxAddMonitor_Click(object sender, RoutedEventArgs e)
-    {
-        var d = GetSelectedDevice();
-        if (d == null) return;
-        if (Window.GetWindow(this) is MainWindow mw)
-            mw.NavigateToMonitor(d);
-    }
-
-    private async void CtxSetAlias_Click(object sender, RoutedEventArgs e)
-    {
-        var d = GetSelectedDevice();
-        if (d == null) return;
-
-        var dialog = new AliasDialog(d.Alias ?? "", d.DisplayName)
-        {
-            Owner = Window.GetWindow(this)
-        };
-
-        if (dialog.ShowDialog() == true)
-        {
-            d.Alias = dialog.AliasText;
-            var svc = new Services.DeviceManager();
-            await svc.SaveDeviceAsync(d);
-        }
-    }
-
-    private void CtxSetCategory_Click(object sender, RoutedEventArgs e)
-    {
-        var d = GetSelectedDevice();
-        if (d == null) return;
-
-        var dialog = new CategoryDialog(d.Category) { Owner = Window.GetWindow(this) };
-        if (dialog.ShowDialog() == true)
-        {
-            d.Category = dialog.SelectedCategory;
-            _ = new Services.DeviceManager().SaveDeviceAsync(d);
-        }
-    }
-
-    private void CtxToggleFavorite_Click(object sender, RoutedEventArgs e)
-    {
-        var d = GetSelectedDevice();
-        if (d == null) return;
-        d.IsFavorite = !d.IsFavorite;
-        _ = new Services.DeviceManager().SaveDeviceAsync(d);
-    }
-
-    private void CtxCopyIP_Click(object sender, RoutedEventArgs e)
-    {
-        var d = GetSelectedDevice();
-        if (d != null) Clipboard.SetText(d.IpAddress ?? "");
-    }
-
-    private void CtxCopyMAC_Click(object sender, RoutedEventArgs e)
-    {
-        var d = GetSelectedDevice();
-        if (d != null) Clipboard.SetText(d.MacAddress ?? "");
-    }
-
-    // ── Show submenu ──────────────────────────────
-    private void CtxShowHostname_Click(object sender, RoutedEventArgs e)
-    {
-        var d = GetSelectedDevice();
-        if (d == null) return;
-        ShowInfo("Hostname", d.Hostname ?? "Nicht verfügbar", d.IpAddress);
-    }
-
-    private void CtxShowMac_Click(object sender, RoutedEventArgs e)
-    {
-        var d = GetSelectedDevice();
-        if (d == null) return;
-        ShowInfo("MAC-Adresse", d.MacAddress ?? "Nicht verfügbar\n(Admin-Rechte erforderlich)", d.IpAddress);
-    }
-
-    private void CtxShowVendor_Click(object sender, RoutedEventArgs e)
-    {
-        var d = GetSelectedDevice();
-        if (d == null) return;
-        ShowInfo("Hersteller", d.Manufacturer ?? "Unbekannt", d.IpAddress);
-    }
-
-    private void CtxShowTtl_Click(object sender, RoutedEventArgs e)
-    {
-        var d = GetSelectedDevice();
-        if (d == null) return;
-        // Get TTL via ping
-        Task.Run(async () =>
-        {
-            try
-            {
-                using var ping = new System.Net.NetworkInformation.Ping();
-                var reply = await ping.SendPingAsync(d.IpAddress!, 1000);
-                string ttlInfo = reply.Status == System.Net.NetworkInformation.IPStatus.Success
-                    ? $"TTL: {reply.Options?.Ttl ?? 0}\n\nTypischer Rückschluss:\n64  → Linux/macOS\n128 → Windows\n255 → Router/Network"
-                    : "Keine Antwort erhalten";
-                Dispatcher.Invoke(() => ShowInfo("TTL", ttlInfo, d.IpAddress));
-            }
-            catch { Dispatcher.Invoke(() => ShowInfo("TTL", "Fehler beim Abrufen", d.IpAddress)); }
-        });
-    }
-
-    private void CtxShowAll_Click(object sender, RoutedEventArgs e)
-    {
-        var d = GetSelectedDevice();
-        if (d == null) return;
-        var info = $"IP-Adresse:   {d.IpAddress}\n" +
-                   $"Hostname:     {d.Hostname ?? "—"}\n" +
-                   $"Alias:        {d.Alias ?? "—"}\n" +
-                   $"MAC-Adresse:  {d.MacAddress ?? "—"}\n" +
-                   $"Hersteller:   {d.Manufacturer ?? "—"}\n" +
-                   $"Ping:         {(d.ResponseTime >= 0 ? d.ResponseTime + " ms" : "—")}\n" +
-                   $"Kategorie:    {d.Category}\n" +
-                   $"Offene Ports: {d.OpenPortCount}\n" +
-                   $"Zuletzt ges.: {d.LastSeen:dd.MM.yyyy HH:mm:ss}\n" +
-                   $"Neu erkannt:  {(d.IsNew ? "Ja" : "Nein")}";
-        ShowInfo("Alle Details", info, d.IpAddress);
     }
 
     private static void ShowInfo(string title, string content, string? ip)

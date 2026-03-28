@@ -108,14 +108,12 @@ jobs:
             - Kein .NET erforderlich (self-contained)
 
             ### Hinweis zur Sicherheitswarnung
-            Die App ist mit einem selbst-signierten Zertifikat signiert.
             Falls Windows Smart App Control die App blockiert:
             Rechtsklick auf die .exe → Eigenschaften → "Zulassen" → OK
           files: ./publish/NetworkLens.exe
           draft: false
           prerelease: false
           make_latest: true
-          fail_on_unmatched_files: false
-          overwrite_existing_release: true
+          overwrite_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

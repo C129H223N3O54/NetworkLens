@@ -155,46 +155,6 @@
                               CanUserSortColumns="True"
                               SelectionChanged="DeviceGrid_SelectionChanged"
                               PreviewMouseRightButtonDown="DeviceGrid_PreviewMouseRightButtonDown">
-                        <DataGrid.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="🔌 Port-Scan" Click="CtxPortScan_Click"/>
-                                <MenuItem Header="📡 In Monitor aufnehmen" Click="CtxAddMonitor_Click"/>
-                                <Separator/>
-                                <MenuItem Header="✏ Alias setzen..." Click="CtxSetAlias_Click"/>
-                                <MenuItem Header="🏷 Kategorie..." Click="CtxSetCategory_Click"/>
-                                <MenuItem Header="⭐ Favorit" Click="CtxToggleFavorite_Click"/>
-                                <Separator/>
-
-                                <!-- Show submenu -->
-                                <MenuItem Header="👁 Anzeigen">
-                                    <MenuItem Header="Hostname"     Click="CtxShowHostname_Click"/>
-                                    <MenuItem Header="MAC-Adresse"  Click="CtxShowMac_Click"/>
-                                    <MenuItem Header="Hersteller"   Click="CtxShowVendor_Click"/>
-                                    <MenuItem Header="TTL"          Click="CtxShowTtl_Click"/>
-                                    <Separator/>
-                                    <MenuItem Header="Alle Details" Click="CtxShowAll_Click"/>
-                                </MenuItem>
-
-                                <!-- Open computer submenu -->
-                                <MenuItem Header="🖥 Öffnen mit">
-                                    <MenuItem Header="🌐 Web Browser (HTTP)"  Click="CtxOpenHttp_Click"/>
-                                    <MenuItem Header="🔒 Web Browser (HTTPS)" Click="CtxOpenHttps_Click"/>
-                                    <MenuItem Header="📁 Explorer (Netzwerk)" Click="CtxOpenExplorer_Click"/>
-                                    <MenuItem Header="🔧 FTP"                 Click="CtxOpenFtp_Click"/>
-                                    <MenuItem Header="💻 Telnet"              Click="CtxOpenTelnet_Click"/>
-                                    <MenuItem Header="📡 SSH"                 Click="CtxOpenSsh_Click"/>
-                                    <Separator/>
-                                    <MenuItem Header="📶 Ping (Terminal)"     Click="CtxPing_Click"/>
-                                    <MenuItem Header="🗺 Traceroute"          Click="CtxTraceroute_Click"/>
-                                    <MenuItem Header="🌍 GeoLocate (Web)"     Click="CtxGeoLocate_Click"/>
-                                </MenuItem>
-
-                                <Separator/>
-                                <MenuItem Header="📋 IP kopieren"  Click="CtxCopyIP_Click"/>
-                                <MenuItem Header="📋 MAC kopieren" Click="CtxCopyMAC_Click"/>
-                            </ContextMenu>
-                        </DataGrid.ContextMenu>
-
                         <DataGrid.Columns>
                             <!-- Status -->
                             <DataGridTemplateColumn Header="●" Width="42" CanUserSort="True" SortMemberPath="StatusSort">
