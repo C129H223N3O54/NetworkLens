@@ -92,40 +92,50 @@ jobs:
 
       - name: Create GitHub Release
         if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v2
-        with:
-          name: NetworkLens ${{ github.ref_name }}
-          body: |
-            ## NetworkLens ${{ github.ref_name }}
-
-            ### 🎉 Initial Release
-
-            Portabler Windows-Netzwerkscanner — keine Installation erforderlich.
-
-            ### Features
-            - 🔍 **Netzwerk-Scan** — Paralleler Ping-Sweep, Live-Ergebnisse, DNS, MAC, Hersteller
-            - 🔌 **Port-Scanner** — Quick/Standard/Full/Custom, Banner-Grabbing
-            - 📊 **Netzwerk-Info** — IP, Gateway, DNS, WLAN, Adapter, netstat
-            - 📡 **Live-Monitor** — Ping/Jitter/Packet Loss Graph, Doppelklick Vollbild
-            - 🏷 **Geräte-Verwaltung** — Alias, Kategorie, Favoriten
-            - 📄 **Reports** — HTML, CSV, JSON, Scan-Vergleich
-            - 🖥 **Kontextmenü** — HTTP/HTTPS/FTP/SSH/Telnet/Traceroute/GeoLocate
-
-            ### Installation
-            1. `NetworkLens.exe` herunterladen
-            2. Direkt starten — kein .NET erforderlich
-            3. Für volle Funktion: Als Administrator ausführen
-
-            ### Hinweis
-            Falls Windows Smart App Control die App blockiert:
-            Rechtsklick → Eigenschaften → "Zulassen" → OK
-
-            ---
-            *Idee & Konzept: Jan Erik Mueller | Entwicklung: Claude (Anthropic)*
-          files: ./publish/NetworkLens.exe
-          draft: false
-          prerelease: false
-          make_latest: true
-          overwrite_files: true
+        shell: pwsh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          $headers = @{
+            Authorization = "Bearer $env:GITHUB_TOKEN"
+            Accept        = "application/vnd.github+json"
+            "X-GitHub-Api-Version" = "2022-11-28"
+          }
+          $repo = "${{ github.repository }}"
+          $tag  = $env:TAG
+
+          # Delete existing release for this tag if it exists
+          $existing = Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/releases/tags/$tag" `
+            -Headers $headers -Method Get -ErrorAction SilentlyContinue
+          if ($existing) {
+            Write-Host "Deleting existing release id=$($existing.id)"
+            Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/releases/$($existing.id)" `
+              -Headers $headers -Method Delete
+          }
+
+          # Create new release
+          $body = @{
+            tag_name   = $tag
+            name       = "NetworkLens $tag"
+            body       = "## NetworkLens $tag`n`n### Features`n- Netzwerk-Scan, Port-Scanner, Netzwerk-Info`n- Live-Monitor mit Ping/Jitter/Packet Loss Graph`n- Kontextmenu: HTTP/HTTPS/FTP/SSH/Telnet/Traceroute/GeoLocate`n- Reports: HTML, CSV, JSON`n- Dark Theme, Self-Contained .exe`n`n### Installation`n1. NetworkLens.exe herunterladen`n2. Direkt starten - kein .NET erforderlich`n3. Als Administrator starten fur vollen Funktionsumfang`n`n---`n*Idee and Konzept: Jan Erik Mueller | Entwicklung: Claude (Anthropic)*"
+            draft      = $false
+            prerelease = $false
+            make_latest = "true"
+          } | ConvertTo-Json
+
+          $release = Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/releases" `
+            -Headers $headers -Method Post -Body $body -ContentType "application/json"
+          Write-Host "Created release id=$($release.id)"
+
+          # Upload exe asset
+          $uploadUrl = $release.upload_url -replace '\{.*\}', ''
+          $exePath   = "./publish/NetworkLens.exe"
+          $exeBytes  = [System.IO.File]::ReadAllBytes($exePath)
+
+          $uploadHeaders = $headers.Clone()
+          $uploadHeaders["Content-Type"] = "application/octet-stream"
+
+          Invoke-RestMethod -Uri "${uploadUrl}?name=NetworkLens.exe" `
+            -Headers $uploadHeaders -Method Post -Body $exeBytes
+          Write-Host "Uploaded NetworkLens.exe successfully"
