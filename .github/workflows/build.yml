@@ -98,18 +98,30 @@ jobs:
           body: |
             ## NetworkLens ${{ github.ref_name }}
 
+            ### 🎉 Initial Release
+
+            Portabler Windows-Netzwerkscanner — keine Installation erforderlich.
+
+            ### Features
+            - 🔍 **Netzwerk-Scan** — Paralleler Ping-Sweep, Live-Ergebnisse, DNS, MAC, Hersteller
+            - 🔌 **Port-Scanner** — Quick/Standard/Full/Custom, Banner-Grabbing
+            - 📊 **Netzwerk-Info** — IP, Gateway, DNS, WLAN, Adapter, netstat
+            - 📡 **Live-Monitor** — Ping/Jitter/Packet Loss Graph, Doppelklick Vollbild
+            - 🏷 **Geräte-Verwaltung** — Alias, Kategorie, Favoriten
+            - 📄 **Reports** — HTML, CSV, JSON, Scan-Vergleich
+            - 🖥 **Kontextmenü** — HTTP/HTTPS/FTP/SSH/Telnet/Traceroute/GeoLocate
+
             ### Installation
             1. `NetworkLens.exe` herunterladen
-            2. Direkt starten — kein .NET-Install nötig
-            3. Optional: Als Administrator starten für vollen Funktionsumfang
+            2. Direkt starten — kein .NET erforderlich
+            3. Für volle Funktion: Als Administrator ausführen
 
-            ### Systemanforderungen
-            - Windows 10 / 11 (x64)
-            - Kein .NET erforderlich (self-contained)
-
-            ### Hinweis zur Sicherheitswarnung
+            ### Hinweis
             Falls Windows Smart App Control die App blockiert:
-            Rechtsklick auf die .exe → Eigenschaften → "Zulassen" → OK
+            Rechtsklick → Eigenschaften → "Zulassen" → OK
+
+            ---
+            *Idee & Konzept: Jan Erik Mueller | Entwicklung: Claude (Anthropic)*
           files: ./publish/NetworkLens.exe
           draft: false
           prerelease: false

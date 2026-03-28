@@ -241,7 +241,7 @@
                                            FontSize="16" FontWeight="SemiBold"
                                            Foreground="{StaticResource TextPrimaryBrush}"/>
                                 <TextBlock x:Name="TxtVersion"
-                                           Text="v0.2.8 — .NET 8 / WPF / Windows x64"
+                                           Text="v1.0.0 — .NET 8 / WPF / Windows x64"
                                            FontFamily="Segoe UI" FontSize="12"
                                            Foreground="{StaticResource AccentBrush}"/>
                             </StackPanel>
@@ -319,141 +319,80 @@
                     <StackPanel>
                         <TextBlock Text="CHANGELOG" Style="{StaticResource Label}" Margin="0,0,0,16"/>
 
-                        <!-- v0.2.8 -->
+                        <!-- v1.0.0 -->
                         <StackPanel Margin="0,0,0,14">
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                                 <Border Background="{StaticResource AccentBrush}" CornerRadius="4"
                                         Padding="7,2" Margin="0,0,10,0">
-                                    <TextBlock Text="v0.2.8" FontSize="11" FontWeight="Bold"
+                                    <TextBlock Text="v1.0.0" FontSize="11" FontWeight="Bold"
                                                Foreground="#FF000000" FontFamily="Cascadia Code, Consolas"/>
                                 </Border>
-                                <TextBlock Text="Credits + MIT License + Changelog"
+                                <TextBlock Text="Initial Release"
                                            FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
                                            Foreground="{StaticResource TextPrimaryBrush}"
                                            VerticalAlignment="Center"/>
+                                <Border Background="#1A00E676" BorderBrush="#3300E676" BorderThickness="1"
+                                        CornerRadius="4" Padding="6,2" Margin="10,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="STABLE" FontSize="10" FontWeight="Bold"
+                                               Foreground="{StaticResource StatusOnlineBrush}"/>
+                                </Border>
                             </StackPanel>
                             <TextBlock FontFamily="Segoe UI" FontSize="12" LineHeight="20"
                                        Foreground="{StaticResource TextSecondaryBrush}">
-                                • Über-Seite: Idee Jan Erik Mueller, Entwicklung Claude (Anthropic)&#x0a;• MIT License Hinweis&#x0a;• Changelog in Einstellungen&#x0a;• MonitorView XML-Fehler behoben
-                            </TextBlock>
-                        </StackPanel>
-
-                        <Border Height="1" Background="{StaticResource BorderBrush}" Margin="0,0,0,14"/>
-
-                        <!-- v0.2.1 -->
-                        <StackPanel Margin="0,0,0,14">
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
-                                <Border Background="{StaticResource AccentBrush}" CornerRadius="4"
-                                        Padding="7,2" Margin="0,0,10,0">
-                                    <TextBlock Text="v0.2.8" FontSize="11" FontWeight="Bold"
-                                               Foreground="#FF000000" FontFamily="Cascadia Code, Consolas"/>
-                                </Border>
-                                <TextBlock Text="Graph-Fenster + Info-Panel"
-                                           FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
-                                           Foreground="{StaticResource TextPrimaryBrush}"
-                                           VerticalAlignment="Center"/>
-                            </StackPanel>
-                            <TextBlock FontFamily="Segoe UI" FontSize="12" LineHeight="20"
-                                       Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,0">
-                                • Graph-Doppelklick öffnet eigenes Fenster (verschiebbar, größenveränderlich)&#x0a;• Monitor läuft im Hintergrund weiter wenn Graph-Fenster offen&#x0a;• ? Erklärungen-Panel: Ping, Jitter, Packet Loss erklärt&#x0a;• Packet Loss zeigt absoluten Paketzähler (verloren / gesendet)
-                            </TextBlock>
-                        </StackPanel>
-
-                        <Border Height="1" Background="{StaticResource BorderBrush}" Margin="0,0,0,14"/>
-
-                        <!-- v0.2.0 -->
-                        <StackPanel Margin="0,0,0,14">
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
-                                <Border Background="{StaticResource BgDeepBrush}"
-                                        BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
-                                        CornerRadius="4" Padding="7,2" Margin="0,0,10,0">
-                                    <TextBlock Text="v0.2.0" FontSize="11" FontWeight="Bold"
-                                               Foreground="{StaticResource TextSecondaryBrush}"
-                                               FontFamily="Cascadia Code, Consolas"/>
-                                </Border>
-                                <TextBlock Text="Tooltips + Packet Loss Zähler"
-                                           FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
-                                           Foreground="{StaticResource TextPrimaryBrush}"
-                                           VerticalAlignment="Center"/>
-                            </StackPanel>
-                            <TextBlock FontFamily="Segoe UI" FontSize="12" LineHeight="20"
-                                       Foreground="{StaticResource TextSecondaryBrush}">
-                                • Ping, Jitter, Min/Avg/Max mit Erklärungen&#x0a;• Packet Loss: Prozent + absoluter Zähler&#x0a;• Doppelklick-Graph-Popup
-                            </TextBlock>
-                        </StackPanel>
-
-                        <Border Height="1" Background="{StaticResource BorderBrush}" Margin="0,0,0,14"/>
-
-                        <!-- v0.1.9 -->
-                        <StackPanel Margin="0,0,0,14">
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
-                                <Border Background="{StaticResource BgDeepBrush}"
-                                        BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
-                                        CornerRadius="4" Padding="7,2" Margin="0,0,10,0">
-                                    <TextBlock Text="v0.1.9" FontSize="11" FontWeight="Bold"
-                                               Foreground="{StaticResource TextSecondaryBrush}"
-                                               FontFamily="Cascadia Code, Consolas"/>
-                                </Border>
-                                <TextBlock Text="Monitor-Verbesserungen"
-                                           FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
-                                           Foreground="{StaticResource TextPrimaryBrush}"
-                                           VerticalAlignment="Center"/>
-                            </StackPanel>
-                            <TextBlock FontFamily="Segoe UI" FontSize="12" LineHeight="20"
-                                       Foreground="{StaticResource TextSecondaryBrush}">
-                                • Intervall: 1s und Dauerhaft hinzugefügt&#x0a;• Scan-Tabelle: Standardsortierung nach IP aufsteigend&#x0a;• Live Ping+Jitter Graph im Monitor
-                            </TextBlock>
-                        </StackPanel>
-
-                        <Border Height="1" Background="{StaticResource BorderBrush}" Margin="0,0,0,14"/>
-
-                        <!-- v0.1.5 -->
-                        <StackPanel Margin="0,0,0,14">
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
-                                <Border Background="{StaticResource BgDeepBrush}"
-                                        BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
-                                        CornerRadius="4" Padding="7,2" Margin="0,0,10,0">
-                                    <TextBlock Text="v0.1.5" FontSize="11" FontWeight="Bold"
-                                               Foreground="{StaticResource TextSecondaryBrush}"
-                                               FontFamily="Cascadia Code, Consolas"/>
-                                </Border>
-                                <TextBlock Text="Auto-Subnet + Live Graph"
-                                           FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
-                                           Foreground="{StaticResource TextPrimaryBrush}"
-                                           VerticalAlignment="Center"/>
-                            </StackPanel>
-                            <TextBlock FontFamily="Segoe UI" FontSize="12" LineHeight="20"
-                                       Foreground="{StaticResource TextSecondaryBrush}">
-                                • Subnetz beim Start automatisch erkannt&#x0a;• Live-Graph mit Ping und Jitter-Linie
-                            </TextBlock>
-                        </StackPanel>
-
-                        <Border Height="1" Background="{StaticResource BorderBrush}" Margin="0,0,0,14"/>
-
-                        <!-- v0.1.0 -->
-                        <StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
-                                <Border Background="{StaticResource BgDeepBrush}"
-                                        BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
-                                        CornerRadius="4" Padding="7,2" Margin="0,0,10,0">
-                                    <TextBlock Text="v0.1.0" FontSize="11" FontWeight="Bold"
-                                               Foreground="{StaticResource TextSecondaryBrush}"
-                                               FontFamily="Cascadia Code, Consolas"/>
-                                </Border>
-                                <TextBlock Text="Erstveröffentlichung"
-                                           FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
-                                           Foreground="{StaticResource TextPrimaryBrush}"
-                                           VerticalAlignment="Center"/>
-                            </StackPanel>
-                            <TextBlock FontFamily="Segoe UI" FontSize="12" LineHeight="20"
-                                       Foreground="{StaticResource TextSecondaryBrush}">
-                                • Netzwerk-Scan, Port-Scanner, Netzwerk-Info&#x0a;• Live-Monitor, Report-Export, Geräte-Verwaltung&#x0a;• Dark Theme, Sidebar-Navigation, Admin-Erkennung
+                                <Run FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}">🔍 Netzwerk-Scan</Run>
+                                <Run Text="&#x0a;  • Paralleler Ping-Sweep des lokalen Subnetzes"/>
+                                <Run Text="&#x0a;  • Automatische Subnetz-Erkennung beim Start"/>
+                                <Run Text="&#x0a;  • Live-Ergebnisse während des Scans"/>
+                                <Run Text="&#x0a;  • DNS Reverse-Lookup, MAC-Adresse via ARP"/>
+                                <Run Text="&#x0a;  • Hersteller-Erkennung via OUI-Datenbank"/>
+                                <Run Text="&#x0a;  • Sortierung nach IP aufsteigend"/>
+                                <Run Text="&#x0a;  • Suche und Filter in Echtzeit"/>
+                                <Run Text="&#x0a;"/>
+                                <Run FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}">🔌 Port-Scanner</Run>
+                                <Run Text="&#x0a;  • Quick / Standard / Full / Custom Profile"/>
+                                <Run Text="&#x0a;  • Async TCP Connect Scan mit Banner-Grabbing"/>
+                                <Run Text="&#x0a;  • ~60 bekannte Dienste automatisch erkannt"/>
+                                <Run Text="&#x0a;"/>
+                                <Run FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}">📊 Netzwerk-Info</Run>
+                                <Run Text="&#x0a;  • Lokale IP, Gateway, Subnetz, DNS-Server"/>
+                                <Run Text="&#x0a;  • Öffentliche IP, WLAN-SSID"/>
+                                <Run Text="&#x0a;  • Adapter-Liste mit Speed und Status"/>
+                                <Run Text="&#x0a;  • Aktive Verbindungen (netstat)"/>
+                                <Run Text="&#x0a;"/>
+                                <Run FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}">📡 Live-Monitor</Run>
+                                <Run Text="&#x0a;  • Kontinuierliche Ping-Überwachung"/>
+                                <Run Text="&#x0a;  • Live Ping + Jitter Graph (Doppelklick = Vollbild)"/>
+                                <Run Text="&#x0a;  • Min / Avg / Max / Jitter / Packet Loss"/>
+                                <Run Text="&#x0a;  • Intervall: 1s / 5s / 10s / 30s / 60s / Dauerhaft"/>
+                                <Run Text="&#x0a;  • Erklärungen-Panel: Ping, Jitter, Packet Loss"/>
+                                <Run Text="&#x0a;  • Wikipedia-Links für weitere Infos"/>
+                                <Run Text="&#x0a;"/>
+                                <Run FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}">🏷 Geräte-Verwaltung</Run>
+                                <Run Text="&#x0a;  • Alias, Kategorie, Favoriten, Notizen"/>
+                                <Run Text="&#x0a;  • Persistent über Scans hinweg (per MAC)"/>
+                                <Run Text="&#x0a;"/>
+                                <Run FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}">📄 Report &amp; Export</Run>
+                                <Run Text="&#x0a;  • HTML-Report mit Filter und Suche"/>
+                                <Run Text="&#x0a;  • CSV und JSON Export"/>
+                                <Run Text="&#x0a;  • Scan-Vergleich: neue / verschwundene Geräte"/>
+                                <Run Text="&#x0a;"/>
+                                <Run FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}">🖥 Kontextmenü</Run>
+                                <Run Text="&#x0a;  • Port-Scan, Monitor, Alias, Kategorie, Favorit"/>
+                                <Run Text="&#x0a;  • HTTP / HTTPS / Explorer / FTP / Telnet / SSH"/>
+                                <Run Text="&#x0a;  • Ping / Traceroute / GeoLocate"/>
+                                <Run Text="&#x0a;  • IP und MAC kopieren"/>
+                                <Run Text="&#x0a;"/>
+                                <Run FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}">⚙ Allgemein</Run>
+                                <Run Text="&#x0a;  • Dark Theme, Sidebar-Navigation"/>
+                                <Run Text="&#x0a;  • Admin-Erkennung mit Neustart-Option"/>
+                                <Run Text="&#x0a;  • Self-Contained .exe — kein .NET nötig"/>
+                                <Run Text="&#x0a;  • Self-Signed Code Signing Certificate"/>
+                                <Run Text="&#x0a;  • MIT License"/>
                             </TextBlock>
                         </StackPanel>
 
                     </StackPanel>
                 </Border>
-
             </StackPanel>
         </ScrollViewer>
     </Grid>

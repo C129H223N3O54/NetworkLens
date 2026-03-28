@@ -188,7 +188,7 @@
                                     </StackPanel>
                                 </Border>
 
-                                <TextBlock Text="NetworkLens v0.2.8" FontSize="10"
+                                <TextBlock Text="NetworkLens v1.0.0" FontSize="10"
                                            Foreground="{StaticResource TextMutedBrush}"
                                            HorizontalAlignment="Center"/>
                             </StackPanel>
