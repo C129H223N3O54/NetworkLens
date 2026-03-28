@@ -205,7 +205,7 @@ public partial class ScanView : UserControl
         }
 
         // Helper to create submenu
-        MenuItem Sub(string header, params MenuItem[] items)
+        MenuItem Sub(string header, params object[] items)
         {
             var mi = new MenuItem { Header = header };
             foreach (var item in items) mi.Items.Add(item);
