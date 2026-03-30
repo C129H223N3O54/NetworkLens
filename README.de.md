@@ -5,7 +5,7 @@
 [![Build & Release](https://github.com/C129H223N3O54/NetworkLens/actions/workflows/build.yml/badge.svg)](https://github.com/C129H223N3O54/NetworkLens/actions/workflows/build.yml)
 [![Neueste Version](https://img.shields.io/github/v/release/C129H223N3O54/NetworkLens?style=flat&label=Download)](https://github.com/C129H223N3O54/NetworkLens/releases/latest)
 [![Lizenz: MIT](https://img.shields.io/badge/Lizenz-MIT-blue.svg)](LICENSE)
-[![Plattform](https://img.shields.io/badge/Plattform-Windows%2010%2F11-informational)](https://github.com/C129H223N3O54/NetworkLens/releases/latest)
+[![Plattform](https://img.shields.io/badge/Plattform-Windows%2010%2F11%2FServer-informational)](https://github.com/C129H223N3O54/NetworkLens/releases/latest)
 
 ---
 
@@ -29,6 +29,8 @@
 1. `NetworkLens.exe` aus dem [neuesten Release](https://github.com/C129H223N3O54/NetworkLens/releases/latest) herunterladen
 2. Direkt starten — **kein .NET erforderlich**
 3. Für alle Funktionen (MAC-Adressen, ARP): Rechtsklick → **Als Administrator ausführen**
+
+> **Windows Server:** Desktop Experience muss installiert sein (Server Core ohne GUI wird nicht unterstützt).
 
 > **Windows Smart App Control:** Falls Windows die App blockiert, Rechtsklick auf die exe → Eigenschaften → **"Zulassen"** anklicken → OK
 
