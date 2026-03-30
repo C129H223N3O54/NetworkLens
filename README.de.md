@@ -118,4 +118,4 @@ MIT License — siehe [LICENSE](LICENSE)
 
 ---
 
-*Entwickelt mit ❤️ und vielen PowerShell-Skripten*
+*Made with ❤️ by Jan Erik Mueller & Claude (Anthropic)*

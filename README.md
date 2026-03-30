@@ -126,4 +126,4 @@ MIT License — see [LICENSE](LICENSE)
 
 ---
 
-*Made with ❤️ and a lot of PowerShell scripts*
+*Made with ❤️ by Jan Erik Mueller & Claude (Anthropic)*
