@@ -72,6 +72,7 @@ public partial class SettingsView : UserControl
         ChkAlertNewPort.IsChecked   = _settings.Alerts.NewOpenPortAlert;
         ChkAlertSound.IsChecked     = _settings.Alerts.PlaySound;
 
+        UpdateThemeButtons();
         _loading = false;
     }
 
@@ -166,6 +167,62 @@ public partial class SettingsView : UserControl
 
     private void BtnOpenAppData_Click(object sender, RoutedEventArgs e)
         => ExportHelper.OpenFolder(App.AppDataPath);
+
+    private void BtnThemeDark_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        App.ApplyTheme(dark: true);
+        UpdateThemeButtons();
+        SaveThemePreference(true);
+    }
+
+    private void BtnThemeLight_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        App.ApplyTheme(dark: false);
+        UpdateThemeButtons();
+        SaveThemePreference(false);
+    }
+
+    private void UpdateThemeButtons()
+    {
+        bool dark = App.IsDarkTheme;
+        // Highlight active button
+        BtnThemeDark.Background  = dark
+            ? new System.Windows.Media.SolidColorBrush(
+                System.Windows.Media.Color.FromRgb(0x00, 0xB4, 0xD8))
+            : new System.Windows.Media.SolidColorBrush(
+                System.Windows.Media.Color.FromRgb(0x22, 0x26, 0x2C));
+        BtnThemeLight.Background = dark
+            ? new System.Windows.Media.SolidColorBrush(
+                System.Windows.Media.Color.FromRgb(0x22, 0x26, 0x2C))
+            : new System.Windows.Media.SolidColorBrush(
+                System.Windows.Media.Color.FromRgb(0x00, 0x77, 0xA8));
+    }
+
+    private static void SaveThemePreference(bool dark)
+    {
+        try
+        {
+            var prefs = new System.Collections.Generic.Dictionary<string, object>
+                { ["darkTheme"] = dark };
+            System.IO.File.WriteAllText(
+                System.IO.Path.Combine(App.AppDataPath, "theme.json"),
+                System.Text.Json.JsonSerializer.Serialize(prefs));
+        }
+        catch { }
+    }
+
+    public static bool LoadThemePreference()
+    {
+        try
+        {
+            var path = System.IO.Path.Combine(App.AppDataPath, "theme.json");
+            if (!System.IO.File.Exists(path)) return true; // default dark
+            var json = System.IO.File.ReadAllText(path);
+            var doc  = System.Text.Json.JsonDocument.Parse(json);
+            return doc.RootElement.GetProperty("darkTheme").GetBoolean();
+        }
+        catch { return true; }
+    }
 
     private void BtnGitHub_Click(object sender, RoutedEventArgs e)
         => ExportHelper.OpenUrl("https://github.com/C129H223N3O54/NetworkLens");

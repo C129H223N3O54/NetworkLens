@@ -13,21 +13,37 @@ public partial class App : Application
     public static string ConfigPath  { get; } = Path.Combine(AppDataPath, "config.json");
     public static string DevicesPath { get; } = Path.Combine(AppDataPath, "devices.json");
 
-    // ── App-wide shared ViewModels ─────────────────
-    // Shared so ScanView, ReportView, MonitorView and PortScanView
-    // can all access the same scan state without re-scanning.
     public static ScanViewModel    ScanVm    { get; } = new();
     public static MonitorViewModel MonitorVm { get; } = new();
+
+    // ── Theme ─────────────────────────────────────
+    private static bool _isDark = true;
+    public static bool IsDarkTheme => _isDark;
+
+    public static void ApplyTheme(bool dark)
+    {
+        _isDark = dark;
+        var uri = new Uri(dark
+            ? "Resources/DarkTheme.xaml"
+            : "Resources/LightTheme.xaml",
+            UriKind.Relative);
+
+        var dict = Current.Resources.MergedDictionaries;
+        dict.Clear();
+        dict.Add(new ResourceDictionary { Source = uri });
+    }
 
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
 
-        // Ensure app directories exist
         Directory.CreateDirectory(AppDataPath);
         Directory.CreateDirectory(ScansPath);
 
-        // Global unhandled exception handler
+        // Load saved theme preference
+        bool dark = Views.SettingsView.LoadThemePreference();
+        ApplyTheme(dark);
+
         DispatcherUnhandledException += (s, ex) =>
         {
             MessageBox.Show(

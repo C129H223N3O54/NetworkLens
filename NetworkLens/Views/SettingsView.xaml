@@ -33,6 +33,52 @@
         <ScrollViewer Grid.Row="1" Padding="28,0,28,24">
             <StackPanel>
 
+                <!-- Appearance -->
+                <Border Style="{StaticResource CardBorder}" Margin="0,0,0,16">
+                    <StackPanel>
+                        <TextBlock Text="ERSCHEINUNGSBILD" Style="{StaticResource Label}"
+                                   Margin="0,0,0,16"/>
+                        <Grid>
+                            <StackPanel>
+                                <TextBlock Text="Theme" Style="{StaticResource Label}"
+                                           Margin="0,0,0,6"/>
+                                <TextBlock FontFamily="Segoe UI" FontSize="12"
+                                           Foreground="{StaticResource TextSecondaryBrush}"
+                                           Margin="0,0,0,12"
+                                           Text="Zwischen Dark Mode und Light Mode wechseln. Die Änderung wird sofort angewendet."/>
+                            </StackPanel>
+                        </Grid>
+                        <StackPanel Orientation="Horizontal">
+                            <Border x:Name="BtnThemeDark"
+                                    Background="{StaticResource AccentBrush}"
+                                    CornerRadius="6" Padding="16,8" Margin="0,0,8,0"
+                                    Cursor="Hand" MouseLeftButtonUp="BtnThemeDark_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="🌙" FontSize="14" Margin="0,0,6,0"
+                                               VerticalAlignment="Center"/>
+                                    <TextBlock Text="Dark Mode" FontFamily="Segoe UI"
+                                               FontSize="13" FontWeight="SemiBold"
+                                               Foreground="Black" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                            <Border x:Name="BtnThemeLight"
+                                    Background="{StaticResource BgDeepBrush}"
+                                    BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                                    CornerRadius="6" Padding="16,8"
+                                    Cursor="Hand" MouseLeftButtonUp="BtnThemeLight_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="☀️" FontSize="14" Margin="0,0,6,0"
+                                               VerticalAlignment="Center"/>
+                                    <TextBlock Text="Light Mode" FontFamily="Segoe UI"
+                                               FontSize="13" FontWeight="SemiBold"
+                                               Foreground="{StaticResource TextPrimaryBrush}"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
                 <!-- Scan Settings -->
                 <Border Style="{StaticResource CardBorder}" Margin="0,0,0,16">
                     <StackPanel>
