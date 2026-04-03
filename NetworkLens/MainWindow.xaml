@@ -6,7 +6,7 @@
         Width="1200" Height="760"
         MinWidth="900" MinHeight="600"
         WindowStartupLocation="CenterScreen"
-        Background="{StaticResource BgMainBrush}"
+        Background="{DynamicResource BgMainBrush}"
         WindowStyle="None"
         AllowsTransparency="True"
         ResizeMode="CanResizeWithGrip">
@@ -15,8 +15,8 @@
         <DropShadowEffect Color="#FF000000" BlurRadius="30" ShadowDepth="0" Opacity="0.6"/>
     </Window.Effect>
 
-    <Border Background="{StaticResource BgMainBrush}" CornerRadius="10" BorderThickness="1"
-            BorderBrush="{StaticResource BorderBrush}">
+    <Border Background="{DynamicResource BgMainBrush}" CornerRadius="10" BorderThickness="1"
+            BorderBrush="{DynamicResource BorderBrush}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="48"/>   <!-- Title Bar -->
@@ -27,7 +27,7 @@
             <!-- ════════════════════════════════
                  CUSTOM TITLE BAR
                  ════════════════════════════════ -->
-            <Border Grid.Row="0" Background="{StaticResource BgDeepBrush}"
+            <Border Grid.Row="0" Background="{DynamicResource BgDeepBrush}"
                     CornerRadius="10,10,0,0" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
                 <Grid Margin="14,0">
                     <Grid.ColumnDefinitions>
@@ -38,22 +38,22 @@
 
                     <!-- App Icon + Title -->
                     <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="◈" FontSize="18" Foreground="{StaticResource AccentBrush}"
+                        <TextBlock Text="◈" FontSize="18" Foreground="{DynamicResource AccentBrush}"
                                    VerticalAlignment="Center" Margin="0,0,10,0"/>
                         <TextBlock Text="NetworkLens" FontFamily="Segoe UI" FontSize="14"
-                                   FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}"
+                                   FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"
                                    VerticalAlignment="Center"/>
                         <Border x:Name="AdminBadge" Margin="10,0,0,0" CornerRadius="4"
                                 Background="#1A00E676" BorderBrush="#3300E676" BorderThickness="1"
                                 Padding="6,2" VerticalAlignment="Center" Visibility="Collapsed">
                             <TextBlock Text="ADMIN" FontSize="9" FontWeight="Bold"
-                                       Foreground="{StaticResource StatusOnlineBrush}" FontFamily="Segoe UI"/>
+                                       Foreground="{DynamicResource StatusOnlineBrush}" FontFamily="Segoe UI"/>
                         </Border>
                         <Border x:Name="NoAdminBadge" Margin="10,0,0,0" CornerRadius="4"
                                 Background="#1AFFAB00" BorderBrush="#33FFAB00" BorderThickness="1"
                                 Padding="6,2" VerticalAlignment="Center">
                             <TextBlock Text="EINGESCHRÄNKT" FontSize="9" FontWeight="Bold"
-                                       Foreground="{StaticResource StatusWarningBrush}" FontFamily="Segoe UI"/>
+                                       Foreground="{DynamicResource StatusWarningBrush}" FontFamily="Segoe UI"/>
                         </Border>
                     </StackPanel>
 
@@ -61,15 +61,15 @@
                     <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
                         <Button x:Name="BtnMinimize" Content="—" Style="{StaticResource IconButton}"
                                 Width="32" Height="32" FontSize="11"
-                                Foreground="{StaticResource TextSecondaryBrush}"
+                                Foreground="{DynamicResource TextSecondaryBrush}"
                                 Click="BtnMinimize_Click"/>
                         <Button x:Name="BtnMaximize" Content="⬜" Style="{StaticResource IconButton}"
                                 Width="32" Height="32" FontSize="11"
-                                Foreground="{StaticResource TextSecondaryBrush}"
+                                Foreground="{DynamicResource TextSecondaryBrush}"
                                 Click="BtnMaximize_Click"/>
                         <Button x:Name="BtnClose" Content="✕" Style="{StaticResource IconButton}"
                                 Width="32" Height="32" FontSize="11"
-                                Foreground="{StaticResource TextSecondaryBrush}"
+                                Foreground="{DynamicResource TextSecondaryBrush}"
                                 Click="BtnClose_Click">
                             <Button.Resources>
                                 <Style TargetType="Button" BasedOn="{StaticResource IconButton}">
@@ -97,7 +97,7 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- SIDEBAR -->
-                <Border Grid.Column="0" Background="{StaticResource BgSidebarBrush}">
+                <Border Grid.Column="0" Background="{DynamicResource BgSidebarBrush}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -107,7 +107,7 @@
 
                         <!-- Nav Section Header -->
                         <TextBlock Grid.Row="0" Text="NAVIGATION" FontSize="10" FontWeight="Bold"
-                                   Foreground="{StaticResource TextMutedBrush}" FontFamily="Segoe UI"
+                                   Foreground="{DynamicResource TextMutedBrush}" FontFamily="Segoe UI"
                                    Margin="22,16,0,8"/>
 
                         <!-- Nav Items -->
@@ -116,7 +116,7 @@
                                     Click="NavButton_Click">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="⬡" FontSize="15" Width="22" VerticalAlignment="Center"
-                                               Foreground="{StaticResource AccentBrush}"/>
+                                               Foreground="{DynamicResource AccentBrush}"/>
                                     <TextBlock Text="Netzwerk-Scan" VerticalAlignment="Center" Margin="6,0,0,0"/>
                                 </StackPanel>
                             </Button>
@@ -154,7 +154,7 @@
                             </Button>
 
                             <!-- Separator -->
-                            <Border Height="1" Background="{StaticResource BorderBrush}" Margin="16,8"/>
+                            <Border Height="1" Background="{DynamicResource BorderBrush}" Margin="16,8"/>
 
                             <Button x:Name="NavSettings" Style="{StaticResource NavButton}"
                                     Click="NavButton_Click">
@@ -167,7 +167,7 @@
 
                         <!-- Sidebar Footer -->
                         <Border Grid.Row="2" BorderThickness="0,1,0,0"
-                                BorderBrush="{StaticResource BorderBrush}" Padding="16,12">
+                                BorderBrush="{DynamicResource BorderBrush}" Padding="16,12">
                             <StackPanel>
                                 <!-- Admin Restart hint (shown when not admin) -->
                                 <Border x:Name="AdminHintPanel" Background="#1AFFAB00"
@@ -176,10 +176,10 @@
                                     <StackPanel>
                                         <TextBlock Text="⚠ Eingeschränkter Modus"
                                                    FontSize="11" FontWeight="SemiBold"
-                                                   Foreground="{StaticResource StatusWarningBrush}"
+                                                   Foreground="{DynamicResource StatusWarningBrush}"
                                                    TextWrapping="Wrap"/>
                                         <TextBlock Text="Einige Features benötigen Admin-Rechte."
-                                                   FontSize="10" Foreground="{StaticResource TextSecondaryBrush}"
+                                                   FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}"
                                                    TextWrapping="Wrap" Margin="0,3,0,6"/>
                                         <Button Content="Als Admin neu starten"
                                                 Style="{StaticResource SecondaryButton}"
@@ -188,8 +188,8 @@
                                     </StackPanel>
                                 </Border>
 
-                                <TextBlock Text="NetworkLens v1.0.0" FontSize="10"
-                                           Foreground="{StaticResource TextMutedBrush}"
+                                <TextBlock Text="NetworkLens v1.1.0" FontSize="10"
+                                           Foreground="{DynamicResource TextMutedBrush}"
                                            HorizontalAlignment="Center"/>
                             </StackPanel>
                         </Border>
@@ -197,10 +197,10 @@
                 </Border>
 
                 <!-- Vertical Divider -->
-                <Border Grid.Column="1" Background="{StaticResource BorderBrush}"/>
+                <Border Grid.Column="1" Background="{DynamicResource BorderBrush}"/>
 
                 <!-- CONTENT AREA -->
-                <Grid Grid.Column="2" Background="{StaticResource BgMainBrush}">
+                <Grid Grid.Column="2" Background="{DynamicResource BgMainBrush}">
 
                     <!-- Scan View (default) -->
                     <views:ScanView x:Name="ScanViewPage" Visibility="Visible"/>
@@ -225,8 +225,8 @@
             <!-- ════════════════════════════════
                  STATUS BAR
                  ════════════════════════════════ -->
-            <Border Grid.Row="2" Background="{StaticResource BgDeepBrush}"
-                    BorderThickness="0,1,0,0" BorderBrush="{StaticResource BorderBrush}"
+            <Border Grid.Row="2" Background="{DynamicResource BgDeepBrush}"
+                    BorderThickness="0,1,0,0" BorderBrush="{DynamicResource BorderBrush}"
                     CornerRadius="0,0,10,10">
                 <Grid Margin="16,0">
                     <Grid.ColumnDefinitions>
@@ -239,10 +239,10 @@
                     <!-- Left: Scan Summary -->
                     <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                         <Ellipse x:Name="StatusIndicator" Width="7" Height="7" Margin="0,0,7,0"
-                                 Fill="{StaticResource TextMutedBrush}"/>
+                                 Fill="{DynamicResource TextMutedBrush}"/>
                         <TextBlock x:Name="StatusText" Text="Bereit"
                                    FontFamily="Segoe UI" FontSize="11.5"
-                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   Foreground="{DynamicResource TextSecondaryBrush}"
                                    VerticalAlignment="Center"/>
                     </StackPanel>
 
@@ -250,15 +250,15 @@
                     <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,16,0">
                         <TextBlock x:Name="DeviceCount" Text="0 Geräte"
                                    FontFamily="Segoe UI" FontSize="11.5"
-                                   Foreground="{StaticResource TextSecondaryBrush}"/>
+                                   Foreground="{DynamicResource TextSecondaryBrush}"/>
                     </StackPanel>
 
-                    <Border Grid.Column="2" Width="1" Background="{StaticResource BorderBrush}"
+                    <Border Grid.Column="2" Width="1" Background="{DynamicResource BorderBrush}"
                             Margin="0,8" Visibility="Collapsed"/>
 
                     <TextBlock Grid.Column="3" x:Name="ScanDuration"
                                FontFamily="Segoe UI" FontSize="11.5"
-                               Foreground="{StaticResource TextMutedBrush}"
+                               Foreground="{DynamicResource TextMutedBrush}"
                                VerticalAlignment="Center" Margin="16,0,0,0"
                                Visibility="Collapsed"/>
                 </Grid>

@@ -28,12 +28,14 @@ public partial class App : Application
             : "Resources/LightTheme.xaml",
             UriKind.Relative);
 
-        var merged = Current.Resources.MergedDictionaries;
-        // Replace only the first dictionary (theme colors), keep Styles.xaml
-        if (merged.Count > 0)
-            merged[0] = new ResourceDictionary { Source = uri };
-        else
-            merged.Insert(0, new ResourceDictionary { Source = uri });
+        var newTheme = new ResourceDictionary { Source = uri };
+
+        // Update each brush directly in Application.Resources
+        // so DynamicResource bindings pick up the changes
+        foreach (var key in newTheme.Keys)
+        {
+            Current.Resources[key] = newTheme[key];
+        }
     }
 
     protected override void OnStartup(StartupEventArgs e)

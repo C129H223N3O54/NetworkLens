@@ -1,7 +1,7 @@
 <UserControl x:Class="NetworkLens.Views.MonitorView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Background="{StaticResource BgMainBrush}"
+             Background="{DynamicResource BgMainBrush}"
              Loaded="UserControl_Loaded">
     <Grid>
         <Grid.RowDefinitions>
@@ -21,13 +21,13 @@
                 <StackPanel>
                     <TextBlock Text="Live-Monitor" Style="{StaticResource H1}"/>
                     <TextBlock Text="Kontinuierliche Ping-Überwachung mit Jitter und Packet-Loss"
-                               Margin="0,4,0,0" Foreground="{StaticResource TextSecondaryBrush}"
+                               Margin="0,4,0,0" Foreground="{DynamicResource TextSecondaryBrush}"
                                FontFamily="Segoe UI" FontSize="13"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock Text="Intervall:" VerticalAlignment="Center" Margin="0,0,8,0"
                                FontFamily="Segoe UI" FontSize="13"
-                               Foreground="{StaticResource TextSecondaryBrush}"/>
+                               Foreground="{DynamicResource TextSecondaryBrush}"/>
                     <ComboBox x:Name="CmbInterval" Width="120"
                               SelectionChanged="CmbInterval_SelectionChanged">
                         <ComboBoxItem Content="1s"/>
@@ -149,7 +149,7 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Text="Gerät hinzufügen:" VerticalAlignment="Center"
                                FontFamily="Segoe UI" FontSize="13"
-                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,10,0"/>
+                               Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,10,0"/>
                     <TextBox Grid.Column="1" x:Name="TxtAddIp"
                              FontFamily="Cascadia Code, Consolas"
                              KeyDown="TxtAddIp_KeyDown"/>
@@ -167,10 +167,10 @@
                     <TextBlock Text="📡" FontSize="52" HorizontalAlignment="Center" Margin="0,0,0,16"/>
                     <TextBlock Text="Kein Gerät überwacht"
                                Style="{StaticResource H2}" HorizontalAlignment="Center"
-                               Foreground="{StaticResource TextSecondaryBrush}"/>
+                               Foreground="{DynamicResource TextSecondaryBrush}"/>
                     <TextBlock Text="IP-Adresse oben eingeben oder Gerät aus dem Scan-Tab hinzufügen."
                                FontFamily="Segoe UI" FontSize="13"
-                               Foreground="{StaticResource TextMutedBrush}"
+                               Foreground="{DynamicResource TextMutedBrush}"
                                HorizontalAlignment="Center" Margin="0,8,0,0"/>
                 </StackPanel>
             </Border>
@@ -188,7 +188,7 @@
                             <Border Width="310" Margin="0,0,16,16"
                                     Style="{StaticResource CardBorder}"
                                     BorderThickness="1"
-                                    BorderBrush="{StaticResource BorderBrush}">
+                                    BorderBrush="{DynamicResource BorderBrush}">
 
                                 <StackPanel>
                                     <!-- Device header -->
@@ -200,11 +200,11 @@
                                                 <TextBlock Text="{Binding Device.DisplayName}"
                                                            FontFamily="Segoe UI" FontSize="14"
                                                            FontWeight="SemiBold"
-                                                           Foreground="{StaticResource TextPrimaryBrush}"/>
+                                                           Foreground="{DynamicResource TextPrimaryBrush}"/>
                                                 <TextBlock Text="{Binding Device.IpAddress}"
                                                            FontFamily="Cascadia Code, Consolas"
                                                            FontSize="11.5"
-                                                           Foreground="{StaticResource AccentBrush}"/>
+                                                           Foreground="{DynamicResource AccentBrush}"/>
                                             </StackPanel>
                                         </StackPanel>
                                         <Button HorizontalAlignment="Right" VerticalAlignment="Top"
@@ -215,7 +215,7 @@
                                     </Grid>
 
                                     <!-- Current ping -->
-                                    <Border Background="{StaticResource BgDeepBrush}"
+                                    <Border Background="{DynamicResource BgDeepBrush}"
                                             CornerRadius="6" Padding="12,10" Margin="0,0,0,12">
                                         <Grid>
                                             <StackPanel HorizontalAlignment="Left">
@@ -225,11 +225,11 @@
                                                     <TextBlock Text="{Binding LastPing}"
                                                                FontFamily="Cascadia Code, Consolas"
                                                                FontSize="28" FontWeight="Light"
-                                                               Foreground="{StaticResource AccentBrush}"/>
+                                                               Foreground="{DynamicResource AccentBrush}"/>
                                                     <TextBlock Text=" ms" VerticalAlignment="Bottom"
                                                                Margin="2,0,0,4" FontFamily="Segoe UI"
                                                                FontSize="13"
-                                                               Foreground="{StaticResource TextSecondaryBrush}"/>
+                                                               Foreground="{DynamicResource TextSecondaryBrush}"/>
                                                 </StackPanel>
                                             </StackPanel>
                                             <StackPanel HorizontalAlignment="Right">
@@ -241,10 +241,10 @@
                                                                VerticalAlignment="Center" Margin="0,0,4,0"/>
                                                     <TextBlock FontFamily="Cascadia Code, Consolas"
                                                                FontSize="16"
-                                                               Foreground="{StaticResource TextPrimaryBrush}">
+                                                               Foreground="{DynamicResource TextPrimaryBrush}">
                                                         <Run Text="{Binding Jitter, StringFormat={}{0:F1}}"/>
                                                         <Run Text=" ms" FontSize="12"
-                                                             Foreground="{StaticResource TextSecondaryBrush}"/>
+                                                             Foreground="{DynamicResource TextSecondaryBrush}"/>
                                                     </TextBlock>
                                                 </StackPanel>
                                             </StackPanel>
@@ -265,7 +265,7 @@
                                                 MIN</TextBlock>
                                             <TextBlock FontFamily="Cascadia Code, Consolas" FontSize="14"
                                                        HorizontalAlignment="Center"
-                                                       Foreground="{StaticResource StatusOnlineBrush}">
+                                                       Foreground="{DynamicResource StatusOnlineBrush}">
                                                 <Run Text="{Binding MinPing}"/><Run Text="ms" FontSize="11"/>
                                             </TextBlock>
                                         </StackPanel>
@@ -276,7 +276,7 @@
                                                 AVG</TextBlock>
                                             <TextBlock FontFamily="Cascadia Code, Consolas" FontSize="14"
                                                        HorizontalAlignment="Center"
-                                                       Foreground="{StaticResource AccentBrush}">
+                                                       Foreground="{DynamicResource AccentBrush}">
                                                 <Run Text="{Binding AvgPing, StringFormat={}{0:F0}}"/><Run Text="ms" FontSize="11"/>
                                             </TextBlock>
                                         </StackPanel>
@@ -287,14 +287,14 @@
                                                 MAX</TextBlock>
                                             <TextBlock FontFamily="Cascadia Code, Consolas" FontSize="14"
                                                        HorizontalAlignment="Center"
-                                                       Foreground="{StaticResource StatusWarningBrush}">
+                                                       Foreground="{DynamicResource StatusWarningBrush}">
                                                 <Run Text="{Binding MaxPing}"/><Run Text="ms" FontSize="11"/>
                                             </TextBlock>
                                         </StackPanel>
                                     </Grid>
 
                                     <!-- Packet loss -->
-                                    <Border Background="{StaticResource BgDeepBrush}"
+                                    <Border Background="{DynamicResource BgDeepBrush}"
                                             CornerRadius="6" Padding="10,8" Margin="0,0,0,8">
                                         <Grid>
                                             <Grid.RowDefinitions>
@@ -310,12 +310,12 @@
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                                                     <TextBlock FontFamily="Cascadia Code, Consolas" FontSize="13"
-                                                               Foreground="{StaticResource StatusOfflineBrush}">
+                                                               Foreground="{DynamicResource StatusOfflineBrush}">
                                                         <Run Text="{Binding PacketLoss, StringFormat={}{0:F1}}"/>
                                                         <Run Text="%"/>
                                                     </TextBlock>
                                                     <TextBlock FontFamily="Segoe UI" FontSize="11"
-                                                               Foreground="{StaticResource TextMutedBrush}"
+                                                               Foreground="{DynamicResource TextMutedBrush}"
                                                                VerticalAlignment="Center" Margin="6,0,0,0">
                                                         <Run Text="("/>
                                                         <Run Text="{Binding LostPings, Mode=OneWay}"/>
@@ -328,12 +328,12 @@
                                             <!-- Progress bar -->
                                             <ProgressBar Grid.Row="1" Minimum="0" Maximum="100"
                                                          Value="{Binding PacketLoss}"
-                                                         Foreground="{StaticResource StatusOfflineBrush}"/>
+                                                         Foreground="{DynamicResource StatusOfflineBrush}"/>
                                         </Grid>
                                     </Border>
 
                                     <!-- Live Graph: Ping + Jitter -->
-                                    <Border Background="{StaticResource BgDeepBrush}"
+                                    <Border Background="{DynamicResource BgDeepBrush}"
                                             CornerRadius="6" Padding="8,6" Margin="0,0,0,8"
                                             Cursor="Hand"
                                             MouseLeftButtonDown="SparkCanvas_DoubleClick"
@@ -342,20 +342,20 @@
                                             <Grid Margin="0,0,0,4">
                                                 <StackPanel Orientation="Horizontal">
                                                     <Ellipse Width="7" Height="7"
-                                                             Fill="{StaticResource AccentBrush}"
+                                                             Fill="{DynamicResource AccentBrush}"
                                                              VerticalAlignment="Center" Margin="0,0,4,0"/>
                                                     <TextBlock Text="Ping" FontSize="10"
-                                                               Foreground="{StaticResource AccentBrush}"
+                                                               Foreground="{DynamicResource AccentBrush}"
                                                                VerticalAlignment="Center" FontFamily="Segoe UI"/>
                                                     <Ellipse Width="7" Height="7"
-                                                             Fill="{StaticResource StatusWarningBrush}"
+                                                             Fill="{DynamicResource StatusWarningBrush}"
                                                              VerticalAlignment="Center" Margin="10,0,4,0"/>
                                                     <TextBlock Text="Jitter" FontSize="10"
-                                                               Foreground="{StaticResource StatusWarningBrush}"
+                                                               Foreground="{DynamicResource StatusWarningBrush}"
                                                                VerticalAlignment="Center" FontFamily="Segoe UI"/>
                                                 </StackPanel>
                                                 <TextBlock HorizontalAlignment="Right" FontSize="10"
-                                                           Foreground="{StaticResource TextMutedBrush}"
+                                                           Foreground="{DynamicResource TextMutedBrush}"
                                                            VerticalAlignment="Center" FontFamily="Segoe UI">
                                                     <Run Text="{Binding PingHistory.Count, Mode=OneWay}"/>
                                                     <Run Text=" Messpunkte"/>
@@ -374,7 +374,7 @@
 
                                     <!-- Pings counter -->
                                     <TextBlock Margin="0,8,0,0" FontFamily="Segoe UI" FontSize="11"
-                                               Foreground="{StaticResource TextMutedBrush}"
+                                               Foreground="{DynamicResource TextMutedBrush}"
                                                HorizontalAlignment="Right">
                                         <Run Text="{Binding TotalPings}"/>
                                         <Run Text=" Pings gesendet · "/>

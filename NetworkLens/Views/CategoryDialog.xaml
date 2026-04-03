@@ -10,8 +10,8 @@
         Background="Transparent"
         ShowInTaskbar="False">
 
-    <Border Background="{StaticResource BgCardBrush}"
-            BorderBrush="{StaticResource BorderBrush}"
+    <Border Background="{DynamicResource BgCardBrush}"
+            BorderBrush="{DynamicResource BorderBrush}"
             BorderThickness="1" CornerRadius="8">
         <Border.Effect>
             <DropShadowEffect Color="#FF000000" BlurRadius="24" ShadowDepth="0" Opacity="0.7"/>
