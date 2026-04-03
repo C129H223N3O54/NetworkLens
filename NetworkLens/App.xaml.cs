@@ -28,9 +28,12 @@ public partial class App : Application
             : "Resources/LightTheme.xaml",
             UriKind.Relative);
 
-        var dict = Current.Resources.MergedDictionaries;
-        dict.Clear();
-        dict.Add(new ResourceDictionary { Source = uri });
+        var merged = Current.Resources.MergedDictionaries;
+        // Replace only the first dictionary (theme colors), keep Styles.xaml
+        if (merged.Count > 0)
+            merged[0] = new ResourceDictionary { Source = uri };
+        else
+            merged.Insert(0, new ResourceDictionary { Source = uri });
     }
 
     protected override void OnStartup(StartupEventArgs e)

@@ -5,8 +5,10 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!-- Theme loaded dynamically in App.xaml.cs -->
-                <ResourceDictionary x:Name="ThemeDictionary" Source="Resources/DarkTheme.xaml"/>
+                <!-- Theme colors (swapped at runtime) -->
+                <ResourceDictionary Source="Resources/DarkTheme.xaml"/>
+                <!-- Control styles (shared, uses theme colors) -->
+                <ResourceDictionary Source="Resources/Styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
