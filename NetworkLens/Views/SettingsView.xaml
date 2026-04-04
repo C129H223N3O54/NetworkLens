@@ -55,8 +55,6 @@
                                     Cursor="Hand" MouseLeftButtonUp="BtnThemeDark_Click"
                                     Background="#FF1A1D21" BorderThickness="2">
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="🌙" FontSize="14" Margin="0,0,8,0"
-                                               VerticalAlignment="Center"/>
                                     <TextBlock x:Name="TxtDarkMode" Text="Dark Mode"
                                                FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
                                                Foreground="#FFF0F2F5" VerticalAlignment="Center"/>
@@ -68,8 +66,6 @@
                                     Cursor="Hand" MouseLeftButtonUp="BtnThemeLight_Click"
                                     Background="#FFFAFAFA" BorderThickness="2">
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="☀️" FontSize="14" Margin="0,0,8,0"
-                                               VerticalAlignment="Center"/>
                                     <TextBlock x:Name="TxtLightMode" Text="Light Mode"
                                                FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
                                                Foreground="#FF1A1D21" VerticalAlignment="Center"/>
