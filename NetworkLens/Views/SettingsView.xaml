@@ -49,29 +49,29 @@
                             </StackPanel>
                         </Grid>
                         <StackPanel Orientation="Horizontal">
+                            <!-- Dark Mode Button: always dark bg, always light text -->
                             <Border x:Name="BtnThemeDark"
-                                    Background="#FF1A1D21"
-                                    BorderBrush="{DynamicResource AccentBrush}" BorderThickness="2"
                                     CornerRadius="6" Padding="16,8" Margin="0,0,8,0"
-                                    Cursor="Hand" MouseLeftButtonUp="BtnThemeDark_Click">
+                                    Cursor="Hand" MouseLeftButtonUp="BtnThemeDark_Click"
+                                    Background="#FF1A1D21" BorderThickness="2">
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="🌙" FontSize="14" Margin="0,0,6,0"
+                                    <TextBlock Text="🌙" FontSize="14" Margin="0,0,8,0"
                                                VerticalAlignment="Center"/>
-                                    <TextBlock Text="Dark Mode" FontFamily="Segoe UI"
-                                               FontSize="13" FontWeight="SemiBold"
+                                    <TextBlock x:Name="TxtDarkMode" Text="Dark Mode"
+                                               FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
                                                Foreground="#FFF0F2F5" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Border>
+                            <!-- Light Mode Button: always light bg, always dark text -->
                             <Border x:Name="BtnThemeLight"
-                                    Background="#FFFFFFFF"
-                                    BorderBrush="{DynamicResource BorderBrush}" BorderThickness="2"
                                     CornerRadius="6" Padding="16,8"
-                                    Cursor="Hand" MouseLeftButtonUp="BtnThemeLight_Click">
+                                    Cursor="Hand" MouseLeftButtonUp="BtnThemeLight_Click"
+                                    Background="#FFFAFAFA" BorderThickness="2">
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="☀️" FontSize="14" Margin="0,0,6,0"
+                                    <TextBlock Text="☀️" FontSize="14" Margin="0,0,8,0"
                                                VerticalAlignment="Center"/>
-                                    <TextBlock Text="Light Mode" FontFamily="Segoe UI"
-                                               FontSize="13" FontWeight="SemiBold"
+                                    <TextBlock x:Name="TxtLightMode" Text="Light Mode"
+                                               FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
                                                Foreground="#FF1A1D21" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Border>
@@ -380,11 +380,23 @@
                                                VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Expander.Header>
-                            <TextBlock FontFamily="Segoe UI" FontSize="12" LineHeight="20"
-                                       Foreground="{DynamicResource TextSecondaryBrush}"
-                                       Margin="16,8,0,8">
-                                • Light Mode und Dark Mode Toggle in Einstellungen&#x0a;• Theme wechselt sofort ohne Neustart&#x0a;• Theme-Wahl wird gespeichert und beim Start geladen&#x0a;• Kontextmenü, Monitor, Graph-Fenster folgen dem Theme&#x0a;• HTML Report erkennt System-Theme automatisch
-                            </TextBlock>
+                            <StackPanel Margin="16,8,0,8">
+                                <TextBlock Text="• Light Mode und Dark Mode Toggle in Einstellungen"
+                                           FontFamily="Segoe UI" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• Theme wechselt sofort ohne Neustart"
+                                           FontFamily="Segoe UI" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• Theme-Wahl wird gespeichert und beim Start geladen"
+                                           FontFamily="Segoe UI" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• Kontextmenü, Monitor, Graph-Fenster folgen dem Theme"
+                                           FontFamily="Segoe UI" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• HTML Report erkennt System-Theme automatisch"
+                                           FontFamily="Segoe UI" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                            </StackPanel>
                         </Expander>
 
                         <Border Height="1" Background="{DynamicResource BorderBrush}" Margin="0,4,0,8"/>
@@ -411,11 +423,44 @@
                                     </Border>
                                 </StackPanel>
                             </Expander.Header>
-                            <TextBlock FontFamily="Segoe UI" FontSize="12" LineHeight="20"
-                                       Foreground="{DynamicResource TextSecondaryBrush}"
-                                       Margin="16,8,0,8">
-                                • Netzwerk-Scan: Paralleler Ping-Sweep, Live-Ergebnisse, DNS, MAC, Hersteller&#x0a;• Port-Scanner: Quick / Standard / Full / Custom Profile, Banner-Grabbing&#x0a;• Netzwerk-Info: IP, Gateway, DNS, WLAN-SSID, Adapter, netstat&#x0a;• Live-Monitor: Ping/Jitter Graph, Packet Loss Zähler, Doppelklick Vollbild&#x0a;• Intervalle: 1s / 5s / 10s / 30s / 60s / Dauerhaft&#x0a;• Erklärungen: Ping, Jitter, Packet Loss mit Wikipedia-Links&#x0a;• Geräte-Verwaltung: Alias, Kategorie, Favoriten (persistent per MAC)&#x0a;• Reports: HTML (interaktiv), CSV, JSON, Scan-Vergleich&#x0a;• Kontextmenü: HTTP/HTTPS/FTP/SSH/Telnet/Traceroute/GeoLocate&#x0a;• Live-Ergebnisse während des Scans&#x0a;• Auto-Subnetz-Erkennung beim Start&#x0a;• Self-Contained .exe — kein .NET nötig&#x0a;• Self-Signed Certificate, MIT License
-                            </TextBlock>
+                            <StackPanel Margin="16,8,0,8">
+                                <TextBlock Text="• Netzwerk-Scan: Paralleler Ping-Sweep, Live-Ergebnisse, DNS, MAC, Hersteller"
+                                           FontFamily="Segoe UI" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• Port-Scanner: Quick / Standard / Full / Custom Profile, Banner-Grabbing"
+                                           FontFamily="Segoe UI" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• Netzwerk-Info: IP, Gateway, DNS, WLAN-SSID, Adapter, netstat"
+                                           FontFamily="Segoe UI" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• Live-Monitor: Ping/Jitter Graph, Packet Loss, Doppelklick Vollbild"
+                                           FontFamily="Segoe UI" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• Intervalle: 1s / 5s / 10s / 30s / 60s / Dauerhaft"
+                                           FontFamily="Segoe UI" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• Erklärungen: Ping, Jitter, Packet Loss mit Wikipedia-Links"
+                                           FontFamily="Segoe UI" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• Geräte-Verwaltung: Alias, Kategorie, Favoriten (persistent per MAC)"
+                                           FontFamily="Segoe UI" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• Reports: HTML (interaktiv), CSV, JSON, Scan-Vergleich"
+                                           FontFamily="Segoe UI" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• Kontextmenü: HTTP/HTTPS/FTP/SSH/Telnet/Traceroute/GeoLocate"
+                                           FontFamily="Segoe UI" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• Live-Ergebnisse während des Scans"
+                                           FontFamily="Segoe UI" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• Auto-Subnetz-Erkennung beim Start"
+                                           FontFamily="Segoe UI" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• Self-Contained .exe — kein .NET nötig, Self-Signed Certificate, MIT License"
+                                           FontFamily="Segoe UI" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                            </StackPanel>
                         </Expander>
 
                     </StackPanel>

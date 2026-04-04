@@ -185,17 +185,16 @@ public partial class SettingsView : UserControl
     private void UpdateThemeButtons()
     {
         bool dark = App.IsDarkTheme;
-        // Highlight active button
-        BtnThemeDark.Background  = dark
-            ? new System.Windows.Media.SolidColorBrush(
-                System.Windows.Media.Color.FromRgb(0x00, 0xB4, 0xD8))
-            : new System.Windows.Media.SolidColorBrush(
-                System.Windows.Media.Color.FromRgb(0x22, 0x26, 0x2C));
-        BtnThemeLight.Background = dark
-            ? new System.Windows.Media.SolidColorBrush(
-                System.Windows.Media.Color.FromRgb(0x22, 0x26, 0x2C))
-            : new System.Windows.Media.SolidColorBrush(
-                System.Windows.Media.Color.FromRgb(0x00, 0x77, 0xA8));
+
+        // Dark button: always dark bg/light text, active = accent border, inactive = muted border
+        BtnThemeDark.BorderBrush = dark
+            ? new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0x00, 0xB4, 0xD8))
+            : new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0x4A, 0x55, 0x68));
+
+        // Light button: always light bg/dark text, active = accent border, inactive = muted border
+        BtnThemeLight.BorderBrush = dark
+            ? new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0x4A, 0x55, 0x68))
+            : new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0x00, 0x77, 0xA8));
     }
 
     private static void SaveThemePreference(bool dark)
