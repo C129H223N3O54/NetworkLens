@@ -49,15 +49,15 @@
 
         <!-- Info Panel (aufklappbar) -->
         <Border Grid.Row="1" x:Name="InfoPanel" Margin="28,0,28,12"
-                Background="#FF1A1D21" CornerRadius="8"
-                BorderBrush="#FF00B4D8" BorderThickness="1"
+                Background="{DynamicResource BgMainBrush}" CornerRadius="8"
+                BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1"
                 Visibility="Collapsed">
             <StackPanel Margin="16,12">
                 <Grid Margin="0,0,0,10">
                     <TextBlock Text="BEGRIFFSERKLÄRUNGEN" FontSize="10" FontWeight="Bold"
-                               Foreground="#FF4A5568" FontFamily="Segoe UI"/>
+                               Foreground="{DynamicResource TextMutedBrush}" FontFamily="Segoe UI"/>
                     <Button x:Name="BtnCloseInfo" Content="✕ Schließen"
-                            HorizontalAlignment="Right" Foreground="#FF8A9BB0"
+                            HorizontalAlignment="Right" Foreground="{DynamicResource TextSecondaryBrush}"
                             FontSize="11" Cursor="Hand" Click="BtnCloseInfo_Click"
                             Background="Transparent" BorderThickness="0">
                         <Button.Template>
@@ -77,15 +77,15 @@
                         <ColumnDefinition Width="12"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Border Grid.Column="0" Background="#FF22262C" CornerRadius="6" Padding="12,10">
+                    <Border Grid.Column="0" Background="{DynamicResource BgCardBrush}" CornerRadius="6" Padding="12,10">
                         <StackPanel>
                             <TextBlock Text="📡 Ping" FontFamily="Segoe UI" FontSize="13"
-                                       FontWeight="SemiBold" Foreground="#FF00B4D8" Margin="0,0,0,6"/>
+                                       FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}" Margin="0,0,0,6"/>
                             <TextBlock TextWrapping="Wrap" FontFamily="Segoe UI" FontSize="12"
-                                       Foreground="#FF8A9BB0" LineHeight="18"
+                                       Foreground="{DynamicResource TextSecondaryBrush}" LineHeight="18"
                                        Text="Zeit in ms, die ein Datenpaket zum Gerät und zurück braucht (Round-Trip Time)."/>
                             <TextBlock TextWrapping="Wrap" FontFamily="Segoe UI" FontSize="11"
-                                       Foreground="#FF4A5568" Margin="0,8,0,0" LineHeight="17">
+                                       Foreground="{DynamicResource TextMutedBrush}" Margin="0,8,0,0" LineHeight="17">
                                 🟢 &lt;30ms — Sehr gut&#x0a;🟡 30–100ms — Normal&#x0a;🔴 &gt;200ms — Langsam
                             </TextBlock>
                             <Button Content="🔗 Ping – Wikipedia"
@@ -96,15 +96,15 @@
                                     Click="BtnWikiLink_Click"/>
                         </StackPanel>
                     </Border>
-                    <Border Grid.Column="2" Background="#FF22262C" CornerRadius="6" Padding="12,10">
+                    <Border Grid.Column="2" Background="{DynamicResource BgCardBrush}" CornerRadius="6" Padding="12,10">
                         <StackPanel>
                             <TextBlock Text="📊 Jitter" FontFamily="Segoe UI" FontSize="13"
-                                       FontWeight="SemiBold" Foreground="#FFFFD600" Margin="0,0,0,6"/>
+                                       FontWeight="SemiBold" Foreground="{DynamicResource StatusWarningBrush}" Margin="0,0,0,6"/>
                             <TextBlock TextWrapping="Wrap" FontFamily="Segoe UI" FontSize="12"
-                                       Foreground="#FF8A9BB0" LineHeight="18"
+                                       Foreground="{DynamicResource TextSecondaryBrush}" LineHeight="18"
                                        Text="Schwankung des Pings. Hoher Jitter = unzuverlässige Verbindung, auch wenn der Durchschnitt gut ist."/>
                             <TextBlock TextWrapping="Wrap" FontFamily="Segoe UI" FontSize="11"
-                                       Foreground="#FF4A5568" Margin="0,8,0,0" LineHeight="17">
+                                       Foreground="{DynamicResource TextMutedBrush}" Margin="0,8,0,0" LineHeight="17">
                                 🟢 &lt;5ms — Stabil&#x0a;🟡 5–20ms — Leichte Schwankungen&#x0a;🔴 &gt;20ms — Instabil
                             </TextBlock>
                             <Button Content="🔗 Jitter – Wikipedia"
@@ -115,15 +115,15 @@
                                     Click="BtnWikiLink_Click"/>
                         </StackPanel>
                     </Border>
-                    <Border Grid.Column="4" Background="#FF22262C" CornerRadius="6" Padding="12,10">
+                    <Border Grid.Column="4" Background="{DynamicResource BgCardBrush}" CornerRadius="6" Padding="12,10">
                         <StackPanel>
                             <TextBlock Text="📦 Packet Loss" FontFamily="Segoe UI" FontSize="13"
-                                       FontWeight="SemiBold" Foreground="#FFFF1744" Margin="0,0,0,6"/>
+                                       FontWeight="SemiBold" Foreground="{DynamicResource StatusOfflineBrush}" Margin="0,0,0,6"/>
                             <TextBlock TextWrapping="Wrap" FontFamily="Segoe UI" FontSize="12"
-                                       Foreground="#FF8A9BB0" LineHeight="18"
+                                       Foreground="{DynamicResource TextSecondaryBrush}" LineHeight="18"
                                        Text="Pakete ohne Antwort. Verursacht Ruckler, Abbrüche und Aussetzer."/>
                             <TextBlock TextWrapping="Wrap" FontFamily="Segoe UI" FontSize="11"
-                                       Foreground="#FF4A5568" Margin="0,8,0,0" LineHeight="17">
+                                       Foreground="{DynamicResource TextMutedBrush}" Margin="0,8,0,0" LineHeight="17">
                                 🟢 0% — Perfekt&#x0a;🟡 1–5% — Leichte Probleme&#x0a;🔴 &gt;5% — Ernsthafte Störung
                             </TextBlock>
                             <Button Content="🔗 Paketverlust – Wikipedia"

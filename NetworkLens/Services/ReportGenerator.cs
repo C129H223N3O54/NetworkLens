@@ -104,12 +104,14 @@ public class ReportGenerator
   --bg: #111416; --bg2: #1a1d21; --card: #22262c;
   --accent: #00b4d8; --text: #f0f2f5; --text2: #8a9bb0; --muted: #4a5568;
   --online: #00e676; --warn: #ffd600; --offline: #ff1744; --border: #2d3748;
+  --hover: #292e36;
 }}
 @media (prefers-color-scheme: light) {{
   :root {{
     --bg: #f0f2f5; --bg2: #ffffff; --card: #f8f9fa;
     --accent: #0077a8; --text: #1a1d21; --text2: #4a5568; --muted: #8a9bb0;
     --online: #008a45; --warn: #b86e00; --offline: #cc0022; --border: #d1d9e0;
+    --hover: #e4e8ec;
   }}
 }}
 *{{box-sizing:border-box;margin:0;padding:0}}
@@ -129,7 +131,7 @@ table{{width:100%;border-collapse:collapse;background:var(--card);border-radius:
 th{{background:var(--bg);color:var(--text2);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;padding:11px 14px;text-align:left;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}}
 th:hover{{color:var(--text)}}
 td{{padding:10px 14px;border-bottom:1px solid #1a1e24;vertical-align:middle}}
-tr.device-row:hover td{{background:#292e36}}
+tr.device-row:hover td{{background:var(--hover)}}
 .dot{{display:inline-block;width:8px;height:8px;border-radius:50%}}
 code{{font-family:'Cascadia Code',Consolas,monospace;font-size:12px;color:var(--accent)}}
 .port{{background:#1a0060;border:1px solid #330088;color:#b0aaff;border-radius:4px;padding:1px 5px;font-family:monospace;font-size:11px;margin:1px}}
