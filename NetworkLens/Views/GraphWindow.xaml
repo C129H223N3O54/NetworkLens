@@ -11,8 +11,8 @@
         ShowInTaskbar="True"
         Topmost="False">
 
-    <Border Background="#FF161A1F" CornerRadius="10"
-            BorderBrush="#FF00B4D8" BorderThickness="1">
+    <Border Background="{DynamicResource BgSidebarBrush}" CornerRadius="10"
+            BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1">
         <Border.Effect>
             <DropShadowEffect Color="#FF000000" BlurRadius="32" ShadowDepth="0" Opacity="0.8"/>
         </Border.Effect>
@@ -26,19 +26,19 @@
             </Grid.RowDefinitions>
 
             <!-- Title bar -->
-            <Border Grid.Row="0" Background="#FF111416" CornerRadius="10,10,0,0"
+            <Border Grid.Row="0" Background="{DynamicResource BgDeepBrush}" CornerRadius="10,10,0,0"
                     MouseLeftButtonDown="TitleBar_MouseDown">
                 <Grid Margin="16,0">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="◈" FontSize="14" Foreground="#FF00B4D8" Margin="0,0,8,0"/>
+                        <TextBlock Text="◈" FontSize="14" Foreground="{DynamicResource AccentBrush}" Margin="0,0,8,0"/>
                         <TextBlock x:Name="TxtTitle" FontFamily="Segoe UI" FontSize="13"
-                                   FontWeight="SemiBold" Foreground="#FFF0F2F5" VerticalAlignment="Center"/>
+                                   FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}" VerticalAlignment="Center"/>
                         <TextBlock x:Name="TxtIp" FontFamily="Cascadia Code, Consolas" FontSize="12"
-                                   Foreground="#FF00B4D8" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                   Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center" Margin="10,0,0,0"/>
                     </StackPanel>
                     <Button Content="✕" HorizontalAlignment="Right" VerticalAlignment="Center"
                             Width="32" Height="32" Background="Transparent" BorderThickness="0"
-                            Foreground="#FF8A9BB0" FontSize="11" Cursor="Hand"
+                            Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" Cursor="Hand"
                             Click="BtnClose_Click">
                         <Button.Style>
                             <Style TargetType="Button">
@@ -68,8 +68,8 @@
             </Border>
 
             <!-- Live stats bar -->
-            <Border Grid.Row="1" Background="#FF1A1D21" Padding="16,10"
-                    BorderBrush="#FF2D3748" BorderThickness="0,1,0,1">
+            <Border Grid.Row="1" Background="{DynamicResource BgMainBrush}" Padding="16,10"
+                    BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,1">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -83,95 +83,95 @@
                     <!-- Ping -->
                     <StackPanel Grid.Column="0" HorizontalAlignment="Center">
                         <TextBlock Text="PING" FontSize="10" FontWeight="Bold"
-                                   Foreground="#FF4A5568" FontFamily="Segoe UI"
+                                   Foreground="{DynamicResource TextMutedBrush}" FontFamily="Segoe UI"
                                    HorizontalAlignment="Center" Margin="0,0,0,2"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBlock x:Name="TxtPing"
                                        FontFamily="Cascadia Code, Consolas" FontSize="22"
-                                       FontWeight="Light" Foreground="#FF00B4D8"/>
+                                       FontWeight="Light" Foreground="{DynamicResource AccentBrush}"/>
                             <TextBlock Text="ms" VerticalAlignment="Bottom" Margin="2,0,0,3"
-                                       FontFamily="Segoe UI" FontSize="11" Foreground="#FF8A9BB0"/>
+                                       FontFamily="Segoe UI" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"/>
                         </StackPanel>
                     </StackPanel>
 
                     <!-- Jitter -->
                     <StackPanel Grid.Column="1" HorizontalAlignment="Center">
                         <TextBlock Text="JITTER" FontSize="10" FontWeight="Bold"
-                                   Foreground="#FF4A5568" FontFamily="Segoe UI"
+                                   Foreground="{DynamicResource TextMutedBrush}" FontFamily="Segoe UI"
                                    HorizontalAlignment="Center" Margin="0,0,0,2"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBlock x:Name="TxtJitterIcon" FontSize="12" VerticalAlignment="Center"
                                        Margin="0,0,4,0"/>
                             <TextBlock x:Name="TxtJitter"
                                        FontFamily="Cascadia Code, Consolas" FontSize="16"
-                                       Foreground="#FFF0F2F5"/>
+                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
                             <TextBlock Text="ms" VerticalAlignment="Bottom" Margin="2,0,0,2"
-                                       FontFamily="Segoe UI" FontSize="11" Foreground="#FF8A9BB0"/>
+                                       FontFamily="Segoe UI" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"/>
                         </StackPanel>
                     </StackPanel>
 
                     <!-- Min -->
                     <StackPanel Grid.Column="2" HorizontalAlignment="Center">
                         <TextBlock Text="MIN" FontSize="10" FontWeight="Bold"
-                                   Foreground="#FF4A5568" FontFamily="Segoe UI"
+                                   Foreground="{DynamicResource TextMutedBrush}" FontFamily="Segoe UI"
                                    HorizontalAlignment="Center" Margin="0,0,0,2"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBlock x:Name="TxtMin"
                                        FontFamily="Cascadia Code, Consolas" FontSize="16"
-                                       Foreground="#FF00E676"/>
+                                       Foreground="{DynamicResource StatusOnlineBrush}"/>
                             <TextBlock Text="ms" VerticalAlignment="Bottom" Margin="2,0,0,2"
-                                       FontFamily="Segoe UI" FontSize="11" Foreground="#FF8A9BB0"/>
+                                       FontFamily="Segoe UI" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"/>
                         </StackPanel>
                     </StackPanel>
 
                     <!-- Avg -->
                     <StackPanel Grid.Column="3" HorizontalAlignment="Center">
                         <TextBlock Text="AVG" FontSize="10" FontWeight="Bold"
-                                   Foreground="#FF4A5568" FontFamily="Segoe UI"
+                                   Foreground="{DynamicResource TextMutedBrush}" FontFamily="Segoe UI"
                                    HorizontalAlignment="Center" Margin="0,0,0,2"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBlock x:Name="TxtAvg"
                                        FontFamily="Cascadia Code, Consolas" FontSize="16"
-                                       Foreground="#FF00B4D8"/>
+                                       Foreground="{DynamicResource AccentBrush}"/>
                             <TextBlock Text="ms" VerticalAlignment="Bottom" Margin="2,0,0,2"
-                                       FontFamily="Segoe UI" FontSize="11" Foreground="#FF8A9BB0"/>
+                                       FontFamily="Segoe UI" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"/>
                         </StackPanel>
                     </StackPanel>
 
                     <!-- Max -->
                     <StackPanel Grid.Column="4" HorizontalAlignment="Center">
                         <TextBlock Text="MAX" FontSize="10" FontWeight="Bold"
-                                   Foreground="#FF4A5568" FontFamily="Segoe UI"
+                                   Foreground="{DynamicResource TextMutedBrush}" FontFamily="Segoe UI"
                                    HorizontalAlignment="Center" Margin="0,0,0,2"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBlock x:Name="TxtMax"
                                        FontFamily="Cascadia Code, Consolas" FontSize="16"
-                                       Foreground="#FFFFD600"/>
+                                       Foreground="{DynamicResource StatusWarningBrush}"/>
                             <TextBlock Text="ms" VerticalAlignment="Bottom" Margin="2,0,0,2"
-                                       FontFamily="Segoe UI" FontSize="11" Foreground="#FF8A9BB0"/>
+                                       FontFamily="Segoe UI" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"/>
                         </StackPanel>
                     </StackPanel>
 
                     <!-- Packet Loss -->
                     <StackPanel Grid.Column="5" HorizontalAlignment="Center">
                         <TextBlock Text="PACKET LOSS" FontSize="10" FontWeight="Bold"
-                                   Foreground="#FF4A5568" FontFamily="Segoe UI"
+                                   Foreground="{DynamicResource TextMutedBrush}" FontFamily="Segoe UI"
                                    HorizontalAlignment="Center" Margin="0,0,0,2"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBlock x:Name="TxtLoss"
                                        FontFamily="Cascadia Code, Consolas" FontSize="16"
-                                       Foreground="#FFFF1744"/>
+                                       Foreground="{DynamicResource StatusOfflineBrush}"/>
                             <TextBlock Text="%" VerticalAlignment="Bottom" Margin="1,0,0,2"
-                                       FontFamily="Segoe UI" FontSize="11" Foreground="#FF8A9BB0"/>
+                                       FontFamily="Segoe UI" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"/>
                         </StackPanel>
                         <TextBlock x:Name="TxtLossCount" HorizontalAlignment="Center"
-                                   FontFamily="Segoe UI" FontSize="10" Foreground="#FF4A5568"/>
+                                   FontFamily="Segoe UI" FontSize="10" Foreground="{DynamicResource TextMutedBrush}"/>
                     </StackPanel>
                 </Grid>
             </Border>
 
             <!-- Graph Canvas -->
-            <Border Grid.Row="2" Background="#FF111416" Margin="12,8">
+            <Border Grid.Row="2" Background="{DynamicResource BgDeepBrush}" Margin="12,8">
                 <Canvas x:Name="GraphCanvas" SizeChanged="GraphCanvas_SizeChanged"/>
             </Border>
 
@@ -180,21 +180,21 @@
                         HorizontalAlignment="Center" Margin="0,0,0,6">
                 <Ellipse Width="8" Height="8" Fill="#FF00B4D8"
                          VerticalAlignment="Center" Margin="0,0,5,0"/>
-                <TextBlock Text="Ping" FontSize="11" Foreground="#FF00B4D8"
+                <TextBlock Text="Ping" FontSize="11" Foreground="{DynamicResource AccentBrush}"
                            VerticalAlignment="Center" FontFamily="Segoe UI"/>
                 <Ellipse Width="8" Height="8" Fill="#FFFFD600"
                          VerticalAlignment="Center" Margin="16,0,5,0"/>
-                <TextBlock Text="Jitter (gestrichelt)" FontSize="11" Foreground="#FFFFD600"
+                <TextBlock Text="Jitter (gestrichelt)" FontSize="11" Foreground="{DynamicResource StatusWarningBrush}"
                            VerticalAlignment="Center" FontFamily="Segoe UI"/>
-                <TextBlock x:Name="TxtPointCount" FontSize="11" Foreground="#FF4A5568"
+                <TextBlock x:Name="TxtPointCount" FontSize="11" Foreground="{DynamicResource TextMutedBrush}"
                            VerticalAlignment="Center" Margin="16,0,0,0" FontFamily="Segoe UI"/>
             </StackPanel>
 
             <!-- Bottom bar -->
-            <Border Grid.Row="4" Background="#FF111416" CornerRadius="0,0,10,10"
-                    BorderBrush="#FF2D3748" BorderThickness="0,1,0,0">
+            <Border Grid.Row="4" Background="{DynamicResource BgDeepBrush}" CornerRadius="0,0,10,10"
+                    BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0">
                 <TextBlock Text="Fenster verschiebbar · Größe änderbar · Monitor läuft im Hintergrund weiter"
-                           FontFamily="Segoe UI" FontSize="11" Foreground="#FF4A5568"
+                           FontFamily="Segoe UI" FontSize="11" Foreground="{DynamicResource TextMutedBrush}"
                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Border>
         </Grid>

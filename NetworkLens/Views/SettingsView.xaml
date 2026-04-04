@@ -373,6 +373,29 @@
                                     <TextBlock Text="v1.1.0" FontSize="11" FontWeight="Bold"
                                                Foreground="#FF000000" FontFamily="Cascadia Code, Consolas"/>
                                 </Border>
+                                <TextBlock Text="Light / Dark Theme"
+                                           FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextPrimaryBrush}"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <TextBlock FontFamily="Segoe UI" FontSize="12" LineHeight="20"
+                                       Foreground="{DynamicResource TextSecondaryBrush}">
+                                • Light Mode und Dark Mode Toggle in Einstellungen&#x0a;• Theme wechselt sofort ohne Neustart&#x0a;• Theme-Wahl wird gespeichert und beim Start geladen&#x0a;• Kontextmenü folgt dem Theme
+                            </TextBlock>
+                        </StackPanel>
+
+                        <Border Height="1" Background="{DynamicResource BorderBrush}" Margin="0,0,0,14"/>
+
+                        <!-- v1.0.0 -->
+                        <StackPanel Margin="0,0,0,14">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <Border Background="{DynamicResource BgDeepBrush}"
+                                        BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+                                        CornerRadius="4" Padding="7,2" Margin="0,0,10,0">
+                                    <TextBlock Text="v1.0.0" FontSize="11" FontWeight="Bold"
+                                               Foreground="{DynamicResource TextSecondaryBrush}"
+                                               FontFamily="Cascadia Code, Consolas"/>
+                                </Border>
                                 <TextBlock Text="Initial Release"
                                            FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
                                            Foreground="{DynamicResource TextPrimaryBrush}"
@@ -385,55 +408,7 @@
                             </StackPanel>
                             <TextBlock FontFamily="Segoe UI" FontSize="12" LineHeight="20"
                                        Foreground="{DynamicResource TextSecondaryBrush}">
-                                <Run FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}">🔍 Netzwerk-Scan</Run>
-                                <Run Text="&#x0a;  • Paralleler Ping-Sweep des lokalen Subnetzes"/>
-                                <Run Text="&#x0a;  • Automatische Subnetz-Erkennung beim Start"/>
-                                <Run Text="&#x0a;  • Live-Ergebnisse während des Scans"/>
-                                <Run Text="&#x0a;  • DNS Reverse-Lookup, MAC-Adresse via ARP"/>
-                                <Run Text="&#x0a;  • Hersteller-Erkennung via OUI-Datenbank"/>
-                                <Run Text="&#x0a;  • Sortierung nach IP aufsteigend"/>
-                                <Run Text="&#x0a;  • Suche und Filter in Echtzeit"/>
-                                <Run Text="&#x0a;"/>
-                                <Run FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}">🔌 Port-Scanner</Run>
-                                <Run Text="&#x0a;  • Quick / Standard / Full / Custom Profile"/>
-                                <Run Text="&#x0a;  • Async TCP Connect Scan mit Banner-Grabbing"/>
-                                <Run Text="&#x0a;  • ~60 bekannte Dienste automatisch erkannt"/>
-                                <Run Text="&#x0a;"/>
-                                <Run FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}">📊 Netzwerk-Info</Run>
-                                <Run Text="&#x0a;  • Lokale IP, Gateway, Subnetz, DNS-Server"/>
-                                <Run Text="&#x0a;  • Öffentliche IP, WLAN-SSID"/>
-                                <Run Text="&#x0a;  • Adapter-Liste mit Speed und Status"/>
-                                <Run Text="&#x0a;  • Aktive Verbindungen (netstat)"/>
-                                <Run Text="&#x0a;"/>
-                                <Run FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}">📡 Live-Monitor</Run>
-                                <Run Text="&#x0a;  • Kontinuierliche Ping-Überwachung"/>
-                                <Run Text="&#x0a;  • Live Ping + Jitter Graph (Doppelklick = Vollbild)"/>
-                                <Run Text="&#x0a;  • Min / Avg / Max / Jitter / Packet Loss"/>
-                                <Run Text="&#x0a;  • Intervall: 1s / 5s / 10s / 30s / 60s / Dauerhaft"/>
-                                <Run Text="&#x0a;  • Erklärungen-Panel: Ping, Jitter, Packet Loss"/>
-                                <Run Text="&#x0a;  • Wikipedia-Links für weitere Infos"/>
-                                <Run Text="&#x0a;"/>
-                                <Run FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}">🏷 Geräte-Verwaltung</Run>
-                                <Run Text="&#x0a;  • Alias, Kategorie, Favoriten, Notizen"/>
-                                <Run Text="&#x0a;  • Persistent über Scans hinweg (per MAC)"/>
-                                <Run Text="&#x0a;"/>
-                                <Run FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}">📄 Report &amp; Export</Run>
-                                <Run Text="&#x0a;  • HTML-Report mit Filter und Suche"/>
-                                <Run Text="&#x0a;  • CSV und JSON Export"/>
-                                <Run Text="&#x0a;  • Scan-Vergleich: neue / verschwundene Geräte"/>
-                                <Run Text="&#x0a;"/>
-                                <Run FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}">🖥 Kontextmenü</Run>
-                                <Run Text="&#x0a;  • Port-Scan, Monitor, Alias, Kategorie, Favorit"/>
-                                <Run Text="&#x0a;  • HTTP / HTTPS / Explorer / FTP / Telnet / SSH"/>
-                                <Run Text="&#x0a;  • Ping / Traceroute / GeoLocate"/>
-                                <Run Text="&#x0a;  • IP und MAC kopieren"/>
-                                <Run Text="&#x0a;"/>
-                                <Run FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}">⚙ Allgemein</Run>
-                                <Run Text="&#x0a;  • Dark Theme, Sidebar-Navigation"/>
-                                <Run Text="&#x0a;  • Admin-Erkennung mit Neustart-Option"/>
-                                <Run Text="&#x0a;  • Self-Contained .exe — kein .NET nötig"/>
-                                <Run Text="&#x0a;  • Self-Signed Code Signing Certificate"/>
-                                <Run Text="&#x0a;  • MIT License"/>
+                                • Netzwerk-Scan mit Live-Ergebnissen, DNS, MAC, Hersteller&#x0a;• Port-Scanner: Quick / Standard / Full / Custom&#x0a;• Netzwerk-Info: IP, Gateway, DNS, WLAN, Adapter, netstat&#x0a;• Live-Monitor: Ping/Jitter Graph, Packet Loss, Doppelklick Vollbild&#x0a;• Geräte-Verwaltung: Alias, Kategorie, Favoriten&#x0a;• Reports: HTML, CSV, JSON, Scan-Vergleich&#x0a;• Kontextmenü: HTTP/HTTPS/FTP/SSH/Telnet/Traceroute/GeoLocate&#x0a;• Self-Contained .exe, MIT License
                             </TextBlock>
                         </StackPanel>
 

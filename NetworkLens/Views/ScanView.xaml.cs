@@ -203,14 +203,14 @@ public partial class ScanView : UserControl
     private void ShowContextMenu(NetworkDevice device)
     {
         var menu = new ContextMenu();
-        menu.Background = new SolidColorBrush(Color.FromRgb(0x22, 0x26, 0x2C));
-        menu.BorderBrush = new SolidColorBrush(Color.FromRgb(0x2D, 0x37, 0x48));
+        // Use theme brushes so context menu follows Light/Dark mode
+        menu.SetResourceReference(ContextMenu.BackgroundProperty, "BgCardBrush");
+        menu.SetResourceReference(ContextMenu.BorderBrushProperty, "BorderBrush");
 
         void Add(string header, Action action)
         {
             var mi = new MenuItem { Header = header };
-            mi.Background  = new SolidColorBrush(Color.FromRgb(0x22, 0x26, 0x2C));
-            mi.Foreground  = new SolidColorBrush(Color.FromRgb(0xF0, 0xF2, 0xF5));
+            mi.SetResourceReference(MenuItem.ForegroundProperty, "TextPrimaryBrush");
             mi.Click += (_, _) => action();
             menu.Items.Add(mi);
         }

@@ -105,6 +105,13 @@ public class ReportGenerator
   --accent: #00b4d8; --text: #f0f2f5; --text2: #8a9bb0; --muted: #4a5568;
   --online: #00e676; --warn: #ffd600; --offline: #ff1744; --border: #2d3748;
 }}
+@media (prefers-color-scheme: light) {{
+  :root {{
+    --bg: #f0f2f5; --bg2: #ffffff; --card: #f8f9fa;
+    --accent: #0077a8; --text: #1a1d21; --text2: #4a5568; --muted: #8a9bb0;
+    --online: #008a45; --warn: #b86e00; --offline: #cc0022; --border: #d1d9e0;
+  }}
+}}
 *{{box-sizing:border-box;margin:0;padding:0}}
 body{{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.5;padding:24px}}
 h1{{font-size:28px;font-weight:300;color:var(--text);margin-bottom:4px}}
