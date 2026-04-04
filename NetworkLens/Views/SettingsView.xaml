@@ -50,7 +50,8 @@
                         </Grid>
                         <StackPanel Orientation="Horizontal">
                             <Border x:Name="BtnThemeDark"
-                                    Background="{DynamicResource AccentBrush}"
+                                    Background="#FF1A1D21"
+                                    BorderBrush="{DynamicResource AccentBrush}" BorderThickness="2"
                                     CornerRadius="6" Padding="16,8" Margin="0,0,8,0"
                                     Cursor="Hand" MouseLeftButtonUp="BtnThemeDark_Click">
                                 <StackPanel Orientation="Horizontal">
@@ -58,12 +59,12 @@
                                                VerticalAlignment="Center"/>
                                     <TextBlock Text="Dark Mode" FontFamily="Segoe UI"
                                                FontSize="13" FontWeight="SemiBold"
-                                               Foreground="Black" VerticalAlignment="Center"/>
+                                               Foreground="#FFF0F2F5" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Border>
                             <Border x:Name="BtnThemeLight"
-                                    Background="{DynamicResource BgDeepBrush}"
-                                    BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+                                    Background="#FFFFFFFF"
+                                    BorderBrush="{DynamicResource BorderBrush}" BorderThickness="2"
                                     CornerRadius="6" Padding="16,8"
                                     Cursor="Hand" MouseLeftButtonUp="BtnThemeLight_Click">
                                 <StackPanel Orientation="Horizontal">
@@ -71,8 +72,7 @@
                                                VerticalAlignment="Center"/>
                                     <TextBlock Text="Light Mode" FontFamily="Segoe UI"
                                                FontSize="13" FontWeight="SemiBold"
-                                               Foreground="{DynamicResource TextPrimaryBrush}"
-                                               VerticalAlignment="Center"/>
+                                               Foreground="#FF1A1D21" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
@@ -366,51 +366,57 @@
                         <TextBlock Text="CHANGELOG" Style="{StaticResource Label}" Margin="0,0,0,16"/>
 
                         <!-- v1.1.0 -->
-                        <StackPanel Margin="0,0,0,14">
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                <Border Background="{DynamicResource AccentBrush}" CornerRadius="4"
-                                        Padding="7,2" Margin="0,0,10,0">
-                                    <TextBlock Text="v1.1.0" FontSize="11" FontWeight="Bold"
-                                               Foreground="#FF000000" FontFamily="Cascadia Code, Consolas"/>
-                                </Border>
-                                <TextBlock Text="Light / Dark Theme"
-                                           FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
-                                           Foreground="{DynamicResource TextPrimaryBrush}"
-                                           VerticalAlignment="Center"/>
-                            </StackPanel>
+                        <Expander Margin="0,0,0,8" IsExpanded="True">
+                            <Expander.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Background="{DynamicResource AccentBrush}" CornerRadius="4"
+                                            Padding="7,2" Margin="0,0,10,0" VerticalAlignment="Center">
+                                        <TextBlock Text="v1.1.0" FontSize="11" FontWeight="Bold"
+                                                   Foreground="#FF000000" FontFamily="Cascadia Code, Consolas"/>
+                                    </Border>
+                                    <TextBlock Text="Light / Dark Theme"
+                                               FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextPrimaryBrush}"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Expander.Header>
                             <TextBlock FontFamily="Segoe UI" FontSize="12" LineHeight="20"
-                                       Foreground="{DynamicResource TextSecondaryBrush}">
-                                • Light Mode und Dark Mode Toggle in Einstellungen&#x0a;• Theme wechselt sofort ohne Neustart&#x0a;• Theme-Wahl wird gespeichert und beim Start geladen&#x0a;• Kontextmenü folgt dem Theme
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
+                                       Margin="16,8,0,8">
+                                • Light Mode und Dark Mode Toggle in Einstellungen&#x0a;• Theme wechselt sofort ohne Neustart&#x0a;• Theme-Wahl wird gespeichert und beim Start geladen&#x0a;• Kontextmenü, Monitor, Graph-Fenster folgen dem Theme&#x0a;• HTML Report erkennt System-Theme automatisch
                             </TextBlock>
-                        </StackPanel>
+                        </Expander>
 
-                        <Border Height="1" Background="{DynamicResource BorderBrush}" Margin="0,0,0,14"/>
+                        <Border Height="1" Background="{DynamicResource BorderBrush}" Margin="0,4,0,8"/>
 
                         <!-- v1.0.0 -->
-                        <StackPanel Margin="0,0,0,14">
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                <Border Background="{DynamicResource BgDeepBrush}"
-                                        BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
-                                        CornerRadius="4" Padding="7,2" Margin="0,0,10,0">
-                                    <TextBlock Text="v1.0.0" FontSize="11" FontWeight="Bold"
-                                               Foreground="{DynamicResource TextSecondaryBrush}"
-                                               FontFamily="Cascadia Code, Consolas"/>
-                                </Border>
-                                <TextBlock Text="Initial Release"
-                                           FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
-                                           Foreground="{DynamicResource TextPrimaryBrush}"
-                                           VerticalAlignment="Center"/>
-                                <Border Background="#1A00E676" BorderBrush="#3300E676" BorderThickness="1"
-                                        CornerRadius="4" Padding="6,2" Margin="10,0,0,0" VerticalAlignment="Center">
-                                    <TextBlock Text="STABLE" FontSize="10" FontWeight="Bold"
-                                               Foreground="{DynamicResource StatusOnlineBrush}"/>
-                                </Border>
-                            </StackPanel>
+                        <Expander Margin="0,0,0,0" IsExpanded="False">
+                            <Expander.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Background="{DynamicResource BgDeepBrush}"
+                                            BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+                                            CornerRadius="4" Padding="7,2" Margin="0,0,10,0" VerticalAlignment="Center">
+                                        <TextBlock Text="v1.0.0" FontSize="11" FontWeight="Bold"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}"
+                                                   FontFamily="Cascadia Code, Consolas"/>
+                                    </Border>
+                                    <TextBlock Text="Initial Release"
+                                               FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextPrimaryBrush}"
+                                               VerticalAlignment="Center"/>
+                                    <Border Background="#1A00E676" BorderBrush="#3300E676" BorderThickness="1"
+                                            CornerRadius="4" Padding="6,2" Margin="10,0,0,0" VerticalAlignment="Center">
+                                        <TextBlock Text="STABLE" FontSize="10" FontWeight="Bold"
+                                                   Foreground="{DynamicResource StatusOnlineBrush}"/>
+                                    </Border>
+                                </StackPanel>
+                            </Expander.Header>
                             <TextBlock FontFamily="Segoe UI" FontSize="12" LineHeight="20"
-                                       Foreground="{DynamicResource TextSecondaryBrush}">
-                                • Netzwerk-Scan mit Live-Ergebnissen, DNS, MAC, Hersteller&#x0a;• Port-Scanner: Quick / Standard / Full / Custom&#x0a;• Netzwerk-Info: IP, Gateway, DNS, WLAN, Adapter, netstat&#x0a;• Live-Monitor: Ping/Jitter Graph, Packet Loss, Doppelklick Vollbild&#x0a;• Geräte-Verwaltung: Alias, Kategorie, Favoriten&#x0a;• Reports: HTML, CSV, JSON, Scan-Vergleich&#x0a;• Kontextmenü: HTTP/HTTPS/FTP/SSH/Telnet/Traceroute/GeoLocate&#x0a;• Self-Contained .exe, MIT License
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
+                                       Margin="16,8,0,8">
+                                • Netzwerk-Scan: Paralleler Ping-Sweep, Live-Ergebnisse, DNS, MAC, Hersteller&#x0a;• Port-Scanner: Quick / Standard / Full / Custom Profile, Banner-Grabbing&#x0a;• Netzwerk-Info: IP, Gateway, DNS, WLAN-SSID, Adapter, netstat&#x0a;• Live-Monitor: Ping/Jitter Graph, Packet Loss Zähler, Doppelklick Vollbild&#x0a;• Intervalle: 1s / 5s / 10s / 30s / 60s / Dauerhaft&#x0a;• Erklärungen: Ping, Jitter, Packet Loss mit Wikipedia-Links&#x0a;• Geräte-Verwaltung: Alias, Kategorie, Favoriten (persistent per MAC)&#x0a;• Reports: HTML (interaktiv), CSV, JSON, Scan-Vergleich&#x0a;• Kontextmenü: HTTP/HTTPS/FTP/SSH/Telnet/Traceroute/GeoLocate&#x0a;• Live-Ergebnisse während des Scans&#x0a;• Auto-Subnetz-Erkennung beim Start&#x0a;• Self-Contained .exe — kein .NET nötig&#x0a;• Self-Signed Certificate, MIT License
                             </TextBlock>
-                        </StackPanel>
+                        </Expander>
 
                     </StackPanel>
                 </Border>
