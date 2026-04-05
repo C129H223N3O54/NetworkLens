@@ -1,6 +1,6 @@
 # ◈ NetworkLens
 
-> Portabler Windows-Netzwerkscanner mit Dark Theme — keine Installation erforderlich.
+> Portabler Windows-Netzwerkscanner mit Light & Dark Theme — keine Installation erforderlich.
 
 [![Build & Release](https://github.com/C129H223N3O54/NetworkLens/actions/workflows/build.yml/badge.svg)](https://github.com/C129H223N3O54/NetworkLens/actions/workflows/build.yml)
 [![Neueste Version](https://img.shields.io/github/v/release/C129H223N3O54/NetworkLens?style=flat&label=Download)](https://github.com/C129H223N3O54/NetworkLens/releases/latest)
@@ -21,6 +21,7 @@
 | 🔄 **Scan-Vergleich** | Neue, verschwundene und geänderte Geräte zwischen Scans erkennen |
 | 📄 **Reports** | Interaktiver HTML-Report, CSV und JSON Export |
 | 🖥️ **Kontextmenü** | Öffnen per HTTP/HTTPS/FTP/SSH/Telnet, Ping, Traceroute, GeoLocate, IP/MAC kopieren |
+| 🎨 **Light / Dark Theme** | Toggle in Einstellungen — wechselt sofort, Wahl wird gespeichert |
 
 ---
 
@@ -85,8 +86,8 @@ dotnet publish NetworkLens/NetworkLens.csproj `
 
 **Release per Tag auslösen:**
 ```bash
-git tag v1.0.0
-git push origin v1.0.0
+git tag v1.1.0
+git push origin v1.1.0
 ```
 
 ---
@@ -98,6 +99,7 @@ Alle Daten werden in `%APPDATA%\NetworkLens\` gespeichert:
 | Datei | Zweck |
 |---|---|
 | `config.json` | App-Einstellungen |
+| `theme.json` | Light / Dark Theme Präferenz |
 | `devices.json` | Geräte-Aliase, Kategorien, Favoriten |
 | `scans\*.json` | Scan-Verlauf als JSON-Snapshots |
 
@@ -115,6 +117,12 @@ Alle Daten werden in `%APPDATA%\NetworkLens\` gespeichert:
 ## 📜 Lizenz
 
 MIT License — siehe [LICENSE](LICENSE)
+
+---
+
+## 🗺️ Roadmap
+
+Geplante Features und kommende Versionen: [ROADMAP.md](ROADMAP.md)
 
 ---
 
