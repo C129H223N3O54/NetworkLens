@@ -9,7 +9,7 @@ public class ReportGenerator
     public async Task<string> GenerateHtmlAsync(ScanResult scan, string outputPath)
     {
         var sb = new StringBuilder();
-        sb.AppendLine(BuildHtml(scan));
+        sb.AppendLine(BuildHtml(scan, App.IsDarkTheme ? "dark" : "light"));
 
         var filePath = Path.Combine(outputPath, $"NetworkLens_Report_{scan.FilenameSlug}.html");
         await File.WriteAllTextAsync(filePath, sb.ToString(), Encoding.UTF8);
@@ -58,7 +58,7 @@ public class ReportGenerator
         return s;
     }
 
-    private static string BuildHtml(ScanResult scan)
+    private static string BuildHtml(ScanResult scan, string initialTheme)
     {
         var online = scan.Devices.Count(d => d.Status is DeviceStatus.Online or DeviceStatus.Slow);
         var offline = scan.Devices.Count(d => d.Status == DeviceStatus.Offline);
@@ -69,10 +69,10 @@ public class ReportGenerator
         {
             var statusColor = d.Status switch
             {
-                DeviceStatus.Online  => "74A732",
-                DeviceStatus.Slow    => "BA7517",
-                DeviceStatus.Offline => "DC2626",
-                _                    => "#4A5568"
+                DeviceStatus.Online  => "#74A732",
+                DeviceStatus.Slow    => "#BA7517",
+                DeviceStatus.Offline => "#DC2626",
+                _                    => "#888780"
             };
             var portsHtml = d.OpenPorts.Count > 0
                 ? string.Join(", ", d.OpenPorts.Where(p => p.Status == PortStatus.Open)
@@ -94,27 +94,23 @@ public class ReportGenerator
         }
 
         return $@"<!DOCTYPE html>
-<html lang=""de"">
+<html lang=""de"" data-theme=""{initialTheme}"">
 <head>
 <meta charset=""UTF-8""/>
 <meta name=""viewport"" content=""width=device-width, initial-scale=1""/>
 <title>Sideforge / NetworkLens Report — {H(scan.Subnet)} — {scan.TimestampFormatted}</title>
 <style>
-:root {{
-  /* Sideforge Dark - Anvil + Ember + Moss */
+:root[data-theme=""dark""] {{
   --bg: #0F0F0F; --bg2: #1A1A1A; --card: #1F1F1F;
   --accent: #F07E2D; --text: #F5F5F5; --text2: #B4B2A9; --muted: #888780;
   --online: #74A732; --warn: #BA7517; --offline: #DC2626; --border: #2C2C2A;
   --hover: #2A1906;
 }}
-@media (prefers-color-scheme: light) {{
-  :root {{
-    /* Sideforge Light - Anvil off-white + Ember */
-    --bg: #FAFAF7; --bg2: #FFFFFF; --card: #F1EFE8;
-    --accent: #E8600A; --text: #1A1A1A; --text2: #5F5E5A; --muted: #888780;
-    --online: #639922; --warn: #BA7517; --offline: #991B1B; --border: #D3D1C7;
-    --hover: #FDD9BC;
-  }}
+:root[data-theme=""light""] {{
+  --bg: #FAFAF7; --bg2: #FFFFFF; --card: #F1EFE8;
+  --accent: #E8600A; --text: #1A1A1A; --text2: #5F5E5A; --muted: #888780;
+  --online: #639922; --warn: #BA7517; --offline: #991B1B; --border: #D3D1C7;
+  --hover: #FDD9BC;
 }}
 *{{box-sizing:border-box;margin:0;padding:0}}
 body{{background:var(--bg);color:var(--text);font-family:Verdana,sans-serif;font-size:14px;line-height:1.5;padding:24px}}
@@ -126,8 +122,22 @@ h1 span{{color:var(--accent)}}
 .stat-val{{font-size:28px;font-weight:300;color:var(--accent)}}
 .stat-lbl{{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:4px}}
 .toolbar{{display:flex;gap:10px;margin-bottom:16px;align-items:center}}
-input[type=text]{{background:var(--bg2);border:1px solid var(--border);border-radius:5px;color:var(--text);padding:8px 12px;font-size:13px;width:280px;outline:none}}
+input[type=text]{{background:var(--bg2);border:1px solid var(--border);border-radius:5px;color:var(--text);padding:8px 12px 8px 32px;font-size:13px;width:280px;outline:none}}
 input[type=text]:focus{{border-color:var(--accent)}}
+.search-wrap{{position:relative;display:inline-block}}
+.search-icon{{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text2);font-size:14px;pointer-events:none}}
+.search-clear{{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:transparent;border:none;color:var(--text2);font-size:18px;cursor:pointer;width:22px;height:22px;border-radius:4px;padding:0;line-height:1;display:none}}
+.search-wrap.has-text .search-clear{{display:block}}
+.search-clear:hover{{background:var(--hover);color:var(--accent)}}
+.theme-toggle{{background:var(--bg2);border:1px solid var(--border);border-radius:5px;color:var(--text);padding:7px 12px;font-size:12px;font-family:Verdana,sans-serif;cursor:pointer}}
+.theme-toggle:hover{{border-color:var(--accent);color:var(--accent)}}
+
+/* Ember-orange scrollbar */
+::-webkit-scrollbar{{width:12px;height:12px}}
+::-webkit-scrollbar-track{{background:var(--bg2)}}
+::-webkit-scrollbar-thumb{{background:var(--accent);border-radius:6px;border:2px solid var(--bg2)}}
+::-webkit-scrollbar-thumb:hover{{background:var(--accent)}}
+html{{scrollbar-color:var(--accent) var(--bg2);scrollbar-width:thin}}
 select{{background:var(--bg2);border:1px solid var(--border);border-radius:5px;color:var(--text);padding:8px 12px;font-size:13px;outline:none}}
 table{{width:100%;border-collapse:collapse;background:var(--card);border-radius:8px;overflow:hidden;border:1px solid var(--border)}}
 th{{background:var(--bg);color:var(--text2);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;padding:11px 14px;text-align:left;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}}
@@ -162,7 +172,11 @@ footer{{margin-top:32px;text-align:center;color:var(--muted);font-size:12px}}
 </div>
 
 <div class=""toolbar"">
-  <input type=""text"" id=""search"" placeholder=""🔍 Suchen (IP, Name, MAC ...)"" oninput=""filterTable(this.value)""/>
+  <div class=""search-wrap"">
+    <span class=""search-icon"">⌕</span>
+    <input type=""text"" id=""search"" placeholder=""Suchen (IP, Name, MAC ...)"" oninput=""filterTable(this.value)""/>
+    <button class=""search-clear"" onclick=""clearSearch()"" title=""Suche leeren"">×</button>
+  </div>
   <select onchange=""filterStatus(this.value)"">
     <option value="""">Alle Status</option>
     <option value=""Online"">Online</option>
@@ -170,6 +184,7 @@ footer{{margin-top:32px;text-align:center;color:var(--muted);font-size:12px}}
     <option value=""Slow"">Langsam</option>
   </select>
   <span style=""margin-left:auto;color:var(--text2);font-size:12px"" id=""rowcount"">{scan.Devices.Count} Einträge</span>
+  <button class=""theme-toggle"" onclick=""toggleTheme()"" title=""Theme wechseln"" id=""themeBtn"">◐ Theme</button>
 </div>
 
 <table id=""devtable"">
@@ -185,7 +200,24 @@ footer{{margin-top:32px;text-align:center;color:var(--muted);font-size:12px}}
 
 <script>
 let currentSearch='', currentStatus='';
-function filterTable(q){{currentSearch=q.toLowerCase();applyFilters()}}
+function filterTable(q){{
+  currentSearch=q.toLowerCase();
+  document.querySelector('.search-wrap').classList.toggle('has-text', q.length > 0);
+  applyFilters();
+}}
+function clearSearch(){{
+  const inp=document.getElementById('search');
+  inp.value='';
+  currentSearch='';
+  document.querySelector('.search-wrap').classList.remove('has-text');
+  applyFilters();
+  inp.focus();
+}}
+function toggleTheme(){{
+  const html=document.documentElement;
+  const cur=html.getAttribute('data-theme');
+  html.setAttribute('data-theme', cur==='dark' ? 'light' : 'dark');
+}}
 function filterStatus(s){{currentStatus=s;applyFilters()}}
 function applyFilters(){{
   const rows=document.querySelectorAll('#tbody .device-row');
@@ -201,7 +233,7 @@ function applyFilters(){{
   }});
   document.getElementById('rowcount').textContent=vis+' Einträge';
 }}
-function getColor(s){{return{{Online:'rgb(0, 230, 118)',Slow:'rgb(255, 214, 0)',Offline:'rgb(255, 23, 68)'}}[s]||''}}
+function getColor(s){{return{{Online:'rgb(116, 167, 50)',Slow:'rgb(186, 117, 23)',Offline:'rgb(220, 38, 38)'}}[s]||''}}
 function sortTable(col){{
   const tbody=document.getElementById('tbody');
   const rows=[...tbody.querySelectorAll('.device-row')];

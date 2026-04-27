@@ -35,25 +35,38 @@
 
 ## 🔜 Planned
 
-### v1.3.0 — Report & Export
-- [ ] Theme toggle button inside HTML report (Light/Dark in browser)
-- [ ] Embed current app theme into exported report
+### v1.2.1 — Polish (released)
+- HTML report now follows the app's current theme
+- Theme toggle button inside HTML report
+- Filter clear button (×) in HTML report
+- Ember-orange scrollbars in WPF and HTML
+- Cleaned context menu (consistent alignment)
+
+### v1.3.0 — Monitor Recording
+- [ ] Record continuous monitoring sessions to disk
+- [ ] Filter recordings by time range, device, threshold
+- [ ] Export recording as CSV/JSON for further analysis
+- [ ] Replay / scrub through recorded data
+- [ ] Long-term statistics across multiple sessions
+
+### v1.4.0 — Report & Export
 - [ ] PDF export
 - [ ] Auto-open report after export
+- [ ] Custom report templates
 
-### v1.4.0 — Scan Improvements
+### v1.5.0 — Scan Improvements
 - [ ] Save scan profiles (custom subnet/timeout combinations)
 - [ ] Scan multiple subnets simultaneously
 - [ ] Device history — track when a device was last seen online
 - [ ] Wake-on-LAN — wake devices via Magic Packet
 
-### v1.5.0 — Monitor Improvements
+### v1.6.0 — Monitor Improvements
 - [ ] Compare multiple devices in one graph simultaneously
 - [ ] Export graph as PNG/SVG
 - [ ] Threshold alerts — notify when ping exceeds X ms
 - [ ] Save monitor history across sessions
 
-### v1.6.0 — Network Info Enhancements
+### v1.7.0 — Network Info Enhancements
 - [ ] DHCP lease viewer — see which IPs are assigned
 - [ ] Simple network topology visualization
 - [ ] Basic bandwidth test to gateway
@@ -62,7 +75,8 @@
 - [ ] SQLite database instead of JSON (better performance at scale)
 - [ ] Plugin system — integrate custom scanners/reporters
 - [ ] Local REST API — query NetworkLens programmatically
-- [ ] Additional languages (EN/DE already built-in)
+- [ ] Full English translation (UI is currently German-only)
+- [ ] Additional languages via resource files
 
 ---
 

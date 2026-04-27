@@ -1,4 +1,4 @@
-// Build: 2026-04-27 05:19:41 (Sideforge migration)
+// Build: 2026-04-27 21:11:38 (v1.2.1 polish)
 using System.IO;
 using System.Windows;
 using NetworkLens.ViewModels;

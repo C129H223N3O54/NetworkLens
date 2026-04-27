@@ -217,32 +217,32 @@ public partial class ScanView : UserControl
 
         void Sep() => menu.Items.Add(new Separator());
 
-        Add("🔌 Port-Scan",            () => { if (Window.GetWindow(this) is MainWindow mw) mw.NavigateToPortScan(device); });
-        Add("📡 In Monitor aufnehmen", () => { if (Window.GetWindow(this) is MainWindow mw) mw.NavigateToMonitor(device); });
+        Add("Port-Scan",                    () => { if (Window.GetWindow(this) is MainWindow mw) mw.NavigateToPortScan(device); });
+        Add("In Monitor aufnehmen",         () => { if (Window.GetWindow(this) is MainWindow mw) mw.NavigateToMonitor(device); });
         Sep();
-        Add("✏  Alias setzen...",      async () => {
+        Add("Alias setzen...",              async () => {
             var dlg = new AliasDialog(device.Alias ?? "", device.DisplayName) { Owner = Window.GetWindow(this) };
             if (dlg.ShowDialog() == true) { device.Alias = dlg.AliasText; await new Services.DeviceManager().SaveDeviceAsync(device); }
         });
-        Add("🏷  Kategorie...",         () => {
+        Add("Kategorie...",                 () => {
             var dlg = new CategoryDialog(device.Category) { Owner = Window.GetWindow(this) };
             if (dlg.ShowDialog() == true) { device.Category = dlg.SelectedCategory; _ = new Services.DeviceManager().SaveDeviceAsync(device); }
         });
-        Add("⭐ Favorit",              async () => { device.IsFavorite = !device.IsFavorite; await new Services.DeviceManager().SaveDeviceAsync(device); });
+        Add("Favorit umschalten",           async () => { device.IsFavorite = !device.IsFavorite; await new Services.DeviceManager().SaveDeviceAsync(device); });
         Sep();
         // ── Öffnen mit ──
-        Add("🌐 HTTP öffnen",           () => OpenUrl($"http://{device.IpAddress}"));
-        Add("🔒 HTTPS öffnen",          () => OpenUrl($"https://{device.IpAddress}"));
-        Add("📁 Explorer (Netzwerk)",   () => OpenExplorer(device.IpAddress));
-        Add("🔧 FTP öffnen",            () => OpenUrl($"ftp://{device.IpAddress}"));
-        Add("💻 Telnet",                () => OpenTerminal($"telnet {device.IpAddress}"));
-        Add("📡 SSH",                   () => OpenTerminal($"ssh {device.IpAddress}"));
-        Add("📶 Ping (Terminal)",       () => OpenTerminal($"ping {device.IpAddress} -t"));
-        Add("🗺  Traceroute",            () => OpenTerminal($"tracert {device.IpAddress}"));
-        Add("🌍 GeoLocate",             () => OpenUrl($"https://www.iplocation.net/?query={device.IpAddress}"));
+        Add("HTTP im Browser öffnen",       () => OpenUrl($"http://{device.IpAddress}"));
+        Add("HTTPS im Browser öffnen",      () => OpenUrl($"https://{device.IpAddress}"));
+        Add("Im Explorer öffnen (Netzwerk)",() => OpenExplorer(device.IpAddress));
+        Add("FTP öffnen",                   () => OpenUrl($"ftp://{device.IpAddress}"));
+        Add("Telnet öffnen",                () => OpenTerminal($"telnet {device.IpAddress}"));
+        Add("SSH öffnen",                   () => OpenTerminal($"ssh {device.IpAddress}"));
+        Add("Ping (Terminal)",              () => OpenTerminal($"ping {device.IpAddress} -t"));
+        Add("Traceroute",                   () => OpenTerminal($"tracert {device.IpAddress}"));
+        Add("GeoLocate (Web)",              () => OpenUrl($"https://www.iplocation.net/?query={device.IpAddress}"));
         Sep();
-        Add("📋 IP kopieren",           () => Clipboard.SetText(device.IpAddress  ?? ""));
-        Add("📋 MAC kopieren",          () => Clipboard.SetText(device.MacAddress ?? ""));
+        Add("IP-Adresse kopieren",          () => Clipboard.SetText(device.IpAddress  ?? ""));
+        Add("MAC-Adresse kopieren",         () => Clipboard.SetText(device.MacAddress ?? ""));
 
         menu.PlacementTarget = DeviceGrid;
         menu.IsOpen = true;

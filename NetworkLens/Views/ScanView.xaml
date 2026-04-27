@@ -59,7 +59,7 @@
                         <ComboBoxItem Content="2000ms (langsam)"/>
                     </ComboBox>
 
-                    <Button Grid.Column="6" Content="🔍 Auto-Erkennung"
+                    <Button Grid.Column="6" Content="⌕ Auto-Erkennung"
                             Style="{StaticResource SecondaryButton}" FontSize="12"
                             Click="BtnAutoDetect_Click"/>
                 </Grid>
@@ -143,7 +143,7 @@
                         </StackPanel>
                         <StackPanel Grid.Column="1" Orientation="Horizontal">
                             <TextBox x:Name="TxtSearch" Width="180"
-                                     Tag="🔍 Suchen..." Margin="0,0,8,0"
+                                     Tag="⌕ Suchen..." Margin="0,0,8,0"
                                      TextChanged="TxtSearch_TextChanged"/>
                             <Button Content="↑↓ Exportieren" Style="{StaticResource SecondaryButton}"
                                     FontSize="12" Padding="10,6" Click="BtnExport_Click"/>
