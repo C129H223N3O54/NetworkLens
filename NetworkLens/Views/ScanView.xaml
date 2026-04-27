@@ -19,7 +19,7 @@
                 <StackPanel Grid.Column="0">
                     <TextBlock Text="Netzwerk-Scan" Style="{StaticResource H1}"/>
                     <TextBlock Text="Alle Geräte im lokalen Netzwerk erkennen" Margin="0,4,0,0"
-                               Foreground="{DynamicResource TextSecondaryBrush}" FontFamily="Segoe UI" FontSize="13"/>
+                               Foreground="{DynamicResource TextSecondaryBrush}" FontFamily="Verdana" FontSize="13"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                     <Button Content="⏹ Stop" Style="{StaticResource SecondaryButton}"
@@ -44,13 +44,13 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Column="0" Text="Subnetz:" FontFamily="Segoe UI"
+                    <TextBlock Grid.Column="0" Text="Subnetz:" FontFamily="Verdana"
                                Foreground="{DynamicResource TextSecondaryBrush}" FontSize="13"
                                VerticalAlignment="Center" Margin="0,0,10,0"/>
                     <TextBox Grid.Column="1" x:Name="TxtSubnet"
-                             Text="192.168.1.0/24" FontFamily="Cascadia Code, Consolas, Courier New"/>
+                             Text="192.168.1.0/24" FontFamily="Consolas, Courier New"/>
 
-                    <TextBlock Grid.Column="3" Text="Timeout:" FontFamily="Segoe UI"
+                    <TextBlock Grid.Column="3" Text="Timeout:" FontFamily="Verdana"
                                Foreground="{DynamicResource TextSecondaryBrush}" FontSize="13"
                                VerticalAlignment="Center" Margin="0,0,10,0"/>
                     <ComboBox Grid.Column="4" x:Name="CmbTimeout" SelectedIndex="1">
@@ -84,16 +84,16 @@
                     </Grid.RowDefinitions>
                     <Grid Grid.Row="0" Margin="0,0,0,8">
                         <TextBlock x:Name="ProgressLabel" Text="Scanne 192.168.1.0/24 ..."
-                                   FontFamily="Segoe UI" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                   FontFamily="Verdana" Foreground="{DynamicResource TextSecondaryBrush}"/>
                         <TextBlock x:Name="ProgressPercent" Text="0%"
                                    HorizontalAlignment="Right"
-                                   FontFamily="Segoe UI" FontWeight="SemiBold"
+                                   FontFamily="Verdana" FontWeight="SemiBold"
                                    Foreground="{DynamicResource AccentBrush}"/>
                     </Grid>
                     <ProgressBar Grid.Row="1" x:Name="ScanProgress" Height="6" Value="0" Maximum="100"/>
                     <TextBlock Grid.Row="2" x:Name="ProgressDetail" Margin="0,6,0,0"
                                Text="0 / 254 Hosts geprüft — 0 online"
-                               FontFamily="Segoe UI" FontSize="11.5"
+                               FontFamily="Verdana" FontSize="11.5"
                                Foreground="{DynamicResource TextMutedBrush}"/>
                 </Grid>
             </Border>
@@ -106,7 +106,7 @@
                     <TextBlock Text="Kein Scan durchgeführt" Style="{StaticResource H2}"
                                HorizontalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}"/>
                     <TextBlock Text="Klicke auf ▶ Scan starten um alle Geräte im Netzwerk zu finden."
-                               FontFamily="Segoe UI" FontSize="13" Foreground="{DynamicResource TextMutedBrush}"
+                               FontFamily="Verdana" FontSize="13" Foreground="{DynamicResource TextMutedBrush}"
                                HorizontalAlignment="Center" Margin="0,8,0,24"/>
                     <Button Content="▶ Scan starten" Style="{StaticResource PrimaryButton}"
                             HorizontalAlignment="Center" Click="BtnScan_Click"/>
@@ -130,7 +130,7 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0" Orientation="Horizontal">
                             <TextBlock x:Name="TxtResultCount"
-                                       Text="0 Geräte gefunden" FontFamily="Segoe UI" FontSize="13"
+                                       Text="0 Geräte gefunden" FontFamily="Verdana" FontSize="13"
                                        FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"
                                        VerticalAlignment="Center"/>
                             <Border x:Name="NewDeviceBadge" Margin="12,0,0,0"
@@ -171,7 +171,7 @@
                                                Width="130" SortMemberPath="IpSort">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
-                                        <Setter Property="FontFamily" Value="Cascadia Code, Consolas"/>
+                                        <Setter Property="FontFamily" Value="Consolas"/>
                                         <Setter Property="FontSize" Value="12"/>
                                         <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
                                         <Setter Property="VerticalAlignment" Value="Center"/>
@@ -184,7 +184,7 @@
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="VerticalAlignment" Value="Center"/>
-                                        <Setter Property="FontFamily" Value="Segoe UI"/>
+                                        <Setter Property="FontFamily" Value="Verdana"/>
                                         <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
@@ -195,7 +195,7 @@
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Alias}" VerticalAlignment="Center"
-                                                   FontFamily="Segoe UI" FontStyle="Italic"
+                                                   FontFamily="Verdana" FontStyle="Italic"
                                                    Foreground="{DynamicResource TextSecondaryBrush}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
@@ -205,7 +205,7 @@
                             <DataGridTextColumn Header="MAC-Adresse" Binding="{Binding MacAddress}" Width="140">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
-                                        <Setter Property="FontFamily" Value="Cascadia Code, Consolas"/>
+                                        <Setter Property="FontFamily" Value="Consolas"/>
                                         <Setter Property="FontSize" Value="11.5"/>
                                         <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
                                         <Setter Property="VerticalAlignment" Value="Center"/>
@@ -227,7 +227,7 @@
                             <DataGridTemplateColumn Header="Ping" Width="80" SortMemberPath="ResponseTime">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock VerticalAlignment="Center" FontFamily="Segoe UI"
+                                        <TextBlock VerticalAlignment="Center" FontFamily="Verdana"
                                                    Foreground="{Binding PingColor}">
                                             <TextBlock.Text>
                                                 <Binding Path="ResponseTime" StringFormat="{}{0} ms"/>
@@ -243,7 +243,7 @@
                                     <DataTemplate>
                                         <TextBlock Text="{Binding OpenPortCount}" VerticalAlignment="Center"
                                                    HorizontalAlignment="Center"
-                                                   FontFamily="Segoe UI" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                                   FontFamily="Verdana" Foreground="{DynamicResource TextSecondaryBrush}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>

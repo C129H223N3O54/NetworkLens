@@ -1,7 +1,8 @@
-# ◈ NetworkLens
+# Sideforge / NetworkLens
 
-> Portabler Windows-Netzwerkscanner mit Light & Dark Theme — keine Installation erforderlich.
+> Portabler Windows-Netzwerkscanner. Teil des [Sideforge](https://github.com/C129H223N3O54/SideForge) Tool-Sets — Ember-warmes Light & Dark Theme, keine Installation erforderlich.
 
+[![Sideforge](https://img.shields.io/badge/Sideforge-Design_System-E8600A?style=flat)](https://github.com/C129H223N3O54/SideForge)
 [![Build & Release](https://github.com/C129H223N3O54/NetworkLens/actions/workflows/build.yml/badge.svg)](https://github.com/C129H223N3O54/NetworkLens/actions/workflows/build.yml)
 [![Neueste Version](https://img.shields.io/github/v/release/C129H223N3O54/NetworkLens?style=flat&label=Download)](https://github.com/C129H223N3O54/NetworkLens/releases/latest)
 [![Lizenz: MIT](https://img.shields.io/badge/Lizenz-MIT-blue.svg)](LICENSE)

@@ -22,11 +22,11 @@
                     <TextBlock Text="Live-Monitor" Style="{StaticResource H1}"/>
                     <TextBlock Text="Kontinuierliche Ping-Überwachung mit Jitter und Packet-Loss"
                                Margin="0,4,0,0" Foreground="{DynamicResource TextSecondaryBrush}"
-                               FontFamily="Segoe UI" FontSize="13"/>
+                               FontFamily="Verdana" FontSize="13"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock Text="Intervall:" VerticalAlignment="Center" Margin="0,0,8,0"
-                               FontFamily="Segoe UI" FontSize="13"
+                               FontFamily="Verdana" FontSize="13"
                                Foreground="{DynamicResource TextSecondaryBrush}"/>
                     <ComboBox x:Name="CmbInterval" Width="120"
                               SelectionChanged="CmbInterval_SelectionChanged">
@@ -55,7 +55,7 @@
             <StackPanel Margin="16,12">
                 <Grid Margin="0,0,0,10">
                     <TextBlock Text="BEGRIFFSERKLÄRUNGEN" FontSize="10" FontWeight="Bold"
-                               Foreground="{DynamicResource TextMutedBrush}" FontFamily="Segoe UI"/>
+                               Foreground="{DynamicResource TextMutedBrush}" FontFamily="Verdana"/>
                     <Button x:Name="BtnCloseInfo" Content="✕ Schließen"
                             HorizontalAlignment="Right" Foreground="{DynamicResource TextSecondaryBrush}"
                             FontSize="11" Cursor="Hand" Click="BtnCloseInfo_Click"
@@ -79,12 +79,12 @@
                     </Grid.ColumnDefinitions>
                     <Border Grid.Column="0" Background="{DynamicResource BgCardBrush}" CornerRadius="6" Padding="12,10">
                         <StackPanel>
-                            <TextBlock Text="📡 Ping" FontFamily="Segoe UI" FontSize="13"
+                            <TextBlock Text="📡 Ping" FontFamily="Verdana" FontSize="13"
                                        FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}" Margin="0,0,0,6"/>
-                            <TextBlock TextWrapping="Wrap" FontFamily="Segoe UI" FontSize="12"
+                            <TextBlock TextWrapping="Wrap" FontFamily="Verdana" FontSize="12"
                                        Foreground="{DynamicResource TextSecondaryBrush}" LineHeight="18"
                                        Text="Zeit in ms, die ein Datenpaket zum Gerät und zurück braucht (Round-Trip Time)."/>
-                            <TextBlock TextWrapping="Wrap" FontFamily="Segoe UI" FontSize="11"
+                            <TextBlock TextWrapping="Wrap" FontFamily="Verdana" FontSize="11"
                                        Foreground="{DynamicResource TextMutedBrush}" Margin="0,8,0,0" LineHeight="17">
                                 🟢 &lt;30ms — Sehr gut&#x0a;🟡 30–100ms — Normal&#x0a;🔴 &gt;200ms — Langsam
                             </TextBlock>
@@ -98,12 +98,12 @@
                     </Border>
                     <Border Grid.Column="2" Background="{DynamicResource BgCardBrush}" CornerRadius="6" Padding="12,10">
                         <StackPanel>
-                            <TextBlock Text="📊 Jitter" FontFamily="Segoe UI" FontSize="13"
+                            <TextBlock Text="📊 Jitter" FontFamily="Verdana" FontSize="13"
                                        FontWeight="SemiBold" Foreground="{DynamicResource StatusWarningBrush}" Margin="0,0,0,6"/>
-                            <TextBlock TextWrapping="Wrap" FontFamily="Segoe UI" FontSize="12"
+                            <TextBlock TextWrapping="Wrap" FontFamily="Verdana" FontSize="12"
                                        Foreground="{DynamicResource TextSecondaryBrush}" LineHeight="18"
                                        Text="Schwankung des Pings. Hoher Jitter = unzuverlässige Verbindung, auch wenn der Durchschnitt gut ist."/>
-                            <TextBlock TextWrapping="Wrap" FontFamily="Segoe UI" FontSize="11"
+                            <TextBlock TextWrapping="Wrap" FontFamily="Verdana" FontSize="11"
                                        Foreground="{DynamicResource TextMutedBrush}" Margin="0,8,0,0" LineHeight="17">
                                 🟢 &lt;5ms — Stabil&#x0a;🟡 5–20ms — Leichte Schwankungen&#x0a;🔴 &gt;20ms — Instabil
                             </TextBlock>
@@ -117,12 +117,12 @@
                     </Border>
                     <Border Grid.Column="4" Background="{DynamicResource BgCardBrush}" CornerRadius="6" Padding="12,10">
                         <StackPanel>
-                            <TextBlock Text="📦 Packet Loss" FontFamily="Segoe UI" FontSize="13"
+                            <TextBlock Text="📦 Packet Loss" FontFamily="Verdana" FontSize="13"
                                        FontWeight="SemiBold" Foreground="{DynamicResource StatusOfflineBrush}" Margin="0,0,0,6"/>
-                            <TextBlock TextWrapping="Wrap" FontFamily="Segoe UI" FontSize="12"
+                            <TextBlock TextWrapping="Wrap" FontFamily="Verdana" FontSize="12"
                                        Foreground="{DynamicResource TextSecondaryBrush}" LineHeight="18"
                                        Text="Pakete ohne Antwort. Verursacht Ruckler, Abbrüche und Aussetzer."/>
-                            <TextBlock TextWrapping="Wrap" FontFamily="Segoe UI" FontSize="11"
+                            <TextBlock TextWrapping="Wrap" FontFamily="Verdana" FontSize="11"
                                        Foreground="{DynamicResource TextMutedBrush}" Margin="0,8,0,0" LineHeight="17">
                                 🟢 0% — Perfekt&#x0a;🟡 1–5% — Leichte Probleme&#x0a;🔴 &gt;5% — Ernsthafte Störung
                             </TextBlock>
@@ -148,10 +148,10 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Text="Gerät hinzufügen:" VerticalAlignment="Center"
-                               FontFamily="Segoe UI" FontSize="13"
+                               FontFamily="Verdana" FontSize="13"
                                Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,10,0"/>
                     <TextBox Grid.Column="1" x:Name="TxtAddIp"
-                             FontFamily="Cascadia Code, Consolas"
+                             FontFamily="Consolas"
                              KeyDown="TxtAddIp_KeyDown"/>
                     <Button Grid.Column="2" Content="+ Hinzufügen"
                             Style="{StaticResource SecondaryButton}" Margin="8,0,0,0"
@@ -169,7 +169,7 @@
                                Style="{StaticResource H2}" HorizontalAlignment="Center"
                                Foreground="{DynamicResource TextSecondaryBrush}"/>
                     <TextBlock Text="IP-Adresse oben eingeben oder Gerät aus dem Scan-Tab hinzufügen."
-                               FontFamily="Segoe UI" FontSize="13"
+                               FontFamily="Verdana" FontSize="13"
                                Foreground="{DynamicResource TextMutedBrush}"
                                HorizontalAlignment="Center" Margin="0,8,0,0"/>
                 </StackPanel>
@@ -198,11 +198,11 @@
                                                        VerticalAlignment="Center" Margin="0,0,8,0"/>
                                             <StackPanel>
                                                 <TextBlock Text="{Binding Device.DisplayName}"
-                                                           FontFamily="Segoe UI" FontSize="14"
+                                                           FontFamily="Verdana" FontSize="14"
                                                            FontWeight="SemiBold"
                                                            Foreground="{DynamicResource TextPrimaryBrush}"/>
                                                 <TextBlock Text="{Binding Device.IpAddress}"
-                                                           FontFamily="Cascadia Code, Consolas"
+                                                           FontFamily="Consolas"
                                                            FontSize="11.5"
                                                            Foreground="{DynamicResource AccentBrush}"/>
                                             </StackPanel>
@@ -223,11 +223,11 @@
                                                            Margin="0,0,0,2">PING</TextBlock>
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBlock Text="{Binding LastPing}"
-                                                               FontFamily="Cascadia Code, Consolas"
+                                                               FontFamily="Consolas"
                                                                FontSize="28" FontWeight="Light"
                                                                Foreground="{DynamicResource AccentBrush}"/>
                                                     <TextBlock Text=" ms" VerticalAlignment="Bottom"
-                                                               Margin="2,0,0,4" FontFamily="Segoe UI"
+                                                               Margin="2,0,0,4" FontFamily="Verdana"
                                                                FontSize="13"
                                                                Foreground="{DynamicResource TextSecondaryBrush}"/>
                                                 </StackPanel>
@@ -239,7 +239,7 @@
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBlock Text="{Binding JitterIcon}" FontSize="12"
                                                                VerticalAlignment="Center" Margin="0,0,4,0"/>
-                                                    <TextBlock FontFamily="Cascadia Code, Consolas"
+                                                    <TextBlock FontFamily="Consolas"
                                                                FontSize="16"
                                                                Foreground="{DynamicResource TextPrimaryBrush}">
                                                         <Run Text="{Binding Jitter, StringFormat={}{0:F1}}"/>
@@ -263,7 +263,7 @@
                                                        HorizontalAlignment="Center" Margin="0,0,0,2"
                                                        ToolTip="Niedrigster gemessener Ping-Wert seit Start des Monitors.">
                                                 MIN</TextBlock>
-                                            <TextBlock FontFamily="Cascadia Code, Consolas" FontSize="14"
+                                            <TextBlock FontFamily="Consolas" FontSize="14"
                                                        HorizontalAlignment="Center"
                                                        Foreground="{DynamicResource StatusOnlineBrush}">
                                                 <Run Text="{Binding MinPing}"/><Run Text="ms" FontSize="11"/>
@@ -274,7 +274,7 @@
                                                        HorizontalAlignment="Center" Margin="0,0,0,2"
                                                        ToolTip="Durchschnittlicher Ping über alle bisherigen Messungen. Aussagekräftiger als ein einzelner Messwert.">
                                                 AVG</TextBlock>
-                                            <TextBlock FontFamily="Cascadia Code, Consolas" FontSize="14"
+                                            <TextBlock FontFamily="Consolas" FontSize="14"
                                                        HorizontalAlignment="Center"
                                                        Foreground="{DynamicResource AccentBrush}">
                                                 <Run Text="{Binding AvgPing, StringFormat={}{0:F0}}"/><Run Text="ms" FontSize="11"/>
@@ -285,7 +285,7 @@
                                                        HorizontalAlignment="Center" Margin="0,0,0,2"
                                                        ToolTip="Höchster gemessener Ping-Wert. Gibt an wie schlecht die Verbindung im schlimmsten Fall war.">
                                                 MAX</TextBlock>
-                                            <TextBlock FontFamily="Cascadia Code, Consolas" FontSize="14"
+                                            <TextBlock FontFamily="Consolas" FontSize="14"
                                                        HorizontalAlignment="Center"
                                                        Foreground="{DynamicResource StatusWarningBrush}">
                                                 <Run Text="{Binding MaxPing}"/><Run Text="ms" FontSize="11"/>
@@ -309,12 +309,12 @@
                                                                Style="{StaticResource Label}"/>
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                                    <TextBlock FontFamily="Cascadia Code, Consolas" FontSize="13"
+                                                    <TextBlock FontFamily="Consolas" FontSize="13"
                                                                Foreground="{DynamicResource StatusOfflineBrush}">
                                                         <Run Text="{Binding PacketLoss, StringFormat={}{0:F1}}"/>
                                                         <Run Text="%"/>
                                                     </TextBlock>
-                                                    <TextBlock FontFamily="Segoe UI" FontSize="11"
+                                                    <TextBlock FontFamily="Verdana" FontSize="11"
                                                                Foreground="{DynamicResource TextMutedBrush}"
                                                                VerticalAlignment="Center" Margin="6,0,0,0">
                                                         <Run Text="("/>
@@ -346,17 +346,17 @@
                                                              VerticalAlignment="Center" Margin="0,0,4,0"/>
                                                     <TextBlock Text="Ping" FontSize="10"
                                                                Foreground="{DynamicResource AccentBrush}"
-                                                               VerticalAlignment="Center" FontFamily="Segoe UI"/>
+                                                               VerticalAlignment="Center" FontFamily="Verdana"/>
                                                     <Ellipse Width="7" Height="7"
                                                              Fill="{DynamicResource StatusWarningBrush}"
                                                              VerticalAlignment="Center" Margin="10,0,4,0"/>
                                                     <TextBlock Text="Jitter" FontSize="10"
                                                                Foreground="{DynamicResource StatusWarningBrush}"
-                                                               VerticalAlignment="Center" FontFamily="Segoe UI"/>
+                                                               VerticalAlignment="Center" FontFamily="Verdana"/>
                                                 </StackPanel>
                                                 <TextBlock HorizontalAlignment="Right" FontSize="10"
                                                            Foreground="{DynamicResource TextMutedBrush}"
-                                                           VerticalAlignment="Center" FontFamily="Segoe UI">
+                                                           VerticalAlignment="Center" FontFamily="Verdana">
                                                     <Run Text="{Binding PingHistory.Count, Mode=OneWay}"/>
                                                     <Run Text=" Messpunkte"/>
                                                 </TextBlock>
@@ -373,7 +373,7 @@
                                     </Border>
 
                                     <!-- Pings counter -->
-                                    <TextBlock Margin="0,8,0,0" FontFamily="Segoe UI" FontSize="11"
+                                    <TextBlock Margin="0,8,0,0" FontFamily="Verdana" FontSize="11"
                                                Foreground="{DynamicResource TextMutedBrush}"
                                                HorizontalAlignment="Right">
                                         <Run Text="{Binding TotalPings}"/>

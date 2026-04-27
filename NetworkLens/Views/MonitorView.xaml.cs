@@ -266,7 +266,7 @@ public partial class MonitorView : UserControl
             {
                 Text = $"{val:F0}ms", FontSize = large ? 10 : 9,
                 Foreground = new SolidColorBrush(Color.FromArgb(0x77, 0xFF, 0xFF, 0xFF)),
-                FontFamily = new FontFamily("Segoe UI")
+                FontFamily = new FontFamily("Verdana")
             };
             Canvas.SetLeft(lbl, 3); Canvas.SetTop(lbl, y + 1);
             canvas.Children.Add(lbl);
@@ -293,14 +293,14 @@ public partial class MonitorView : UserControl
         {
             Points = new PointCollection(pPts) { new Point(w, h), new Point(0, h) },
             Fill = new LinearGradientBrush(
-                Color.FromArgb(0x55, 0x00, 0xB4, 0xD8),
-                Color.FromArgb(0x05, 0x00, 0xB4, 0xD8),
+                Color.FromArgb(0x55, 0xE8, 0x60, 0x0A),
+                Color.FromArgb(0x05, 0xE8, 0x60, 0x0A),
                 new Point(0, 0), new Point(0, 1))
         });
         canvas.Children.Add(new Polyline
         {
             Points = pPts,
-            Stroke = new SolidColorBrush(Color.FromRgb(0x00, 0xB4, 0xD8)),
+            Stroke = new SolidColorBrush(Color.FromRgb(0xE8, 0x60, 0x0A)),
             StrokeThickness = large ? 2 : 1.8,
             StrokeLineJoin = PenLineJoin.Round
         });
@@ -310,7 +310,7 @@ public partial class MonitorView : UserControl
             canvas.Children.Add(new Polyline
             {
                 Points = Pts(jitter, 0, jMax, w, h),
-                Stroke = new SolidColorBrush(Color.FromArgb(0xDD, 0xFF, 0xD6, 0x00)),
+                Stroke = new SolidColorBrush(Color.FromArgb(0xDD, 0xBA, 0x75, 0x17)),
                 StrokeThickness = large ? 1.5 : 1.2,
                 StrokeLineJoin = PenLineJoin.Round,
                 StrokeDashArray = new DoubleCollection { 4, 2 }
@@ -324,10 +324,10 @@ public partial class MonitorView : UserControl
             var dot = new Ellipse
             {
                 Width = r * 2, Height = r * 2,
-                Fill = new SolidColorBrush(Color.FromRgb(0x00, 0xB4, 0xD8)),
+                Fill = new SolidColorBrush(Color.FromRgb(0xE8, 0x60, 0x0A)),
                 Effect = new DropShadowEffect
                 {
-                    Color = Color.FromRgb(0x00, 0xB4, 0xD8),
+                    Color = Color.FromRgb(0xE8, 0x60, 0x0A),
                     BlurRadius = 8, ShadowDepth = 0, Opacity = 0.9
                 }
             };

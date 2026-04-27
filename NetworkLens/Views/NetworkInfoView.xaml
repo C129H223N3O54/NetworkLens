@@ -20,7 +20,7 @@
                     <TextBlock Text="Netzwerk-Info" Style="{StaticResource H1}"/>
                     <TextBlock Text="Lokale Adapter, IPs, DNS und aktive Verbindungen"
                                Margin="0,4,0,0" Foreground="{DynamicResource TextSecondaryBrush}"
-                               FontFamily="Segoe UI" FontSize="13"/>
+                               FontFamily="Verdana" FontSize="13"/>
                 </StackPanel>
                 <Button Grid.Column="1" Content="↺ Aktualisieren"
                         Style="{StaticResource SecondaryButton}" VerticalAlignment="Center"
@@ -47,13 +47,13 @@
                         <StackPanel>
                             <TextBlock Text="LOKALE IP" Style="{StaticResource Label}" Margin="0,0,0,8"/>
                             <TextBlock x:Name="TxtLocalIp" Text="—"
-                                       FontFamily="Cascadia Code, Consolas" FontSize="18"
+                                       FontFamily="Consolas" FontSize="18"
                                        Foreground="{DynamicResource AccentBrush}" FontWeight="Light"/>
                             <TextBlock x:Name="TxtSubnetMask" Text="Maske: —" Margin="0,4,0,0"
-                                       FontFamily="Segoe UI" FontSize="11.5"
+                                       FontFamily="Verdana" FontSize="11.5"
                                        Foreground="{DynamicResource TextSecondaryBrush}"/>
                             <TextBlock x:Name="TxtDhcp" Text="DHCP" Margin="0,2,0,0"
-                                       FontFamily="Segoe UI" FontSize="11"
+                                       FontFamily="Verdana" FontSize="11"
                                        Foreground="{DynamicResource TextMutedBrush}"/>
                         </StackPanel>
                     </Border>
@@ -63,10 +63,10 @@
                         <StackPanel>
                             <TextBlock Text="GATEWAY" Style="{StaticResource Label}" Margin="0,0,0,8"/>
                             <TextBlock x:Name="TxtGateway" Text="—"
-                                       FontFamily="Cascadia Code, Consolas" FontSize="18"
+                                       FontFamily="Consolas" FontSize="18"
                                        Foreground="{DynamicResource AccentBrush}" FontWeight="Light"/>
                             <TextBlock x:Name="TxtGatewayPing" Text="Ping: —" Margin="0,4,0,0"
-                                       FontFamily="Segoe UI" FontSize="11.5"
+                                       FontFamily="Verdana" FontSize="11.5"
                                        Foreground="{DynamicResource TextSecondaryBrush}"/>
                         </StackPanel>
                     </Border>
@@ -76,7 +76,7 @@
                         <StackPanel>
                             <TextBlock Text="ÖFFENTLICHE IP" Style="{StaticResource Label}" Margin="0,0,0,8"/>
                             <TextBlock x:Name="TxtPublicIp" Text="Wird geladen…"
-                                       FontFamily="Cascadia Code, Consolas" FontSize="18"
+                                       FontFamily="Consolas" FontSize="18"
                                        Foreground="{DynamicResource AccentBrush}" FontWeight="Light"/>
                             <Button x:Name="BtnCopyPublicIp" Content="Kopieren"
                                     Style="{StaticResource SecondaryButton}"
@@ -103,7 +103,7 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding}"
-                                                   FontFamily="Cascadia Code, Consolas" FontSize="13"
+                                                   FontFamily="Consolas" FontSize="13"
                                                    Foreground="{DynamicResource AccentBrush}"
                                                    Margin="0,2"/>
                                     </DataTemplate>
@@ -111,7 +111,7 @@
                             </ItemsControl>
                             <TextBlock x:Name="TxtNoDns" Text="Keine DNS-Server gefunden"
                                        Foreground="{DynamicResource TextMutedBrush}"
-                                       FontFamily="Segoe UI" FontSize="12" Visibility="Collapsed"/>
+                                       FontFamily="Verdana" FontSize="12" Visibility="Collapsed"/>
                         </StackPanel>
                     </Border>
 
@@ -123,15 +123,15 @@
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
                                     <Ellipse Width="8" Height="8" Fill="{DynamicResource StatusOnlineBrush}"
                                              VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                    <TextBlock Text="Verbunden" FontFamily="Segoe UI" FontSize="12"
+                                    <TextBlock Text="Verbunden" FontFamily="Verdana" FontSize="12"
                                                Foreground="{DynamicResource StatusOnlineBrush}"/>
                                 </StackPanel>
                                 <TextBlock Text="SSID" Style="{StaticResource Label}" Margin="0,6,0,3"/>
                                 <TextBlock x:Name="TxtSsid" Text="—"
-                                           FontFamily="Segoe UI" FontSize="16" FontWeight="SemiBold"
+                                           FontFamily="Verdana" FontSize="16" FontWeight="SemiBold"
                                            Foreground="{DynamicResource TextPrimaryBrush}"/>
                                 <TextBlock x:Name="TxtWlanAdapter" Text="—" Margin="0,4,0,0"
-                                           FontFamily="Segoe UI" FontSize="11.5"
+                                           FontFamily="Verdana" FontSize="11.5"
                                            Foreground="{DynamicResource TextSecondaryBrush}"/>
                             </StackPanel>
                             <StackPanel x:Name="NoWlanPanel">
@@ -139,11 +139,11 @@
                                     <Ellipse Width="8" Height="8" Fill="{DynamicResource TextMutedBrush}"
                                              VerticalAlignment="Center" Margin="0,0,8,0"/>
                                     <TextBlock Text="Kein WLAN verbunden"
-                                               FontFamily="Segoe UI" FontSize="12"
+                                               FontFamily="Verdana" FontSize="12"
                                                Foreground="{DynamicResource TextSecondaryBrush}"/>
                                 </StackPanel>
                                 <TextBlock Text="Nur LAN-Verbindung erkannt" Margin="0,6,0,0"
-                                           FontFamily="Segoe UI" FontSize="11.5"
+                                           FontFamily="Verdana" FontSize="11.5"
                                            Foreground="{DynamicResource TextMutedBrush}"/>
                             </StackPanel>
                         </StackPanel>
@@ -156,7 +156,7 @@
                         <Grid Margin="16,14,16,10">
                             <TextBlock Text="NETZWERK-ADAPTER" Style="{StaticResource Label}"/>
                             <TextBlock x:Name="TxtAdapterCount" HorizontalAlignment="Right"
-                                       FontFamily="Segoe UI" FontSize="11.5"
+                                       FontFamily="Verdana" FontSize="11.5"
                                        Foreground="{DynamicResource TextMutedBrush}"/>
                         </Grid>
                         <Border Height="1" Background="{DynamicResource BorderBrush}"/>
@@ -179,7 +179,7 @@
                                             </Border>
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                                 <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding Name}" FontFamily="Segoe UI"
+                                                    <TextBlock Text="{Binding Name}" FontFamily="Verdana"
                                                                FontWeight="SemiBold" FontSize="13"
                                                                Foreground="{DynamicResource TextPrimaryBrush}"/>
                                                     <Border Margin="8,0,0,0" CornerRadius="4" Padding="5,1"
@@ -188,24 +188,24 @@
                                                                    FontWeight="Bold" Foreground="{Binding StatusFg}"/>
                                                     </Border>
                                                 </StackPanel>
-                                                <TextBlock Margin="0,2,0,0" FontFamily="Segoe UI" FontSize="11.5"
+                                                <TextBlock Margin="0,2,0,0" FontFamily="Verdana" FontSize="11.5"
                                                            Foreground="{DynamicResource TextSecondaryBrush}">
                                                     <Run Text="{Binding IpAddress}"/>
                                                     <Run Text=" · "/>
                                                     <Run Text="{Binding MacAddress}"
-                                                         FontFamily="Cascadia Code, Consolas" FontSize="11"/>
+                                                         FontFamily="Consolas" FontSize="11"/>
                                                 </TextBlock>
                                                 <TextBlock Text="{Binding Description}" Margin="0,1,0,0"
-                                                           FontFamily="Segoe UI" FontSize="11"
+                                                           FontFamily="Verdana" FontSize="11"
                                                            Foreground="{DynamicResource TextMutedBrush}"/>
                                             </StackPanel>
                                             <StackPanel Grid.Column="2" VerticalAlignment="Center"
                                                         HorizontalAlignment="Right">
-                                                <TextBlock Text="{Binding SpeedText}" FontFamily="Segoe UI"
+                                                <TextBlock Text="{Binding SpeedText}" FontFamily="Verdana"
                                                            FontSize="13" FontWeight="SemiBold"
                                                            Foreground="{DynamicResource AccentBrush}"
                                                            HorizontalAlignment="Right"/>
-                                                <TextBlock Text="{Binding AdapterType}" FontFamily="Segoe UI"
+                                                <TextBlock Text="{Binding AdapterType}" FontFamily="Verdana"
                                                            FontSize="11" Foreground="{DynamicResource TextMutedBrush}"
                                                            HorizontalAlignment="Right"/>
                                             </StackPanel>
@@ -244,7 +244,7 @@
                                 <DataGridTextColumn Header="Protokoll" Binding="{Binding Protocol}" Width="80">
                                     <DataGridTextColumn.ElementStyle>
                                         <Style TargetType="TextBlock">
-                                            <Setter Property="FontFamily" Value="Cascadia Code, Consolas"/>
+                                            <Setter Property="FontFamily" Value="Consolas"/>
                                             <Setter Property="FontSize" Value="12"/>
                                             <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
                                             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -254,7 +254,7 @@
                                 <DataGridTextColumn Header="Lokale Adresse" Binding="{Binding LocalAddress}" Width="180">
                                     <DataGridTextColumn.ElementStyle>
                                         <Style TargetType="TextBlock">
-                                            <Setter Property="FontFamily" Value="Cascadia Code, Consolas"/>
+                                            <Setter Property="FontFamily" Value="Consolas"/>
                                             <Setter Property="FontSize" Value="12"/>
                                             <Setter Property="VerticalAlignment" Value="Center"/>
                                         </Style>
@@ -263,7 +263,7 @@
                                 <DataGridTextColumn Header="Remote-Adresse" Binding="{Binding RemoteAddress}" Width="180">
                                     <DataGridTextColumn.ElementStyle>
                                         <Style TargetType="TextBlock">
-                                            <Setter Property="FontFamily" Value="Cascadia Code, Consolas"/>
+                                            <Setter Property="FontFamily" Value="Consolas"/>
                                             <Setter Property="FontSize" Value="12"/>
                                             <Setter Property="VerticalAlignment" Value="Center"/>
                                         </Style>

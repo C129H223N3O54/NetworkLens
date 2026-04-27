@@ -136,26 +136,26 @@ public class NetworkDevice : INotifyPropertyChanged
 
     [JsonIgnore] public Brush StatusColor => Status switch
     {
-        DeviceStatus.Online  => new SolidColorBrush(Color.FromRgb(0x00, 0xE6, 0x76)),
-        DeviceStatus.Slow    => new SolidColorBrush(Color.FromRgb(0xFF, 0xD6, 0x00)),
-        DeviceStatus.Offline => new SolidColorBrush(Color.FromRgb(0xFF, 0x17, 0x44)),
+        DeviceStatus.Online  => new SolidColorBrush(Color.FromRgb(0x74, 0xA7, 0x32)),
+        DeviceStatus.Slow    => new SolidColorBrush(Color.FromRgb(0xBA, 0x75, 0x17)),
+        DeviceStatus.Offline => new SolidColorBrush(Color.FromRgb(0xDC, 0x26, 0x26)),
         _                    => new SolidColorBrush(Color.FromRgb(0x4A, 0x55, 0x68))
     };
 
     [JsonIgnore] public Color StatusColorRaw => Status switch
     {
-        DeviceStatus.Online  => Color.FromRgb(0x00, 0xE6, 0x76),
-        DeviceStatus.Slow    => Color.FromRgb(0xFF, 0xD6, 0x00),
-        DeviceStatus.Offline => Color.FromRgb(0xFF, 0x17, 0x44),
+        DeviceStatus.Online  => Color.FromRgb(0x74, 0xA7, 0x32),
+        DeviceStatus.Slow    => Color.FromRgb(0xBA, 0x75, 0x17),
+        DeviceStatus.Offline => Color.FromRgb(0xDC, 0x26, 0x26),
         _                    => Color.FromRgb(0x4A, 0x55, 0x68)
     };
 
     [JsonIgnore] public Brush PingColor => ResponseTime switch
     {
         < 0    => new SolidColorBrush(Color.FromRgb(0x4A, 0x55, 0x68)),
-        < 50   => new SolidColorBrush(Color.FromRgb(0x00, 0xE6, 0x76)),
-        < 200  => new SolidColorBrush(Color.FromRgb(0xFF, 0xD6, 0x00)),
-        _      => new SolidColorBrush(Color.FromRgb(0xFF, 0x17, 0x44))
+        < 50   => new SolidColorBrush(Color.FromRgb(0x74, 0xA7, 0x32)),
+        < 200  => new SolidColorBrush(Color.FromRgb(0xBA, 0x75, 0x17)),
+        _      => new SolidColorBrush(Color.FromRgb(0xDC, 0x26, 0x26))
     };
 
     // For sorting

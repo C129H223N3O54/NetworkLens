@@ -19,7 +19,7 @@
                     <TextBlock Text="Report" Style="{StaticResource H1}"/>
                     <TextBlock Text="Scan-Ergebnisse exportieren und Verlauf vergleichen"
                                Margin="0,4,0,0" Foreground="{DynamicResource TextSecondaryBrush}"
-                               FontFamily="Segoe UI" FontSize="13"/>
+                               FontFamily="Verdana" FontSize="13"/>
                 </StackPanel>
             </Grid>
         </Border>
@@ -34,7 +34,7 @@
                                    Margin="0,0,0,16"/>
                         <TextBlock x:Name="TxtNoScan"
                                    Text="Noch kein Scan durchgeführt. Bitte zuerst einen Netzwerk-Scan starten."
-                                   FontFamily="Segoe UI" FontSize="13"
+                                   FontFamily="Verdana" FontSize="13"
                                    Foreground="{DynamicResource TextMutedBrush}"/>
 
                         <!-- Export buttons -->
@@ -58,7 +58,7 @@
                                     Click="BtnExportJson_Click">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="JSON" Margin="0,0,6,0"
-                                               FontFamily="Cascadia Code, Consolas" FontSize="12"/>
+                                               FontFamily="Consolas" FontSize="12"/>
                                     <TextBlock Text="JSON exportieren"/>
                                 </StackPanel>
                             </Button>
@@ -66,7 +66,7 @@
 
                         <!-- Last export info -->
                         <TextBlock x:Name="TxtLastExport" Margin="0,12,0,0"
-                                   FontFamily="Segoe UI" FontSize="11.5"
+                                   FontFamily="Verdana" FontSize="11.5"
                                    Foreground="{DynamicResource TextMutedBrush}"
                                    Visibility="Collapsed"/>
                     </StackPanel>
@@ -86,7 +86,7 @@
 
                         <TextBlock x:Name="TxtNoHistory"
                                    Text="Noch keine gespeicherten Scans."
-                                   FontFamily="Segoe UI" FontSize="13"
+                                   FontFamily="Verdana" FontSize="13"
                                    Foreground="{DynamicResource TextMutedBrush}"
                                    Margin="16,16"/>
 
@@ -99,7 +99,7 @@
                                 <DataGridTextColumn Header="Subnetz" Binding="{Binding Subnet}" Width="140">
                                     <DataGridTextColumn.ElementStyle>
                                         <Style TargetType="TextBlock">
-                                            <Setter Property="FontFamily" Value="Cascadia Code, Consolas"/>
+                                            <Setter Property="FontFamily" Value="Consolas"/>
                                             <Setter Property="FontSize" Value="12"/>
                                             <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
                                             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -164,7 +164,7 @@
                                                    Foreground="{DynamicResource StatusOnlineBrush}"/>
                                     </Border>
                                     <TextBlock Text="seit dem letzten Scan aufgetaucht" VerticalAlignment="Center"
-                                               FontFamily="Segoe UI" FontSize="12"
+                                               FontFamily="Verdana" FontSize="12"
                                                Foreground="{DynamicResource TextSecondaryBrush}"/>
                                 </StackPanel>
                                 <ItemsControl x:Name="NewDevList">
@@ -172,7 +172,7 @@
                                         <DataTemplate>
                                             <Border Background="#0A00E676" CornerRadius="5"
                                                     Padding="10,6" Margin="0,2">
-                                                <TextBlock FontFamily="Cascadia Code, Consolas" FontSize="12"
+                                                <TextBlock FontFamily="Consolas" FontSize="12"
                                                            Foreground="{DynamicResource StatusOnlineBrush}">
                                                     <Run Text="+ "/>
                                                     <Run Text="{Binding IpAddress}"/>
@@ -201,7 +201,7 @@
                                                    Foreground="{DynamicResource StatusOfflineBrush}"/>
                                     </Border>
                                     <TextBlock Text="nicht mehr im Netz" VerticalAlignment="Center"
-                                               FontFamily="Segoe UI" FontSize="12"
+                                               FontFamily="Verdana" FontSize="12"
                                                Foreground="{DynamicResource TextSecondaryBrush}"/>
                                 </StackPanel>
                                 <ItemsControl x:Name="GoneDevList">
@@ -209,7 +209,7 @@
                                         <DataTemplate>
                                             <Border Background="#0AFF1744" CornerRadius="5"
                                                     Padding="10,6" Margin="0,2">
-                                                <TextBlock FontFamily="Cascadia Code, Consolas" FontSize="12"
+                                                <TextBlock FontFamily="Consolas" FontSize="12"
                                                            Foreground="{DynamicResource StatusOfflineBrush}">
                                                     <Run Text="- "/>
                                                     <Run Text="{Binding IpAddress}"/>
@@ -227,7 +227,7 @@
                         <!-- No changes -->
                         <TextBlock x:Name="TxtNoDiff"
                                    Text="✓ Keine Änderungen zwischen den beiden Scans erkannt."
-                                   FontFamily="Segoe UI" FontSize="13"
+                                   FontFamily="Verdana" FontSize="13"
                                    Foreground="{DynamicResource StatusOnlineBrush}"
                                    Visibility="Collapsed"/>
                     </StackPanel>

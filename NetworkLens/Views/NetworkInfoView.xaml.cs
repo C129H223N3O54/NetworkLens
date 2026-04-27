@@ -251,10 +251,10 @@ public partial class NetworkInfoView : UserControl
                 StatusText  = isUp ? "AKTIV" : "INAKTIV",
                 Icon        = icon,
                 StatusBg    = isUp
-                    ? new SolidColorBrush(Color.FromArgb(0x20, 0x00, 0xE6, 0x76))
+                    ? new SolidColorBrush(Color.FromArgb(0x20, 0x74, 0xA7, 0x32))
                     : new SolidColorBrush(Color.FromArgb(0x18, 0x4A, 0x55, 0x68)),
                 StatusFg    = isUp
-                    ? new SolidColorBrush(Color.FromRgb(0x00, 0xE6, 0x76))
+                    ? new SolidColorBrush(Color.FromRgb(0x74, 0xA7, 0x32))
                     : new SolidColorBrush(Color.FromRgb(0x4A, 0x55, 0x68))
             });
         }

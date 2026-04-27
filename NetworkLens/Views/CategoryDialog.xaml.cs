@@ -46,11 +46,11 @@ public partial class CategoryDialog : Window
                 Margin = new Thickness(4),
                 CornerRadius = new CornerRadius(8),
                 Background = isSelected
-                    ? new SolidColorBrush(Color.FromArgb(0x33, 0x00, 0xB4, 0xD8))
+                    ? new SolidColorBrush(Color.FromArgb(0x33, 0xE8, 0x60, 0x0A))
                     : new SolidColorBrush(Color.FromRgb(0x1A, 0x1D, 0x21)),
                 BorderThickness = new Thickness(isSelected ? 1.5 : 1),
                 BorderBrush = isSelected
-                    ? new SolidColorBrush(Color.FromRgb(0x00, 0xB4, 0xD8))
+                    ? new SolidColorBrush(Color.FromRgb(0xE8, 0x60, 0x0A))
                     : new SolidColorBrush(Color.FromRgb(0x2D, 0x37, 0x48)),
                 Cursor = Cursors.Hand,
                 Tag = cat
@@ -72,7 +72,7 @@ public partial class CategoryDialog : Window
             {
                 Text              = label,
                 FontSize          = 11,
-                FontFamily        = new FontFamily("Segoe UI"),
+                FontFamily        = new FontFamily("Verdana"),
                 Foreground        = isSelected
                     ? new SolidColorBrush(Color.FromRgb(0xF0, 0xF2, 0xF5))
                     : new SolidColorBrush(Color.FromRgb(0x8A, 0x9B, 0xB0)),
@@ -103,10 +103,10 @@ public partial class CategoryDialog : Window
             if (b.Tag is not DeviceCategory cat) continue;
             bool selected = cat == SelectedCategory;
             b.Background = selected
-                ? new SolidColorBrush(Color.FromArgb(0x33, 0x00, 0xB4, 0xD8))
+                ? new SolidColorBrush(Color.FromArgb(0x33, 0xE8, 0x60, 0x0A))
                 : new SolidColorBrush(Color.FromRgb(0x1A, 0x1D, 0x21));
             b.BorderBrush = selected
-                ? new SolidColorBrush(Color.FromRgb(0x00, 0xB4, 0xD8))
+                ? new SolidColorBrush(Color.FromRgb(0xE8, 0x60, 0x0A))
                 : new SolidColorBrush(Color.FromRgb(0x2D, 0x37, 0x48));
             b.BorderThickness = new Thickness(selected ? 1.5 : 1);
 

@@ -23,29 +23,37 @@
 - Context menu, monitor, graph window follow theme
 - HTML report respects system theme automatically
 
+### v1.2.0 — Sideforge Design System
+- Migration to the [Sideforge](https://github.com/C129H223N3O54/SideForge) design language
+- Ember-orange primary accent (replaces Cyan)
+- Warm Anvil grayscale (replaces cool blue-gray)
+- SF-Logo + Sideforge wordmark in app header
+- Verdana for UI, Georgia italic for logo, Consolas for monospace
+- Light + Dark mode recalibrated for the Sideforge palette
+
 ---
 
 ## 🔜 Planned
 
-### v1.2.0 — Report & Export
+### v1.3.0 — Report & Export
 - [ ] Theme toggle button inside HTML report (Light/Dark in browser)
 - [ ] Embed current app theme into exported report
 - [ ] PDF export
 - [ ] Auto-open report after export
 
-### v1.3.0 — Scan Improvements
+### v1.4.0 — Scan Improvements
 - [ ] Save scan profiles (custom subnet/timeout combinations)
 - [ ] Scan multiple subnets simultaneously
 - [ ] Device history — track when a device was last seen online
 - [ ] Wake-on-LAN — wake devices via Magic Packet
 
-### v1.4.0 — Monitor Improvements
+### v1.5.0 — Monitor Improvements
 - [ ] Compare multiple devices in one graph simultaneously
 - [ ] Export graph as PNG/SVG
 - [ ] Threshold alerts — notify when ping exceeds X ms
 - [ ] Save monitor history across sessions
 
-### v1.5.0 — Network Info Enhancements
+### v1.6.0 — Network Info Enhancements
 - [ ] DHCP lease viewer — see which IPs are assigned
 - [ ] Simple network topology visualization
 - [ ] Basic bandwidth test to gateway

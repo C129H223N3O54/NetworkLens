@@ -12,14 +12,14 @@ public class PortResultUi : PortResult
 {
     public Brush StatusBgColor => Status switch
     {
-        PortStatus.Open     => new SolidColorBrush(Color.FromArgb(0x22, 0x00, 0xE6, 0x76)),
-        PortStatus.Filtered => new SolidColorBrush(Color.FromArgb(0x22, 0xFF, 0xD6, 0x00)),
+        PortStatus.Open     => new SolidColorBrush(Color.FromArgb(0x22, 0x74, 0xA7, 0x32)),
+        PortStatus.Filtered => new SolidColorBrush(Color.FromArgb(0x22, 0xBA, 0x75, 0x17)),
         _                   => new SolidColorBrush(Color.FromArgb(0x18, 0x4A, 0x55, 0x68))
     };
     public Color StatusColorRaw => Status switch
     {
-        PortStatus.Open     => Color.FromRgb(0x00, 0xE6, 0x76),
-        PortStatus.Filtered => Color.FromRgb(0xFF, 0xD6, 0x00),
+        PortStatus.Open     => Color.FromRgb(0x74, 0xA7, 0x32),
+        PortStatus.Filtered => Color.FromRgb(0xBA, 0x75, 0x17),
         _                   => Color.FromRgb(0x4A, 0x55, 0x68)
     };
 }

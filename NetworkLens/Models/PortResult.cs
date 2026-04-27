@@ -99,8 +99,8 @@ public class PortResult
     // UI helpers
     [JsonIgnore] public Brush StatusColor => Status switch
     {
-        PortStatus.Open     => new SolidColorBrush(Color.FromRgb(0x00, 0xE6, 0x76)),
-        PortStatus.Filtered => new SolidColorBrush(Color.FromRgb(0xFF, 0xD6, 0x00)),
+        PortStatus.Open     => new SolidColorBrush(Color.FromRgb(0x74, 0xA7, 0x32)),
+        PortStatus.Filtered => new SolidColorBrush(Color.FromRgb(0xBA, 0x75, 0x17)),
         PortStatus.Closed   => new SolidColorBrush(Color.FromRgb(0x4A, 0x55, 0x68)),
         _                   => new SolidColorBrush(Color.FromRgb(0x4A, 0x55, 0x68))
     };

@@ -69,9 +69,9 @@ public class ReportGenerator
         {
             var statusColor = d.Status switch
             {
-                DeviceStatus.Online  => "#00E676",
-                DeviceStatus.Slow    => "#FFD600",
-                DeviceStatus.Offline => "#FF1744",
+                DeviceStatus.Online  => "74A732",
+                DeviceStatus.Slow    => "BA7517",
+                DeviceStatus.Offline => "DC2626",
                 _                    => "#4A5568"
             };
             var portsHtml = d.OpenPorts.Count > 0
@@ -98,24 +98,26 @@ public class ReportGenerator
 <head>
 <meta charset=""UTF-8""/>
 <meta name=""viewport"" content=""width=device-width, initial-scale=1""/>
-<title>NetworkLens Report — {H(scan.Subnet)} — {scan.TimestampFormatted}</title>
+<title>Sideforge / NetworkLens Report — {H(scan.Subnet)} — {scan.TimestampFormatted}</title>
 <style>
 :root {{
-  --bg: #111416; --bg2: #1a1d21; --card: #22262c;
-  --accent: #00b4d8; --text: #f0f2f5; --text2: #8a9bb0; --muted: #4a5568;
-  --online: #00e676; --warn: #ffd600; --offline: #ff1744; --border: #2d3748;
-  --hover: #292e36;
+  /* Sideforge Dark - Anvil + Ember + Moss */
+  --bg: #0F0F0F; --bg2: #1A1A1A; --card: #1F1F1F;
+  --accent: #F07E2D; --text: #F5F5F5; --text2: #B4B2A9; --muted: #888780;
+  --online: #74A732; --warn: #BA7517; --offline: #DC2626; --border: #2C2C2A;
+  --hover: #2A1906;
 }}
 @media (prefers-color-scheme: light) {{
   :root {{
-    --bg: #f0f2f5; --bg2: #ffffff; --card: #f8f9fa;
-    --accent: #0077a8; --text: #1a1d21; --text2: #4a5568; --muted: #8a9bb0;
-    --online: #008a45; --warn: #b86e00; --offline: #cc0022; --border: #d1d9e0;
-    --hover: #e4e8ec;
+    /* Sideforge Light - Anvil off-white + Ember */
+    --bg: #FAFAF7; --bg2: #FFFFFF; --card: #F1EFE8;
+    --accent: #E8600A; --text: #1A1A1A; --text2: #5F5E5A; --muted: #888780;
+    --online: #639922; --warn: #BA7517; --offline: #991B1B; --border: #D3D1C7;
+    --hover: #FDD9BC;
   }}
 }}
 *{{box-sizing:border-box;margin:0;padding:0}}
-body{{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.5;padding:24px}}
+body{{background:var(--bg);color:var(--text);font-family:Verdana,sans-serif;font-size:14px;line-height:1.5;padding:24px}}
 h1{{font-size:28px;font-weight:300;color:var(--text);margin-bottom:4px}}
 h1 span{{color:var(--accent)}}
 .subtitle{{color:var(--text2);font-size:13px;margin-bottom:28px}}
@@ -142,7 +144,13 @@ footer{{margin-top:32px;text-align:center;color:var(--muted);font-size:12px}}
 </style>
 </head>
 <body>
-<h1>◈ NetworkLens <span>Report</span></h1>
+<div style=""display:flex;align-items:center;gap:12px;margin-bottom:8px"">
+  <div style=""width:40px;height:40px;border-radius:8px;background:#1A1A1A;position:relative;display:inline-block"">
+    <span style=""position:absolute;left:6px;top:50%;transform:translateY(-50%);font-family:Georgia;font-style:italic;font-weight:bold;font-size:24px;color:#E8600A"">S</span>
+    <span style=""position:absolute;right:6px;top:50%;transform:translateY(-50%);font-family:Georgia;font-style:italic;font-weight:bold;font-size:24px;color:#F5F5F5"">F</span>
+  </div>
+  <h1 style=""margin:0""><strong style=""font-weight:bold"">Side</strong><span>forge</span> <span style=""color:var(--muted);font-weight:300;font-size:18px"">/ NetworkLens Report</span></h1>
+</div>
 <div class=""subtitle"">Subnetz: {H(scan.Subnet)} · {scan.TimestampFormatted} · Scan-Dauer: {scan.DurationFormatted}</div>
 
 <div class=""stats"">

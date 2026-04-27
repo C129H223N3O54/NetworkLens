@@ -22,7 +22,7 @@
                     <TextBlock Text="Port-Scanner" Style="{StaticResource H1}"/>
                     <TextBlock Text="TCP Connect Scan — offene Ports und Dienste erkennen"
                                Margin="0,4,0,0" Foreground="{DynamicResource TextSecondaryBrush}"
-                               FontFamily="Segoe UI" FontSize="13"/>
+                               FontFamily="Verdana" FontSize="13"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                     <Button x:Name="BtnStop" Content="⏹ Stop" Style="{StaticResource SecondaryButton}"
@@ -49,13 +49,13 @@
                     </Grid.ColumnDefinitions>
 
                     <TextBlock Grid.Column="0" Text="Ziel-IP:" VerticalAlignment="Center"
-                               FontFamily="Segoe UI" FontSize="13"
+                               FontFamily="Verdana" FontSize="13"
                                Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,10,0"/>
                     <TextBox Grid.Column="1" x:Name="TxtTargetIp"
-                             FontFamily="Cascadia Code, Consolas" FontSize="13"/>
+                             FontFamily="Consolas" FontSize="13"/>
 
                     <TextBlock Grid.Column="3" Text="Profil:" VerticalAlignment="Center"
-                               FontFamily="Segoe UI" FontSize="13"
+                               FontFamily="Verdana" FontSize="13"
                                Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,10,0"/>
                     <ComboBox Grid.Column="4" x:Name="CmbProfile"
                               SelectionChanged="CmbProfile_SelectionChanged">
@@ -66,12 +66,12 @@
                     </ComboBox>
 
                     <TextBlock Grid.Column="6" Text="Ports:" VerticalAlignment="Center"
-                               FontFamily="Segoe UI" FontSize="13"
+                               FontFamily="Verdana" FontSize="13"
                                Foreground="{DynamicResource TextSecondaryBrush}"
                                Margin="20,0,10,0" x:Name="LblCustomPorts" Visibility="Collapsed"/>
                     <TextBox Grid.Column="7" x:Name="TxtCustomPorts"
                              Text="80,443,8080,22,3389" Visibility="Collapsed"
-                             FontFamily="Cascadia Code, Consolas" FontSize="12"
+                             FontFamily="Consolas" FontSize="12"
                              ToolTip="Kommagetrennt: 80,443 oder Bereich: 8000-8100"/>
                 </Grid>
             </Border>
@@ -88,14 +88,14 @@
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0" Margin="0,0,0,8">
                     <TextBlock x:Name="TxtProgressLabel" Text="Scanne …"
-                               FontFamily="Segoe UI" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                               FontFamily="Verdana" Foreground="{DynamicResource TextSecondaryBrush}"/>
                     <TextBlock x:Name="TxtProgressPct" HorizontalAlignment="Right"
-                               FontFamily="Segoe UI" FontWeight="SemiBold"
+                               FontFamily="Verdana" FontWeight="SemiBold"
                                Foreground="{DynamicResource AccentBrush}"/>
                 </Grid>
                 <ProgressBar Grid.Row="1" x:Name="ScanProgress" Height="6" Value="0" Maximum="100"/>
                 <TextBlock Grid.Row="2" x:Name="TxtProgressDetail" Margin="0,6,0,0"
-                           FontFamily="Segoe UI" FontSize="11.5"
+                           FontFamily="Verdana" FontSize="11.5"
                            Foreground="{DynamicResource TextMutedBrush}"/>
             </Grid>
         </Border>
@@ -113,7 +113,7 @@
                 <Grid Grid.Row="0" Margin="16,12">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock x:Name="TxtOpenCount" Text="—"
-                                   FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
+                                   FontFamily="Verdana" FontSize="13" FontWeight="SemiBold"
                                    Foreground="{DynamicResource TextPrimaryBrush}" VerticalAlignment="Center"/>
                         <!-- Filter pills -->
                         <Border x:Name="PillAll" Margin="12,0,0,0" CornerRadius="12" Padding="10,3"
@@ -146,11 +146,11 @@
                     <TextBlock Text="⬡" FontSize="48" Foreground="{DynamicResource TextMutedBrush}"
                                HorizontalAlignment="Center" Margin="0,0,0,12"/>
                     <TextBlock Text="Kein Port-Scan durchgeführt"
-                               FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold"
+                               FontFamily="Verdana" FontSize="14" FontWeight="SemiBold"
                                Foreground="{DynamicResource TextSecondaryBrush}"
                                HorizontalAlignment="Center"/>
                     <TextBlock Text="IP eingeben und Scan starten."
-                               FontFamily="Segoe UI" FontSize="12"
+                               FontFamily="Verdana" FontSize="12"
                                Foreground="{DynamicResource TextMutedBrush}"
                                HorizontalAlignment="Center" Margin="0,6,0,0"/>
                 </StackPanel>
@@ -175,7 +175,7 @@
                                            SortMemberPath="Port">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
-                                    <Setter Property="FontFamily" Value="Cascadia Code, Consolas"/>
+                                    <Setter Property="FontFamily" Value="Consolas"/>
                                     <Setter Property="FontSize" Value="13"/>
                                     <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
                                     <Setter Property="VerticalAlignment" Value="Center"/>
@@ -201,7 +201,7 @@
                         <DataGridTextColumn Header="Dienst" Binding="{Binding DisplayService}" Width="140">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
-                                    <Setter Property="FontFamily" Value="Segoe UI"/>
+                                    <Setter Property="FontFamily" Value="Verdana"/>
                                     <Setter Property="FontWeight" Value="SemiBold"/>
                                     <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
                                     <Setter Property="VerticalAlignment" Value="Center"/>
@@ -213,7 +213,7 @@
                         <DataGridTextColumn Header="Banner / Antwort" Binding="{Binding Banner}" Width="*">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
-                                    <Setter Property="FontFamily" Value="Cascadia Code, Consolas"/>
+                                    <Setter Property="FontFamily" Value="Consolas"/>
                                     <Setter Property="FontSize" Value="11.5"/>
                                     <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
                                     <Setter Property="VerticalAlignment" Value="Center"/>
