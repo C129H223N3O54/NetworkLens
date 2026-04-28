@@ -1,6 +1,7 @@
 <UserControl x:Class="NetworkLens.Views.NetworkInfoView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:NetworkLens.Localization"
              Background="{DynamicResource BgMainBrush}"
              Loaded="UserControl_Loaded">
     <Grid>
@@ -17,7 +18,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0">
-                    <TextBlock Text="Netzwerk-Info" Style="{StaticResource H1}"/>
+                    <TextBlock Text="{Binding [NetInfo_Title], Source={x:Static loc:LocalizationManager.Instance}}" Style="{StaticResource H1}"/>
                     <TextBlock Text="Lokale Adapter, IPs, DNS und aktive Verbindungen"
                                Margin="0,4,0,0" Foreground="{DynamicResource TextSecondaryBrush}"
                                FontFamily="Verdana" FontSize="13"/>

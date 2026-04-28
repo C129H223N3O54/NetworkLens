@@ -113,9 +113,14 @@ public partial class MonitorView : UserControl
 
     private void BtnWikiLink_Click(object sender, RoutedEventArgs e)
     {
-        if (sender is System.Windows.Controls.Button btn && btn.Tag is string url)
+        if (sender is System.Windows.Controls.Button btn && btn.Tag is string key)
+        {
+            var loc = Localization.LocalizationManager.Instance;
+            var slug = loc.T(key);
+            var url = loc.WikiPrefix + slug;
             System.Diagnostics.Process.Start(
                 new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
+        }
     }
 
     private void BtnShowInfo_Click(object sender, RoutedEventArgs e)

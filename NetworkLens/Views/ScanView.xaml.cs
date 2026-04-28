@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using NetworkLens.Localization;
 using NetworkLens.Models;
 using NetworkLens.ViewModels;
 
@@ -217,32 +218,33 @@ public partial class ScanView : UserControl
 
         void Sep() => menu.Items.Add(new Separator());
 
-        Add("Port-Scan",                    () => { if (Window.GetWindow(this) is MainWindow mw) mw.NavigateToPortScan(device); });
-        Add("In Monitor aufnehmen",         () => { if (Window.GetWindow(this) is MainWindow mw) mw.NavigateToMonitor(device); });
+        var L = LocalizationManager.Instance;
+        Add(L.T("Ctx_PortScan"), () => { if (Window.GetWindow(this) is MainWindow mw) mw.NavigateToPortScan(device); });
+        Add(L.T("Ctx_AddMonitor"), () => { if (Window.GetWindow(this) is MainWindow mw) mw.NavigateToMonitor(device); });
         Sep();
-        Add("Alias setzen...",              async () => {
+        Add(L.T("Ctx_SetAlias"), async () => {
             var dlg = new AliasDialog(device.Alias ?? "", device.DisplayName) { Owner = Window.GetWindow(this) };
             if (dlg.ShowDialog() == true) { device.Alias = dlg.AliasText; await new Services.DeviceManager().SaveDeviceAsync(device); }
         });
-        Add("Kategorie...",                 () => {
+        Add(L.T("Ctx_SetCategory"), () => {
             var dlg = new CategoryDialog(device.Category) { Owner = Window.GetWindow(this) };
             if (dlg.ShowDialog() == true) { device.Category = dlg.SelectedCategory; _ = new Services.DeviceManager().SaveDeviceAsync(device); }
         });
-        Add("Favorit umschalten",           async () => { device.IsFavorite = !device.IsFavorite; await new Services.DeviceManager().SaveDeviceAsync(device); });
+        Add(L.T("Ctx_ToggleFav"), async () => { device.IsFavorite = !device.IsFavorite; await new Services.DeviceManager().SaveDeviceAsync(device); });
         Sep();
         // ── Öffnen mit ──
-        Add("HTTP im Browser öffnen",       () => OpenUrl($"http://{device.IpAddress}"));
-        Add("HTTPS im Browser öffnen",      () => OpenUrl($"https://{device.IpAddress}"));
-        Add("Im Explorer öffnen (Netzwerk)",() => OpenExplorer(device.IpAddress));
-        Add("FTP öffnen",                   () => OpenUrl($"ftp://{device.IpAddress}"));
-        Add("Telnet öffnen",                () => OpenTerminal($"telnet {device.IpAddress}"));
-        Add("SSH öffnen",                   () => OpenTerminal($"ssh {device.IpAddress}"));
-        Add("Ping (Terminal)",              () => OpenTerminal($"ping {device.IpAddress} -t"));
-        Add("Traceroute",                   () => OpenTerminal($"tracert {device.IpAddress}"));
-        Add("GeoLocate (Web)",              () => OpenUrl($"https://www.iplocation.net/?query={device.IpAddress}"));
+        Add(L.T("Ctx_OpenHttp"), () => OpenUrl($"http://{device.IpAddress}"));
+        Add(L.T("Ctx_OpenHttps"), () => OpenUrl($"https://{device.IpAddress}"));
+        Add(L.T("Ctx_OpenExplorer"), () => OpenExplorer(device.IpAddress));
+        Add(L.T("Ctx_OpenFtp"), () => OpenUrl($"ftp://{device.IpAddress}"));
+        Add(L.T("Ctx_OpenTelnet"), () => OpenTerminal($"telnet {device.IpAddress}"));
+        Add(L.T("Ctx_OpenSsh"), () => OpenTerminal($"ssh {device.IpAddress}"));
+        Add(L.T("Ctx_Ping"), () => OpenTerminal($"ping {device.IpAddress} -t"));
+        Add(L.T("Ctx_Traceroute"), () => OpenTerminal($"tracert {device.IpAddress}"));
+        Add(L.T("Ctx_GeoLocate"), () => OpenUrl($"https://www.iplocation.net/?query={device.IpAddress}"));
         Sep();
-        Add("IP-Adresse kopieren",          () => Clipboard.SetText(device.IpAddress  ?? ""));
-        Add("MAC-Adresse kopieren",         () => Clipboard.SetText(device.MacAddress ?? ""));
+        Add(L.T("Ctx_CopyIP"), () => Clipboard.SetText(device.IpAddress  ?? ""));
+        Add(L.T("Ctx_CopyMAC"), () => Clipboard.SetText(device.MacAddress ?? ""));
 
         menu.PlacementTarget = DeviceGrid;
         menu.IsOpen = true;

@@ -1,4 +1,4 @@
-// Build: 2026-04-27 21:11:38 (v1.2.1 polish)
+// Build: 2026-04-28 17:59:08 (v1.3.0 i18n)
 using System.IO;
 using System.Windows;
 using NetworkLens.ViewModels;
@@ -50,11 +50,15 @@ public partial class App : Application
         bool dark = Views.SettingsView.LoadThemePreference();
         ApplyTheme(dark);
 
+        // Detect / load language preference (auto-detect Windows lang on first start)
+        Localization.LocalizationManager.Instance.Language =
+            Localization.LocalizationManager.DetectInitialLanguage();
+
         DispatcherUnhandledException += (s, ex) =>
         {
             MessageBox.Show(
-                $"Ein unerwarteter Fehler ist aufgetreten:\n\n{ex.Exception.Message}",
-                "NetworkLens — Fehler",
+                $"{Localization.LocalizationManager.Instance.T("Err_Generic")}\n\n{ex.Exception.Message}",
+                Localization.LocalizationManager.Instance.T("Err_Title"),
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
             ex.Handled = true;

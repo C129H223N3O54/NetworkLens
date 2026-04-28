@@ -73,6 +73,7 @@ public partial class SettingsView : UserControl
         ChkAlertSound.IsChecked     = _settings.Alerts.PlaySound;
 
         UpdateThemeButtons();
+        UpdateLanguageButtons();
         _loading = false;
     }
 
@@ -167,6 +168,32 @@ public partial class SettingsView : UserControl
 
     private void BtnOpenAppData_Click(object sender, RoutedEventArgs e)
         => ExportHelper.OpenFolder(App.AppDataPath);
+
+    private void BtnLangDe_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        Localization.LocalizationManager.Instance.Language = "de";
+        Localization.LocalizationManager.Instance.SaveLanguage();
+        UpdateLanguageButtons();
+    }
+
+    private void BtnLangEn_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        Localization.LocalizationManager.Instance.Language = "en";
+        Localization.LocalizationManager.Instance.SaveLanguage();
+        UpdateLanguageButtons();
+    }
+
+    private void UpdateLanguageButtons()
+    {
+        bool isEn = Localization.LocalizationManager.Instance.Language == "en";
+
+        BtnLangDe.BorderBrush = isEn
+            ? new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0x88, 0x87, 0x80))
+            : new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0xE8, 0x60, 0x0A));
+        BtnLangEn.BorderBrush = isEn
+            ? new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0xE8, 0x60, 0x0A))
+            : new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0x88, 0x87, 0x80));
+    }
 
     private void BtnThemeDark_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {
