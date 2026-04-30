@@ -193,7 +193,7 @@ public class ScanViewModel : BaseViewModel
                     System.Windows.Application.Current.Dispatcher.Invoke(() =>
                     {
                         Progress = pct;
-                        ProgressDetail = string.Format(LocalizationManager.Instance.T("Scan_Progress"), checkedCount, totalHosts, onlineCount);
+                        ProgressDetail = string.Format(LocalizationManager.Instance.T("Scan_Progress"), done, total, online);
                     });
                 },
                 cancellationToken: _cts.Token
