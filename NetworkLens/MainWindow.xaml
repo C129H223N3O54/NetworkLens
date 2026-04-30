@@ -199,11 +199,11 @@
                                         BorderBrush="#33FFAB00" BorderThickness="1"
                                         CornerRadius="6" Padding="10,8" Margin="0,0,0,8">
                                     <StackPanel>
-                                        <TextBlock Text="⚠ Eingeschränkter Modus"
+                                        <TextBlock Text="{Binding [Adm_LimitedTitle], Source={x:Static loc:LocalizationManager.Instance}}"
                                                    FontSize="11" FontWeight="SemiBold"
                                                    Foreground="{DynamicResource StatusWarningBrush}"
                                                    TextWrapping="Wrap"/>
-                                        <TextBlock Text="Einige Features benötigen Admin-Rechte."
+                                        <TextBlock Text="{Binding [Adm_LimitedHint], Source={x:Static loc:LocalizationManager.Instance}}"
                                                    FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}"
                                                    TextWrapping="Wrap" Margin="0,3,0,6"/>
                                         <Button Content="Als Admin neu starten"
@@ -213,7 +213,7 @@
                                     </StackPanel>
                                 </Border>
 
-                                <TextBlock Text="Sideforge · NetworkLens v1.3.0" FontSize="10"
+                                <TextBlock Text="Sideforge · NetworkLens v1.3.5" FontSize="10"
                                            Foreground="{DynamicResource TextMutedBrush}"
                                            HorizontalAlignment="Center"/>
                             </StackPanel>
@@ -265,7 +265,7 @@
                     <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                         <Ellipse x:Name="StatusIndicator" Width="7" Height="7" Margin="0,0,7,0"
                                  Fill="{DynamicResource TextMutedBrush}"/>
-                        <TextBlock x:Name="StatusText" Text="Bereit"
+                        <TextBlock x:Name="StatusText" Text="{Binding [Footer_Ready], Source={x:Static loc:LocalizationManager.Instance}}"
                                    FontFamily="Verdana" FontSize="11.5"
                                    Foreground="{DynamicResource TextSecondaryBrush}"
                                    VerticalAlignment="Center"/>
@@ -273,7 +273,7 @@
 
                     <!-- Right: Stats -->
                     <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,16,0">
-                        <TextBlock x:Name="DeviceCount" Text="0 Geräte"
+                        <TextBlock x:Name="DeviceCount" Text="0"
                                    FontFamily="Verdana" FontSize="11.5"
                                    Foreground="{DynamicResource TextSecondaryBrush}"/>
                     </StackPanel>

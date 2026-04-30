@@ -15,7 +15,14 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         Loaded += MainWindow_Loaded;
+
+        // Refresh status bar text when language changes
+        Localization.LocalizationManager.Instance.LanguageChanged += (_, _) =>
+            Dispatcher.Invoke(() => UpdateStatusBar(_lastStatus, _lastDeviceCount));
     }
+
+    private string _lastStatus = "";
+    private int _lastDeviceCount = 0;
 
     private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
     {
@@ -155,7 +162,7 @@ public partial class MainWindow : Window
         catch (Exception ex)
         {
             MessageBox.Show($"Konnte nicht als Admin neu starten:\n{ex.Message}",
-                "Fehler", MessageBoxButton.OK, MessageBoxImage.Warning);
+                Localization.LocalizationManager.Instance.T("Msg_Error"), MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 
@@ -190,10 +197,13 @@ public partial class MainWindow : Window
     public void UpdateStatusBar(string status, int deviceCount = 0,
         string? duration = null, bool scanning = false)
     {
+        _lastStatus      = status;
+        _lastDeviceCount = deviceCount;
+
         Dispatcher.Invoke(() =>
         {
             StatusText.Text  = status;
-            DeviceCount.Text = deviceCount > 0 ? $"{deviceCount} Geräte" : "0 Geräte";
+            DeviceCount.Text = $"{deviceCount} {Localization.LocalizationManager.Instance.T("Footer_Devices")}";
 
             StatusIndicator.Fill = scanning
                 ? FindResource("AccentBrush") as System.Windows.Media.Brush

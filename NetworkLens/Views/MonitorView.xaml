@@ -264,7 +264,7 @@
                                         <StackPanel Grid.Column="1" HorizontalAlignment="Center">
                                             <TextBlock Style="{StaticResource Label}"
                                                        HorizontalAlignment="Center" Margin="0,0,0,2"
-                                                       ToolTip="Durchschnittlicher Ping über alle bisherigen Messungen. Aussagekräftiger als ein einzelner Messwert.">
+                                                       ToolTip="{Binding [Tip_AvgPingLong], Source={x:Static loc:LocalizationManager.Instance}}">
                                                 AVG</TextBlock>
                                             <TextBlock FontFamily="Consolas" FontSize="14"
                                                        HorizontalAlignment="Center"
@@ -275,7 +275,7 @@
                                         <StackPanel Grid.Column="2" HorizontalAlignment="Center">
                                             <TextBlock Style="{StaticResource Label}"
                                                        HorizontalAlignment="Center" Margin="0,0,0,2"
-                                                       ToolTip="Höchster gemessener Ping-Wert. Gibt an wie schlecht die Verbindung im schlimmsten Fall war.">
+                                                       ToolTip="{Binding [Tip_MaxPing], Source={x:Static loc:LocalizationManager.Instance}}">
                                                 MAX</TextBlock>
                                             <TextBlock FontFamily="Consolas" FontSize="14"
                                                        HorizontalAlignment="Center"

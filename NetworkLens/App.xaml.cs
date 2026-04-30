@@ -1,4 +1,4 @@
-// Build: 2026-04-28 17:59:08 (v1.3.0 i18n)
+// Build: 2026-04-30 19:07:36 (v1.3.5 bilingual reports)
 using System.IO;
 using System.Windows;
 using NetworkLens.ViewModels;
@@ -42,6 +42,9 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+
+        // Register code page encodings (for OEM CP 850 used by netstat etc.)
+        System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
         Directory.CreateDirectory(AppDataPath);
         Directory.CreateDirectory(ScansPath);

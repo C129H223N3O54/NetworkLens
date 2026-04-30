@@ -127,7 +127,7 @@ public partial class ScanView : UserControl
 
     private void UpdateResultCount()
     {
-        TxtResultCount.Text = $"{_vm.Devices.Count} Geräte gefunden";
+        TxtResultCount.Text = string.Format(Localization.LocalizationManager.Instance.T("Stat_DevicesFound"), _vm.Devices.Count);
     }
 
     private void UpdateMainWindowStatus()
@@ -283,7 +283,7 @@ public partial class ScanView : UserControl
                     () => ShowInfo("TTL", info, device.IpAddress));
             }
             catch { System.Windows.Application.Current.Dispatcher.Invoke(
-                    () => ShowInfo("TTL", "Fehler beim Abrufen", device.IpAddress)); }
+                    () => ShowInfo("TTL", Localization.LocalizationManager.Instance.T("Msg_TtlError"), device.IpAddress)); }
         });
     }
 

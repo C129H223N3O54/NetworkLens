@@ -8,9 +8,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>NetworkLens</AssemblyName>
     <RootNamespace>NetworkLens</RootNamespace>
-    <Version>1.3.0</Version>
-    <FileVersion>1.3.0.0</FileVersion>
-    <AssemblyVersion>1.3.0.0</AssemblyVersion>
+    <Version>1.3.5</Version>
+    <FileVersion>1.3.5.0</FileVersion>
+    <AssemblyVersion>1.3.5.0</AssemblyVersion>
     <Company>NetworkLens</Company>
     <Product>NetworkLens</Product>
     <Description>Portable network scanner and monitor for Windows</Description>
@@ -28,6 +28,10 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\oui.txt"/>
     <Resource Include="Resources\Icons\**\*" Condition="Exists('Resources\Icons')"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
   </ItemGroup>
 
 </Project>

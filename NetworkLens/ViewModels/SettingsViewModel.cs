@@ -1,3 +1,4 @@
+using NetworkLens.Localization;
 using System.Text.Json;
 using NetworkLens.Models;
 
@@ -52,8 +53,8 @@ public class SettingsViewModel : BaseViewModel
         }
         catch (Exception ex)
         {
-            System.Windows.MessageBox.Show($"Einstellungen konnten nicht gespeichert werden:\n{ex.Message}",
-                "Fehler", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
+            System.Windows.MessageBox.Show(string.Format(LocalizationManager.Instance.T("Msg_SettingsLoadError"), ex.Message),
+                LocalizationManager.Instance.T("Msg_Error"), System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
         }
     }
 

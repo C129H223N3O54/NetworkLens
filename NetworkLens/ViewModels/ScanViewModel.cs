@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
+using NetworkLens.Localization;
 using NetworkLens.Models;
 using NetworkLens.Services;
 using NetworkLens.ViewModels;
@@ -192,7 +193,7 @@ public class ScanViewModel : BaseViewModel
                     System.Windows.Application.Current.Dispatcher.Invoke(() =>
                     {
                         Progress = pct;
-                        ProgressDetail = $"{done} / {total} Hosts geprüft — {online} online";
+                        ProgressDetail = string.Format(LocalizationManager.Instance.T("Scan_Progress"), checkedCount, totalHosts, onlineCount);
                     });
                 },
                 cancellationToken: _cts.Token
@@ -217,7 +218,7 @@ public class ScanViewModel : BaseViewModel
             LastScanResult = scanResult;
             await SaveScanHistoryAsync(scanResult);
 
-            StatusText = $"Scan abgeschlossen — {Devices.Count} Geräte";
+            StatusText = string.Format(LocalizationManager.Instance.T("Stat_ScanComplete"), Devices.Count);
             ProgressLabel = "Scan abgeschlossen";
             Progress = 100;
         }
@@ -230,8 +231,8 @@ public class ScanViewModel : BaseViewModel
         }
         catch (Exception ex)
         {
-            StatusText = $"Fehler: {ex.Message}";
-            ProgressLabel = "Fehler beim Scan";
+            StatusText = string.Format(LocalizationManager.Instance.T("Stat_Error"), ex.Message);
+            ProgressLabel = LocalizationManager.Instance.T("Stat_ScanError");
         }
         finally
         {

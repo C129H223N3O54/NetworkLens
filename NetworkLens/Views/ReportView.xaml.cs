@@ -87,7 +87,8 @@ public partial class ReportView : UserControl
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Fehler beim Exportieren:\n{ex.Message}", "Fehler",
+            var L1 = Localization.LocalizationManager.Instance;
+            MessageBox.Show(string.Format(L1.T("Msg_ExportError"), ex.Message), L1.T("Msg_Error"),
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -105,7 +106,7 @@ public partial class ReportView : UserControl
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Fehler:\n{ex.Message}", "Fehler",
+            MessageBox.Show(string.Format(Localization.LocalizationManager.Instance.T("Msg_GenericError"), ex.Message), Localization.LocalizationManager.Instance.T("Msg_Error"),
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -122,7 +123,7 @@ public partial class ReportView : UserControl
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Fehler:\n{ex.Message}", "Fehler",
+            MessageBox.Show(string.Format(Localization.LocalizationManager.Instance.T("Msg_GenericError"), ex.Message), Localization.LocalizationManager.Instance.T("Msg_Error"),
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -143,7 +144,8 @@ public partial class ReportView : UserControl
 
         if (before == null || after == null)
         {
-            MessageBox.Show("Bitte zwei Scans auswählen.", "Vergleich",
+            var L2 = Localization.LocalizationManager.Instance;
+        MessageBox.Show(L2.T("Msg_SelectTwoScans"), L2.T("Msg_CompareTitle"),
                 MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
@@ -162,7 +164,7 @@ public partial class ReportView : UserControl
         if (diff.NewDevices.Count > 0)
         {
             NewDevSection.Visibility = Visibility.Visible;
-            TxtNewCount.Text = $"{diff.NewDevices.Count} neue Geräte";
+            TxtNewCount.Text = string.Format(Localization.LocalizationManager.Instance.T("Rpt_NewDevices"), diff.NewDevices.Count);
             NewDevList.ItemsSource = diff.NewDevices;
         }
         else

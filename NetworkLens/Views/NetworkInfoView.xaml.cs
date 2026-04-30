@@ -178,7 +178,7 @@ public partial class NetworkInfoView : UserControl
                 ? $"Ping: {reply.RoundtripTime} ms"
                 : "Ping: Keine Antwort";
         }
-        catch { TxtGatewayPing.Text = "Ping: Fehler"; }
+        catch { TxtGatewayPing.Text = Localization.LocalizationManager.Instance.T("Stat_PingError"); }
     }
 
     // ── Public IP ─────────────────────────────────
@@ -291,7 +291,9 @@ public partial class NetworkInfoView : UserControl
             {
                 RedirectStandardOutput = true,
                 UseShellExecute = false,
-                CreateNoWindow = true
+                CreateNoWindow = true,
+                StandardOutputEncoding = System.Text.Encoding.GetEncoding(
+                    System.Globalization.CultureInfo.CurrentCulture.TextInfo.OEMCodePage)
             };
 
             using var proc = Process.Start(psi);
@@ -312,6 +314,23 @@ public partial class NetworkInfoView : UserControl
             }
             catch { }
 
+            // Localized state -> normalized translation key
+            string LocalizeState(string s)
+            {
+                var L = Localization.LocalizationManager.Instance;
+                // Recognize German + English + various netstat variants
+                var u = s.ToUpperInvariant();
+                if (u.Contains("LISTEN") || u.Contains("ABH") || u == "ABHÖREN")
+                    return L.T("Conn_Listen");
+                if (u.Contains("ESTABLISHED") || u.Contains("HERGESTELLT") || u.Contains("VERBUNDEN"))
+                    return L.T("Conn_Established");
+                if (u.Contains("TIME_WAIT") || u.Contains("WARTEZEIT") || u.Contains("WARTET"))
+                    return L.T("Conn_TimeWait");
+                if (u.Contains("CLOSE_WAIT") || u.Contains("SCHLIESSWARTE") || u.Contains("SCHLIESST"))
+                    return L.T("Conn_CloseWait");
+                return s;
+            }
+
             foreach (var line in output.Split('\n'))
             {
                 var parts = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
@@ -323,7 +342,7 @@ public partial class NetworkInfoView : UserControl
 
                 if (parts[0] == "TCP" && parts.Length >= 5)
                 {
-                    state = parts[3];
+                    state = LocalizeState(parts[3]);
                     int.TryParse(parts[4], out pid);
                 }
                 else if (parts[0] == "UDP" && parts.Length >= 4)

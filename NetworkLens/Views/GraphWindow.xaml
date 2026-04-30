@@ -1,6 +1,7 @@
 <Window x:Class="NetworkLens.Views.GraphWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:NetworkLens.Localization"
         Title="NetworkLens — Graph"
         Width="700" Height="460"
         MinWidth="500" MinHeight="340"
@@ -193,7 +194,7 @@
             <!-- Bottom bar -->
             <Border Grid.Row="4" Background="{DynamicResource BgDeepBrush}" CornerRadius="0,0,10,10"
                     BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0">
-                <TextBlock Text="Fenster verschiebbar · Größe änderbar · Monitor läuft im Hintergrund weiter"
+                <TextBlock Text="{Binding [Graph_Hint], Source={x:Static loc:LocalizationManager.Instance}}"
                            FontFamily="Verdana" FontSize="11" Foreground="{DynamicResource TextMutedBrush}"
                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Border>

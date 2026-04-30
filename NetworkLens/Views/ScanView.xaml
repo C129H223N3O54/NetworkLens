@@ -19,13 +19,13 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0">
                     <TextBlock Text="{Binding [Scan_Title], Source={x:Static loc:LocalizationManager.Instance}}" Style="{StaticResource H1}"/>
-                    <TextBlock Text="Alle Geräte im lokalen Netzwerk erkennen" Margin="0,4,0,0"
+                    <TextBlock Text="{Binding [Scan_AllSubtitle], Source={x:Static loc:LocalizationManager.Instance}}" Margin="0,4,0,0"
                                Foreground="{DynamicResource TextSecondaryBrush}" FontFamily="Verdana" FontSize="13"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Button Content="⏹ Stop" Style="{StaticResource SecondaryButton}"
+                    <Button Content="{Binding [Scan_StopButton], Source={x:Static loc:LocalizationManager.Instance}}" Style="{StaticResource SecondaryButton}"
                             Margin="0,0,8,0" IsEnabled="False" x:Name="BtnStop" Click="BtnStop_Click"/>
-                    <Button Content="▶ Scan starten" Style="{StaticResource PrimaryButton}"
+                    <Button Content="{Binding [Scan_StartShort], Source={x:Static loc:LocalizationManager.Instance}}" Style="{StaticResource PrimaryButton}"
                             x:Name="BtnScan" Click="BtnScan_Click"/>
                 </StackPanel>
             </Grid>
@@ -45,18 +45,18 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Column="0" Text="Subnetz:" FontFamily="Verdana"
+                    <TextBlock Grid.Column="0" Text="{Binding [Scan_Subnet], Source={x:Static loc:LocalizationManager.Instance}}" FontFamily="Verdana"
                                Foreground="{DynamicResource TextSecondaryBrush}" FontSize="13"
                                VerticalAlignment="Center" Margin="0,0,10,0"/>
                     <TextBox Grid.Column="1" x:Name="TxtSubnet"
                              Text="192.168.1.0/24" FontFamily="Consolas, Courier New"/>
 
-                    <TextBlock Grid.Column="3" Text="Timeout:" FontFamily="Verdana"
+                    <TextBlock Grid.Column="3" Text="{Binding [Scan_Timeout], Source={x:Static loc:LocalizationManager.Instance}}" FontFamily="Verdana"
                                Foreground="{DynamicResource TextSecondaryBrush}" FontSize="13"
                                VerticalAlignment="Center" Margin="0,0,10,0"/>
                     <ComboBox Grid.Column="4" x:Name="CmbTimeout" SelectedIndex="1">
                         <ComboBoxItem Content="500ms (schnell)"/>
-                        <ComboBoxItem Content="1000ms (Standard)"/>
+                        <ComboBoxItem Content="{Binding [Scan_TimeoutDefault], Source={x:Static loc:LocalizationManager.Instance}}"/>
                         <ComboBoxItem Content="2000ms (langsam)"/>
                     </ComboBox>
 
@@ -93,7 +93,7 @@
                     </Grid>
                     <ProgressBar Grid.Row="1" x:Name="ScanProgress" Height="6" Value="0" Maximum="100"/>
                     <TextBlock Grid.Row="2" x:Name="ProgressDetail" Margin="0,6,0,0"
-                               Text="0 / 254 Hosts geprüft — 0 online"
+                               Text=""
                                FontFamily="Verdana" FontSize="11.5"
                                Foreground="{DynamicResource TextMutedBrush}"/>
                 </Grid>
@@ -104,12 +104,12 @@
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                     <TextBlock Text="◈" FontSize="56" Foreground="{DynamicResource TextMutedBrush}"
                                HorizontalAlignment="Center" Margin="0,0,0,16"/>
-                    <TextBlock Text="Kein Scan durchgeführt" Style="{StaticResource H2}"
+                    <TextBlock Text="{Binding [Scan_NoScanRun], Source={x:Static loc:LocalizationManager.Instance}}" Style="{StaticResource H2}"
                                HorizontalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}"/>
-                    <TextBlock Text="Klicke auf ▶ Scan starten um alle Geräte im Netzwerk zu finden."
+                    <TextBlock Text="{Binding [Scan_NoScanHint], Source={x:Static loc:LocalizationManager.Instance}}"
                                FontFamily="Verdana" FontSize="13" Foreground="{DynamicResource TextMutedBrush}"
                                HorizontalAlignment="Center" Margin="0,8,0,24"/>
-                    <Button Content="▶ Scan starten" Style="{StaticResource PrimaryButton}"
+                    <Button Content="{Binding [Scan_StartShort], Source={x:Static loc:LocalizationManager.Instance}}" Style="{StaticResource PrimaryButton}"
                             HorizontalAlignment="Center" Click="BtnScan_Click"/>
                 </StackPanel>
             </Border>
@@ -131,7 +131,7 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0" Orientation="Horizontal">
                             <TextBlock x:Name="TxtResultCount"
-                                       Text="0 Geräte gefunden" FontFamily="Verdana" FontSize="13"
+                                       Text="0" FontFamily="Verdana" FontSize="13"
                                        FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"
                                        VerticalAlignment="Center"/>
                             <Border x:Name="NewDeviceBadge" Margin="12,0,0,0"

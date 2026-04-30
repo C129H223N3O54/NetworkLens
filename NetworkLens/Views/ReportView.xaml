@@ -18,7 +18,7 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel>
                     <TextBlock Text="{Binding [Report_Title], Source={x:Static loc:LocalizationManager.Instance}}" Style="{StaticResource H1}"/>
-                    <TextBlock Text="Scan-Ergebnisse exportieren und Verlauf vergleichen"
+                    <TextBlock Text="{Binding [Report_FullSubtitle], Source={x:Static loc:LocalizationManager.Instance}}"
                                Margin="0,4,0,0" Foreground="{DynamicResource TextSecondaryBrush}"
                                FontFamily="Verdana" FontSize="13"/>
                 </StackPanel>
@@ -31,10 +31,10 @@
                 <!-- Export Card -->
                 <Border Style="{StaticResource CardBorder}" Margin="0,0,0,16">
                     <StackPanel>
-                        <TextBlock Text="AKTUELLEN SCAN EXPORTIEREN" Style="{StaticResource Label}"
+                        <TextBlock Text="{Binding [Report_ExportCurrent], Source={x:Static loc:LocalizationManager.Instance}}" Style="{StaticResource Label}"
                                    Margin="0,0,0,16"/>
                         <TextBlock x:Name="TxtNoScan"
-                                   Text="Noch kein Scan durchgeführt. Bitte zuerst einen Netzwerk-Scan starten."
+                                   Text="{Binding [Report_NoCurrentScan], Source={x:Static loc:LocalizationManager.Instance}}"
                                    FontFamily="Verdana" FontSize="13"
                                    Foreground="{DynamicResource TextMutedBrush}"/>
 
@@ -45,7 +45,7 @@
                                     Click="BtnExportHtml_Click">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="🌐" Margin="0,0,6,0"/>
-                                    <TextBlock Text="HTML-Report öffnen"/>
+                                    <TextBlock Text="{Binding [Rpt_OpenHtml], Source={x:Static loc:LocalizationManager.Instance}}"/>
                                 </StackPanel>
                             </Button>
                             <Button Style="{StaticResource SecondaryButton}" Margin="0,0,10,0"
@@ -77,8 +77,8 @@
                 <Border Style="{StaticResource CardBorder}" Margin="0,0,0,16" Padding="0">
                     <StackPanel>
                         <Grid Margin="16,14,16,12">
-                            <TextBlock Text="SCAN-VERLAUF" Style="{StaticResource Label}"/>
-                            <Button HorizontalAlignment="Right" Content="Verlauf löschen"
+                            <TextBlock Text="{Binding [Report_History], Source={x:Static loc:LocalizationManager.Instance}}" Style="{StaticResource Label}"/>
+                            <Button HorizontalAlignment="Right" Content="{Binding [Report_ClearHistory], Source={x:Static loc:LocalizationManager.Instance}}"
                                     Style="{StaticResource DangerButton}"
                                     Padding="8,4" FontSize="11"
                                     Click="BtnClearHistory_Click"/>
@@ -86,7 +86,7 @@
                         <Border Height="1" Background="{DynamicResource BorderBrush}"/>
 
                         <TextBlock x:Name="TxtNoHistory"
-                                   Text="Noch keine gespeicherten Scans."
+                                   Text="{Binding [Rpt_NoSavedScans], Source={x:Static loc:LocalizationManager.Instance}}"
                                    FontFamily="Verdana" FontSize="13"
                                    Foreground="{DynamicResource TextMutedBrush}"
                                    Margin="16,16"/>
@@ -96,8 +96,8 @@
                                   Visibility="Collapsed"
                                   SelectionChanged="HistoryGrid_SelectionChanged">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Datum/Zeit" Binding="{Binding TimestampFormatted}" Width="160"/>
-                                <DataGridTextColumn Header="Subnetz" Binding="{Binding Subnet}" Width="140">
+                                <DataGridTextColumn Header="{Binding [Report_DateTime], Source={x:Static loc:LocalizationManager.Instance}}" Binding="{Binding TimestampFormatted}" Width="160"/>
+                                <DataGridTextColumn Header="{Binding [Report_Subnet], Source={x:Static loc:LocalizationManager.Instance}}" Binding="{Binding Subnet}" Width="140">
                                     <DataGridTextColumn.ElementStyle>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="FontFamily" Value="Consolas"/>
@@ -107,9 +107,9 @@
                                         </Style>
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
-                                <DataGridTextColumn Header="Geräte" Binding="{Binding OnlineCount}" Width="80"/>
-                                <DataGridTextColumn Header="Dauer" Binding="{Binding DurationFormatted}" Width="80"/>
-                                <DataGridTextColumn Header="Hosts geprüft" Binding="{Binding TotalHostsScanned}" Width="110"/>
+                                <DataGridTextColumn Header="{Binding [Report_DeviceCount], Source={x:Static loc:LocalizationManager.Instance}}" Binding="{Binding OnlineCount}" Width="80"/>
+                                <DataGridTextColumn Header="{Binding [Report_Duration], Source={x:Static loc:LocalizationManager.Instance}}" Binding="{Binding DurationFormatted}" Width="80"/>
+                                <DataGridTextColumn Header="{Binding [Report_HostsChecked], Source={x:Static loc:LocalizationManager.Instance}}" Binding="{Binding TotalHostsScanned}" Width="110"/>
                             </DataGrid.Columns>
                         </DataGrid>
 
@@ -117,7 +117,7 @@
                         <Border x:Name="ComparePanel" Margin="16,12,16,16" Visibility="Collapsed">
                             <StackPanel>
                                 <Grid Margin="0,0,0,12">
-                                    <TextBlock Text="SCAN VERGLEICHEN" Style="{StaticResource Label}"/>
+                                    <TextBlock Text="{Binding [Report_Compare], Source={x:Static loc:LocalizationManager.Instance}}" Style="{StaticResource Label}"/>
                                     <Button HorizontalAlignment="Right" Content="🔄 Vergleichen"
                                             Style="{StaticResource SecondaryButton}"
                                             Padding="10,5" FontSize="12"
@@ -131,15 +131,37 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="0">
-                                        <TextBlock Text="VORHER" Style="{StaticResource Label}" Margin="0,0,0,6"/>
-                                        <ComboBox x:Name="CmbBefore" DisplayMemberPath="TimestampFormatted"/>
+                                        <TextBlock Text="{Binding [Report_Before], Source={x:Static loc:LocalizationManager.Instance}}" Style="{StaticResource Label}" Margin="0,0,0,6"/>
+                                        <ComboBox x:Name="CmbBefore">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="{Binding TimestampFormatted}" FontFamily="Consolas"/>
+                                                        <TextBlock Text=" — " Foreground="{DynamicResource TextMutedBrush}"/>
+                                                        <TextBlock Text="{Binding Subnet}" FontFamily="Consolas"
+                                                                   Foreground="{DynamicResource AccentBrush}"/>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
                                     </StackPanel>
                                     <TextBlock Grid.Column="1" Text="→" VerticalAlignment="Center"
                                                HorizontalAlignment="Center" FontSize="18"
                                                Foreground="{DynamicResource TextMutedBrush}"/>
                                     <StackPanel Grid.Column="2">
-                                        <TextBlock Text="NACHHER" Style="{StaticResource Label}" Margin="0,0,0,6"/>
-                                        <ComboBox x:Name="CmbAfter" DisplayMemberPath="TimestampFormatted"/>
+                                        <TextBlock Text="{Binding [Report_After], Source={x:Static loc:LocalizationManager.Instance}}" Style="{StaticResource Label}" Margin="0,0,0,6"/>
+                                        <ComboBox x:Name="CmbAfter">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="{Binding TimestampFormatted}" FontFamily="Consolas"/>
+                                                        <TextBlock Text=" — " Foreground="{DynamicResource TextMutedBrush}"/>
+                                                        <TextBlock Text="{Binding Subnet}" FontFamily="Consolas"
+                                                                   Foreground="{DynamicResource AccentBrush}"/>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
                                     </StackPanel>
                                 </Grid>
                             </StackPanel>
@@ -160,7 +182,7 @@
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                                     <Border CornerRadius="4" Padding="8,3" Margin="0,0,8,0"
                                             Background="#1A00E676" BorderBrush="#3300E676" BorderThickness="1">
-                                        <TextBlock x:Name="TxtNewCount" Text="0 neue Geräte"
+                                        <TextBlock x:Name="TxtNewCount" Text="0"
                                                    FontSize="11" FontWeight="Bold"
                                                    Foreground="{DynamicResource StatusOnlineBrush}"/>
                                     </Border>
@@ -227,7 +249,7 @@
 
                         <!-- No changes -->
                         <TextBlock x:Name="TxtNoDiff"
-                                   Text="✓ Keine Änderungen zwischen den beiden Scans erkannt."
+                                   Text="{Binding [Rpt_NoChanges], Source={x:Static loc:LocalizationManager.Instance}}"
                                    FontFamily="Verdana" FontSize="13"
                                    Foreground="{DynamicResource StatusOnlineBrush}"
                                    Visibility="Collapsed"/>

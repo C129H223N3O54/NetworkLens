@@ -11,7 +11,7 @@ public partial class AliasDialog : Window
     {
         InitializeComponent();
         TxtAlias.Text = currentAlias;
-        TxtDeviceName.Text = $"Gerät: {deviceName}";
+        TxtDeviceName.Text = $"{Localization.LocalizationManager.Instance.T("Dlg_Device")}: {deviceName}";
         Loaded += (_, _) =>
         {
             TxtAlias.Focus();

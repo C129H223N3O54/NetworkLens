@@ -130,12 +130,12 @@ public partial class SettingsView : UserControl
             var json = System.Text.Json.JsonSerializer.Serialize(
                 _settings, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
             System.IO.File.WriteAllText(App.ConfigPath, json);
-            MessageBox.Show("Einstellungen gespeichert.", "NetworkLens",
+            MessageBox.Show(Localization.LocalizationManager.Instance.T("Msg_SettingsSaved"), "NetworkLens",
                 MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Fehler beim Speichern:\n{ex.Message}", "Fehler",
+            MessageBox.Show(string.Format(Localization.LocalizationManager.Instance.T("Msg_SettingsSaveError"), ex.Message), Localization.LocalizationManager.Instance.T("Msg_Error"),
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }

@@ -21,14 +21,14 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel>
                     <TextBlock Text="{Binding [Port_Title], Source={x:Static loc:LocalizationManager.Instance}}" Style="{StaticResource H1}"/>
-                    <TextBlock Text="TCP Connect Scan — offene Ports und Dienste erkennen"
+                    <TextBlock Text="{Binding [Port_FullSubtitle], Source={x:Static loc:LocalizationManager.Instance}}"
                                Margin="0,4,0,0" Foreground="{DynamicResource TextSecondaryBrush}"
                                FontFamily="Verdana" FontSize="13"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Button x:Name="BtnStop" Content="⏹ Stop" Style="{StaticResource SecondaryButton}"
+                    <Button x:Name="BtnStop" Content="{Binding [Monitor_StopButton], Source={x:Static loc:LocalizationManager.Instance}}" Style="{StaticResource SecondaryButton}"
                             Margin="0,0,8,0" IsEnabled="False" Click="BtnStop_Click"/>
-                    <Button x:Name="BtnScan" Content="▶ Scan starten" Style="{StaticResource PrimaryButton}"
+                    <Button x:Name="BtnScan" Content="{Binding [Port_StartScan], Source={x:Static loc:LocalizationManager.Instance}}" Style="{StaticResource PrimaryButton}"
                             Click="BtnScan_Click"/>
                 </StackPanel>
             </Grid>
@@ -49,13 +49,13 @@
                         <ColumnDefinition Width="200"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Column="0" Text="Ziel-IP:" VerticalAlignment="Center"
+                    <TextBlock Grid.Column="0" Text="{Binding [Port_TargetIp], Source={x:Static loc:LocalizationManager.Instance}}" VerticalAlignment="Center"
                                FontFamily="Verdana" FontSize="13"
                                Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,10,0"/>
                     <TextBox Grid.Column="1" x:Name="TxtTargetIp"
                              FontFamily="Consolas" FontSize="13"/>
 
-                    <TextBlock Grid.Column="3" Text="Profil:" VerticalAlignment="Center"
+                    <TextBlock Grid.Column="3" Text="{Binding [Port_ProfileLabel], Source={x:Static loc:LocalizationManager.Instance}}" VerticalAlignment="Center"
                                FontFamily="Verdana" FontSize="13"
                                Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,10,0"/>
                     <ComboBox Grid.Column="4" x:Name="CmbProfile"
@@ -134,7 +134,7 @@
                                        Foreground="{DynamicResource StatusWarningBrush}"/>
                         </Border>
                     </StackPanel>
-                    <Button HorizontalAlignment="Right" Content="📋 Als Text kopieren"
+                    <Button HorizontalAlignment="Right" Content="{Binding [Port_CopyAsText], Source={x:Static loc:LocalizationManager.Instance}}"
                             Style="{StaticResource SecondaryButton}" Padding="10,5" FontSize="12"
                             Click="BtnCopyResults_Click"/>
                 </Grid>
@@ -146,11 +146,11 @@
                             VerticalAlignment="Center" HorizontalAlignment="Center">
                     <TextBlock Text="⬡" FontSize="48" Foreground="{DynamicResource TextMutedBrush}"
                                HorizontalAlignment="Center" Margin="0,0,0,12"/>
-                    <TextBlock Text="Kein Port-Scan durchgeführt"
+                    <TextBlock Text="{Binding [Port_NoPortScan], Source={x:Static loc:LocalizationManager.Instance}}"
                                FontFamily="Verdana" FontSize="14" FontWeight="SemiBold"
                                Foreground="{DynamicResource TextSecondaryBrush}"
                                HorizontalAlignment="Center"/>
-                    <TextBlock Text="IP eingeben und Scan starten."
+                    <TextBlock Text="{Binding [Port_NoPortScanHint], Source={x:Static loc:LocalizationManager.Instance}}"
                                FontFamily="Verdana" FontSize="12"
                                Foreground="{DynamicResource TextMutedBrush}"
                                HorizontalAlignment="Center" Margin="0,6,0,0"/>

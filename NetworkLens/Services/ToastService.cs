@@ -1,3 +1,4 @@
+using NetworkLens.Localization;
 using NetworkLens.Models;
 
 namespace NetworkLens.Services;
@@ -28,26 +29,26 @@ public sealed class ToastService : IDisposable
     public void AlertNewDevice(NetworkDevice device)
     {
         if (!_settings.Alerts.NewDeviceAlert) return;
-        Show("Unbekanntes Gerät",
+        Show(LocalizationManager.Instance.T("Toast_NewDeviceTitle"),
             $"{device.IpAddress}  {device.Hostname ?? ""}  {device.MacAddress ?? ""}");
     }
 
     public void AlertDeviceOffline(NetworkDevice device)
     {
         if (!_settings.Alerts.DeviceOfflineAlert) return;
-        Show("Gerät offline", $"{device.DisplayName} ({device.IpAddress})");
+        Show(LocalizationManager.Instance.T("Toast_OfflineTitle"), $"{device.DisplayName} ({device.IpAddress})");
     }
 
     public void AlertDeviceOnline(NetworkDevice device)
     {
         if (!_settings.Alerts.DeviceOnlineAlert) return;
-        Show("Gerät online", $"{device.DisplayName} ({device.IpAddress})");
+        Show(LocalizationManager.Instance.T("Toast_OnlineTitle"), $"{device.DisplayName} ({device.IpAddress})");
     }
 
     public void AlertNewPort(NetworkDevice device, PortResult port)
     {
         if (!_settings.Alerts.NewOpenPortAlert) return;
-        Show("Neuer offener Port",
+        Show(LocalizationManager.Instance.T("Toast_NewPortTitle"),
             $"{device.DisplayName}: Port {port.Port} ({port.DisplayService})");
     }
 

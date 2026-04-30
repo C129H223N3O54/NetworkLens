@@ -102,7 +102,8 @@ public partial class MonitorView : UserControl
     {
         if (_vm.Entries.Count == 0)
         {
-            MessageBox.Show("Bitte zuerst Geräte hinzufügen.", "Monitor",
+            var L = Localization.LocalizationManager.Instance;
+            MessageBox.Show(L.T("Msg_AddDevicesFirst"), L.T("Msg_MonitorTitle"),
                 MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }

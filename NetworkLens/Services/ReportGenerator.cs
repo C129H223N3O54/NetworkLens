@@ -19,7 +19,7 @@ public class ReportGenerator
     public async Task<string> GenerateCsvAsync(ScanResult scan, string outputPath)
     {
         var sb = new StringBuilder();
-        sb.AppendLine("IP-Adresse,Hostname,Alias,MAC-Adresse,Hersteller,Status,Ping (ms),Offene Ports,Kategorie,Zuletzt gesehen");
+        sb.AppendLine(NetworkLens.Localization.LocalizationManager.Instance.T("Csv_Header"));
 
         foreach (var d in scan.Devices.OrderBy(d => d.IpSort))
         {
@@ -60,6 +60,7 @@ public class ReportGenerator
 
     private static string BuildHtml(ScanResult scan, string initialTheme)
     {
+        var L = NetworkLens.Localization.LocalizationManager.Instance;
         var online = scan.Devices.Count(d => d.Status is DeviceStatus.Online or DeviceStatus.Slow);
         var offline = scan.Devices.Count(d => d.Status == DeviceStatus.Offline);
         var newDev = scan.Devices.Count(d => d.IsNew);
@@ -81,7 +82,7 @@ public class ReportGenerator
 
             rows.AppendLine($@"<tr class='device-row' data-search=""{H(d.IpAddress)} {H(d.Hostname)} {H(d.Alias)} {H(d.MacAddress)} {H(d.Manufacturer)}"">
   <td><span class='dot' style='background:{statusColor};box-shadow:0 0 6px {statusColor}88'></span></td>
-  <td><code>{H(d.IpAddress)}</code>{(d.IsNew ? " <span class='badge new'>NEU</span>" : "")}</td>
+  <td><code>{H(d.IpAddress)}</code>{(d.IsNew ? $" <span class='badge new'>{L.T("Rep_BadgeNew")}</span>" : "")}</td>
   <td>{H(d.Hostname)}</td>
   <td><em>{H(d.Alias)}</em></td>
   <td><code>{H(d.MacAddress)}</code></td>
@@ -94,11 +95,11 @@ public class ReportGenerator
         }
 
         return $@"<!DOCTYPE html>
-<html lang=""de"" data-theme=""{initialTheme}"">
+<html lang=""{L.Language}"" data-theme=""{initialTheme}"">
 <head>
 <meta charset=""UTF-8""/>
 <meta name=""viewport"" content=""width=device-width, initial-scale=1""/>
-<title>Sideforge / NetworkLens Report — {H(scan.Subnet)} — {scan.TimestampFormatted}</title>
+<title>Sideforge / NetworkLens {L.T("Rep_Title")} — {H(scan.Subnet)} — {scan.TimestampFormatted}</title>
 <style>
 :root[data-theme=""dark""] {{
   --bg: #0F0F0F; --bg2: #1A1A1A; --card: #1F1F1F;
@@ -122,10 +123,9 @@ h1 span{{color:var(--accent)}}
 .stat-val{{font-size:28px;font-weight:300;color:var(--accent)}}
 .stat-lbl{{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:4px}}
 .toolbar{{display:flex;gap:10px;margin-bottom:16px;align-items:center}}
-input[type=text]{{background:var(--bg2);border:1px solid var(--border);border-radius:5px;color:var(--text);padding:8px 12px 8px 32px;font-size:13px;width:280px;outline:none}}
+input[type=text]{{background:var(--bg2);border:1px solid var(--border);border-radius:5px;color:var(--text);padding:8px 30px 8px 12px;font-size:13px;width:280px;outline:none}}
 input[type=text]:focus{{border-color:var(--accent)}}
 .search-wrap{{position:relative;display:inline-block}}
-.search-icon{{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text2);font-size:14px;pointer-events:none}}
 .search-clear{{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:transparent;border:none;color:var(--text2);font-size:18px;cursor:pointer;width:22px;height:22px;border-radius:4px;padding:0;line-height:1;display:none}}
 .search-wrap.has-text .search-clear{{display:block}}
 .search-clear:hover{{background:var(--hover);color:var(--accent)}}
@@ -159,44 +159,43 @@ footer{{margin-top:32px;text-align:center;color:var(--muted);font-size:12px}}
     <span style=""position:absolute;left:6px;top:50%;transform:translateY(-50%);font-family:Georgia;font-style:italic;font-weight:bold;font-size:24px;color:#E8600A"">S</span>
     <span style=""position:absolute;right:6px;top:50%;transform:translateY(-50%);font-family:Georgia;font-style:italic;font-weight:bold;font-size:24px;color:#F5F5F5"">F</span>
   </div>
-  <h1 style=""margin:0""><strong style=""font-weight:bold"">Side</strong><span>forge</span> <span style=""color:var(--muted);font-weight:300;font-size:18px"">/ NetworkLens Report</span></h1>
+  <h1 style=""margin:0""><strong style=""font-weight:bold"">Side</strong><span>forge</span> <span style=""color:var(--muted);font-weight:300;font-size:18px"">/ NetworkLens {L.T("Rep_Title")}</span></h1>
 </div>
-<div class=""subtitle"">Subnetz: {H(scan.Subnet)} · {scan.TimestampFormatted} · Scan-Dauer: {scan.DurationFormatted}</div>
+<div class=""subtitle"">{L.T("Rep_SubnetLabel")}: {H(scan.Subnet)} · {scan.TimestampFormatted} · {L.T("Rep_Duration")}: {scan.DurationFormatted}</div>
 
 <div class=""stats"">
-  <div class=""stat""><div class=""stat-val"">{scan.Devices.Count}</div><div class=""stat-lbl"">Geräte gesamt</div></div>
-  <div class=""stat""><div class=""stat-val"" style=""color:var(--online)"">{online}</div><div class=""stat-lbl"">Online</div></div>
-  <div class=""stat""><div class=""stat-val"" style=""color:var(--offline)"">{offline}</div><div class=""stat-lbl"">Offline</div></div>
-  <div class=""stat""><div class=""stat-val"" style=""color:var(--warn)"">{newDev}</div><div class=""stat-lbl"">Neu erkannt</div></div>
-  <div class=""stat""><div class=""stat-val"">{scan.TotalHostsScanned}</div><div class=""stat-lbl"">Hosts geprüft</div></div>
+  <div class=""stat""><div class=""stat-val"">{scan.Devices.Count}</div><div class=""stat-lbl"">{L.T("Rep_StatTotal")}</div></div>
+  <div class=""stat""><div class=""stat-val"" style=""color:var(--online)"">{online}</div><div class=""stat-lbl"">{L.T("Rep_StatOnline")}</div></div>
+  <div class=""stat""><div class=""stat-val"" style=""color:var(--offline)"">{offline}</div><div class=""stat-lbl"">{L.T("Rep_StatOffline")}</div></div>
+  <div class=""stat""><div class=""stat-val"" style=""color:var(--warn)"">{newDev}</div><div class=""stat-lbl"">{L.T("Rep_StatNew")}</div></div>
+  <div class=""stat""><div class=""stat-val"">{scan.TotalHostsScanned}</div><div class=""stat-lbl"">{L.T("Rep_StatHosts")}</div></div>
 </div>
 
 <div class=""toolbar"">
   <div class=""search-wrap"">
-    <span class=""search-icon"">⌕</span>
-    <input type=""text"" id=""search"" placeholder=""Suchen (IP, Name, MAC ...)"" oninput=""filterTable(this.value)""/>
-    <button class=""search-clear"" onclick=""clearSearch()"" title=""Suche leeren"">×</button>
+    <input type=""text"" id=""search"" placeholder=""{L.T("Rep_SearchPlaceholder")}"" oninput=""filterTable(this.value)""/>
+    <button class=""search-clear"" onclick=""clearSearch()"" title=""{L.T("Rep_ClearSearch")}"">×</button>
   </div>
   <select onchange=""filterStatus(this.value)"">
-    <option value="""">Alle Status</option>
-    <option value=""Online"">Online</option>
-    <option value=""Offline"">Offline</option>
-    <option value=""Slow"">Langsam</option>
+    <option value="""">{L.T("Rep_AllStatus")}</option>
+    <option value=""Online"">{L.T("Rep_StatOnline")}</option>
+    <option value=""Offline"">{L.T("Rep_StatOffline")}</option>
+    <option value=""Slow"">{L.T("Rep_StatusSlow")}</option>
   </select>
-  <span style=""margin-left:auto;color:var(--text2);font-size:12px"" id=""rowcount"">{scan.Devices.Count} Einträge</span>
-  <button class=""theme-toggle"" onclick=""toggleTheme()"" title=""Theme wechseln"" id=""themeBtn"">◐ Theme</button>
+  <span style=""margin-left:auto;color:var(--text2);font-size:12px"" id=""rowcount"">{scan.Devices.Count} {L.T("Rep_RowCount")}</span>
+  <button class=""theme-toggle"" onclick=""toggleTheme()"" title=""{L.T("Rep_ThemeToggle")}"" id=""themeBtn"">◐ Theme</button>
 </div>
 
 <table id=""devtable"">
 <thead><tr>
-  <th>●</th><th onclick=""sortTable(1)"">IP ↕</th><th onclick=""sortTable(2)"">Hostname ↕</th>
-  <th>Alias</th><th>MAC</th><th>Hersteller</th><th onclick=""sortTable(6)"">Ping ↕</th>
-  <th>Ports</th><th>Kategorie</th><th onclick=""sortTable(9)"">Zuletzt gesehen ↕</th>
+  <th>●</th><th onclick=""sortTable(1)"">{L.T("Rep_ColIP")} ↕</th><th onclick=""sortTable(2)"">{L.T("Rep_ColHostname")} ↕</th>
+  <th>{L.T("Rep_ColAlias")}</th><th>{L.T("Rep_ColMAC")}</th><th>{L.T("Rep_ColManufacturer")}</th><th onclick=""sortTable(6)"">{L.T("Rep_ColPing")} ↕</th>
+  <th>{L.T("Rep_ColPorts")}</th><th>{L.T("Rep_ColCategory")}</th><th onclick=""sortTable(9)"">{L.T("Rep_ColLastSeen")} ↕</th>
 </tr></thead>
 <tbody id=""tbody"">{rows}</tbody>
 </table>
 
-<footer>Erstellt mit NetworkLens · {scan.TimestampFormatted}</footer>
+<footer>{L.T("Rep_Footer")} NetworkLens · {scan.TimestampFormatted}</footer>
 
 <script>
 let currentSearch='', currentStatus='';
@@ -231,7 +230,7 @@ function applyFilters(){{
     r.classList.toggle('hidden',!show);
     if(show)vis++;
   }});
-  document.getElementById('rowcount').textContent=vis+' Einträge';
+  document.getElementById('rowcount').textContent=vis+' {L.T("Rep_RowCount")}';
 }}
 function getColor(s){{return{{Online:'rgb(116, 167, 50)',Slow:'rgb(186, 117, 23)',Offline:'rgb(220, 38, 38)'}}[s]||''}}
 function sortTable(col){{

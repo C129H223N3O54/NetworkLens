@@ -126,29 +126,29 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="Ping-Timeout pro Host" Style="{StaticResource Label}"
+                                <TextBlock Text="{Binding [Set_PingTimeout], Source={x:Static loc:LocalizationManager.Instance}}" Style="{StaticResource Label}"
                                            Margin="0,0,0,6"/>
                                 <ComboBox x:Name="CmbScanTimeout" SelectedIndex="1">
-                                    <ComboBoxItem Content="500 ms"/>
-                                    <ComboBoxItem Content="1000 ms (Standard)"/>
-                                    <ComboBoxItem Content="2000 ms"/>
-                                    <ComboBoxItem Content="3000 ms"/>
+                                    <ComboBoxItem Content="{Binding [TO_500ms], Source={x:Static loc:LocalizationManager.Instance}}"/>
+                                    <ComboBoxItem Content="{Binding [TO_1000msDefault], Source={x:Static loc:LocalizationManager.Instance}}"/>
+                                    <ComboBoxItem Content="{Binding [TO_2000ms], Source={x:Static loc:LocalizationManager.Instance}}"/>
+                                    <ComboBoxItem Content="{Binding [TO_3000ms], Source={x:Static loc:LocalizationManager.Instance}}"/>
                                 </ComboBox>
-                                <TextBlock Text="Kürzere Timeouts = schnellere Scans, aber evtl. mehr Fehlalarme"
+                                <TextBlock Text="{Binding [Set_PingTimeoutHint], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="11"
                                            Foreground="{DynamicResource TextMutedBrush}" Margin="0,6,0,0"
                                            TextWrapping="Wrap"/>
                             </StackPanel>
                             <StackPanel Grid.Column="2">
-                                <TextBlock Text="Maximale parallele Threads" Style="{StaticResource Label}"
+                                <TextBlock Text="{Binding [Set_MaxThreads], Source={x:Static loc:LocalizationManager.Instance}}" Style="{StaticResource Label}"
                                            Margin="0,0,0,6"/>
                                 <ComboBox x:Name="CmbMaxThreads" SelectedIndex="1">
-                                    <ComboBoxItem Content="50"/>
-                                    <ComboBoxItem Content="100 (Standard)"/>
-                                    <ComboBoxItem Content="200"/>
-                                    <ComboBoxItem Content="500 (aggressiv)"/>
+                                    <ComboBoxItem Content="{Binding [Th_50], Source={x:Static loc:LocalizationManager.Instance}}"/>
+                                    <ComboBoxItem Content="{Binding [Th_100Default], Source={x:Static loc:LocalizationManager.Instance}}"/>
+                                    <ComboBoxItem Content="{Binding [Th_200], Source={x:Static loc:LocalizationManager.Instance}}"/>
+                                    <ComboBoxItem Content="{Binding [Th_500Aggressive], Source={x:Static loc:LocalizationManager.Instance}}"/>
                                 </ComboBox>
-                                <TextBlock Text="Mehr Threads = schnellerer Scan, aber höhere CPU-Last"
+                                <TextBlock Text="{Binding [Set_MaxThreadsHint], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="11"
                                            Foreground="{DynamicResource TextMutedBrush}" Margin="0,6,0,0"
                                            TextWrapping="Wrap"/>
@@ -164,20 +164,20 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="Port-Scan Timeout" Style="{StaticResource Label}"
+                                <TextBlock Text="{Binding [Set_PortTimeout], Source={x:Static loc:LocalizationManager.Instance}}" Style="{StaticResource Label}"
                                            Margin="0,0,0,6"/>
                                 <ComboBox x:Name="CmbPortTimeout" SelectedIndex="1">
-                                    <ComboBoxItem Content="200 ms"/>
-                                    <ComboBoxItem Content="500 ms (Standard)"/>
-                                    <ComboBoxItem Content="1000 ms"/>
-                                    <ComboBoxItem Content="2000 ms"/>
+                                    <ComboBoxItem Content="{Binding [TO_200ms], Source={x:Static loc:LocalizationManager.Instance}}"/>
+                                    <ComboBoxItem Content="{Binding [TO_500msDefault], Source={x:Static loc:LocalizationManager.Instance}}"/>
+                                    <ComboBoxItem Content="{Binding [TO_1000ms], Source={x:Static loc:LocalizationManager.Instance}}"/>
+                                    <ComboBoxItem Content="{Binding [TO_2000ms], Source={x:Static loc:LocalizationManager.Instance}}"/>
                                 </ComboBox>
                             </StackPanel>
                             <StackPanel Grid.Column="2">
-                                <TextBlock Text="Auto-Scan beim Start" Style="{StaticResource Label}"
+                                <TextBlock Text="{Binding [Set_AutoScanStart], Source={x:Static loc:LocalizationManager.Instance}}" Style="{StaticResource Label}"
                                            Margin="0,0,0,6"/>
                                 <CheckBox x:Name="ChkAutoScan"
-                                          Content="Netzwerk-Scan beim Programmstart ausführen"/>
+                                          Content="{Binding [Set_AutoScanHint], Source={x:Static loc:LocalizationManager.Instance}}"/>
                             </StackPanel>
                         </Grid>
                     </StackPanel>
@@ -195,15 +195,15 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="Standard-Intervall" Style="{StaticResource Label}"
+                                <TextBlock Text="{Binding [Set_DefaultInterval], Source={x:Static loc:LocalizationManager.Instance}}" Style="{StaticResource Label}"
                                            Margin="0,0,0,6"/>
                                 <ComboBox x:Name="CmbMonitorInterval" SelectedIndex="2">
-                                    <ComboBoxItem Content="1 Sekunde"/>
-                                    <ComboBoxItem Content="5 Sekunden"/>
-                                    <ComboBoxItem Content="10 Sekunden (Standard)"/>
-                                    <ComboBoxItem Content="30 Sekunden"/>
-                                    <ComboBoxItem Content="60 Sekunden"/>
-                                    <ComboBoxItem Content="Dauerhaft"/>
+                                    <ComboBoxItem Content="{Binding [Int_1Sec], Source={x:Static loc:LocalizationManager.Instance}}"/>
+                                    <ComboBoxItem Content="{Binding [Int_5Sec], Source={x:Static loc:LocalizationManager.Instance}}"/>
+                                    <ComboBoxItem Content="{Binding [Set_Interval10], Source={x:Static loc:LocalizationManager.Instance}}"/>
+                                    <ComboBoxItem Content="{Binding [Int_30Sec], Source={x:Static loc:LocalizationManager.Instance}}"/>
+                                    <ComboBoxItem Content="{Binding [Int_60Sec], Source={x:Static loc:LocalizationManager.Instance}}"/>
+                                    <ComboBoxItem Content="{Binding [Int_Continuous], Source={x:Static loc:LocalizationManager.Instance}}"/>
                                 </ComboBox>
                             </StackPanel>
                         </Grid>
@@ -216,19 +216,19 @@
                         <Grid Margin="0,0,0,16">
                             <TextBlock Text="{Binding [Section_Notify], Source={x:Static loc:LocalizationManager.Instance}}" Style="{StaticResource Label}"/>
                             <CheckBox x:Name="ChkNotifications" HorizontalAlignment="Right"
-                                      Content="Benachrichtigungen aktiv"/>
+                                      Content="{Binding [Set_NotifyEnabled], Source={x:Static loc:LocalizationManager.Instance}}"/>
                         </Grid>
                         <StackPanel x:Name="AlertPanel">
                             <CheckBox x:Name="ChkAlertNewDevice" Margin="0,0,0,10"
-                                      Content="⚠  Neues unbekanntes Gerät im Netzwerk erkannt"/>
+                                      Content="{Binding [Set_NotifyNewDevice], Source={x:Static loc:LocalizationManager.Instance}}"/>
                             <CheckBox x:Name="ChkAlertOffline" Margin="0,0,0,10"
-                                      Content="🔴 Überwachtes Gerät offline gegangen"/>
+                                      Content="{Binding [Set_NotifyOffline], Source={x:Static loc:LocalizationManager.Instance}}"/>
                             <CheckBox x:Name="ChkAlertOnline" Margin="0,0,0,10"
-                                      Content="🟢 Gerät wieder online gegangen"/>
+                                      Content="{Binding [Set_NotifyOnline], Source={x:Static loc:LocalizationManager.Instance}}"/>
                             <CheckBox x:Name="ChkAlertNewPort" Margin="0,0,0,10"
-                                      Content="⚡ Neuer offener Port erkannt"/>
+                                      Content="{Binding [Set_NotifyNewPort], Source={x:Static loc:LocalizationManager.Instance}}"/>
                             <CheckBox x:Name="ChkAlertSound"
-                                      Content="🔔 Sound bei Alert abspielen"/>
+                                      Content="{Binding [Set_NotifySound], Source={x:Static loc:LocalizationManager.Instance}}"/>
                         </StackPanel>
                     </StackPanel>
                 </Border>
@@ -250,7 +250,7 @@
                                     Style="{StaticResource SecondaryButton}"
                                     Click="BtnBrowseOutput_Click"/>
                         </Grid>
-                        <TextBlock Text="HTML-, CSV- und JSON-Reports werden hier gespeichert."
+                        <TextBlock Text="{Binding [Set_OutputHint], Source={x:Static loc:LocalizationManager.Instance}}"
                                    FontFamily="Verdana" FontSize="11"
                                    Foreground="{DynamicResource TextMutedBrush}" Margin="0,6,0,0"/>
                     </StackPanel>
@@ -266,7 +266,7 @@
                                     <ColumnDefinition Width="120"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="Konfiguration" FontFamily="Verdana" FontSize="12"
+                                <TextBlock Text="{Binding [Set_AppConfig], Source={x:Static loc:LocalizationManager.Instance}}" FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}"
                                            VerticalAlignment="Center"/>
                                 <TextBlock Grid.Column="1" x:Name="TxtPathConfig"
@@ -279,7 +279,7 @@
                                     <ColumnDefinition Width="120"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="Geräte-Daten" FontFamily="Verdana" FontSize="12"
+                                <TextBlock Text="{Binding [Set_AppDevices], Source={x:Static loc:LocalizationManager.Instance}}" FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}"
                                            VerticalAlignment="Center"/>
                                 <TextBlock Grid.Column="1" x:Name="TxtPathDevices"
@@ -292,7 +292,7 @@
                                     <ColumnDefinition Width="120"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="Scan-Verlauf" FontFamily="Verdana" FontSize="12"
+                                <TextBlock Text="{Binding [Set_AppScans], Source={x:Static loc:LocalizationManager.Instance}}" FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}"
                                            VerticalAlignment="Center"/>
                                 <TextBlock Grid.Column="1" x:Name="TxtPathScans"
@@ -343,7 +343,7 @@
                                                VerticalAlignment="Center" Margin="6,2,0,0"/>
                                 </StackPanel>
                                 <TextBlock x:Name="TxtVersion"
-                                           Text="v1.3.0 — .NET 8 / WPF / Windows x64"
+                                           Text="v1.3.5 — .NET 8 / WPF / Windows x64"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource AccentBrush}" Margin="0,2,0,0"/>
                             </StackPanel>
@@ -425,14 +425,134 @@
                     <StackPanel>
                         <TextBlock Text="{Binding [Section_Changelog], Source={x:Static loc:LocalizationManager.Instance}}" Style="{StaticResource Label}" Margin="0,0,0,16"/>
 
-                        <!-- v1.3.0 -->
+                        <!-- v1.3.5 -->
                         <Expander Margin="0,0,0,8" IsExpanded="True">
                             <Expander.Header>
                                 <StackPanel Orientation="Horizontal">
-                                    <Border Background="{DynamicResource AccentBrush}" CornerRadius="4"
-                                            Padding="7,2" Margin="0,0,10,0" VerticalAlignment="Center">
-                                        <TextBlock Text="v1.3.0" FontSize="11" FontWeight="Bold"
+                                    <Border Background="{DynamicResource AccentBrush}"
+                                            CornerRadius="4" Padding="7,2" Margin="0,0,10,0" VerticalAlignment="Center">
+                                        <TextBlock Text="v1.3.5" FontSize="11" FontWeight="Bold"
                                                    Foreground="#FF000000" FontFamily="Consolas"/>
+                                    </Border>
+                                    <TextBlock Text="Final Translation Polish"
+                                               FontFamily="Verdana" FontSize="13" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextPrimaryBrush}"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Expander.Header>
+                            <StackPanel Margin="16,8,0,8">
+                                <TextBlock Text="• Category dialog fully localized (Title, header, Apply button)"
+                                           FontFamily="Verdana" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• Admin hint panel: 'Limited mode' + description translated"
+                                           FontFamily="Verdana" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• Monitor AVG tooltip and ScanView progress text translated"
+                                           FontFamily="Verdana" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• Report buttons: 'Open HTML report' and comparison status messages"
+                                           FontFamily="Verdana" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• 290 translation keys in Strings.cs"
+                                           FontFamily="Verdana" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                            </StackPanel>
+                        </Expander>
+
+                        <Border Height="1" Background="{DynamicResource BorderBrush}" Margin="0,4,0,8"/>
+
+                        <!-- v1.3.2 -->
+                        <Expander Margin="0,0,0,8" IsExpanded="False">
+                            <Expander.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Background="{DynamicResource BgDeepBrush}"
+                                            BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+                                            CornerRadius="4" Padding="7,2" Margin="0,0,10,0" VerticalAlignment="Center">
+                                        <TextBlock Text="v1.3.2" FontSize="11" FontWeight="Bold"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}" FontFamily="Consolas"/>
+                                    </Border>
+                                    <TextBlock Text="Full Translation Coverage"
+                                               FontFamily="Verdana" FontSize="13" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextPrimaryBrush}"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Expander.Header>
+                            <StackPanel Margin="16,8,0,8">
+                                <TextBlock Text="• All dialogs translated: Alias, Category, Graph window"
+                                           FontFamily="Verdana" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• All MessageBoxes (errors, confirmations, hints) translated"
+                                           FontFamily="Verdana" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• Status texts: 'X devices found', 'Scan complete', error messages"
+                                           FontFamily="Verdana" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• Toast notifications: titles and descriptions"
+                                           FontFamily="Verdana" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• Tooltips: MIN / AVG / MAX explanations"
+                                           FontFamily="Verdana" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• Notification checkboxes with icon prefix"
+                                           FontFamily="Verdana" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• 280+ translation keys in Strings.cs"
+                                           FontFamily="Verdana" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                            </StackPanel>
+                        </Expander>
+
+                        <Border Height="1" Background="{DynamicResource BorderBrush}" Margin="0,4,0,8"/>
+
+                        <!-- v1.3.1 -->
+                        <Expander Margin="0,0,0,8" IsExpanded="False">
+                            <Expander.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Background="{DynamicResource BgDeepBrush}"
+                                            BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+                                            CornerRadius="4" Padding="7,2" Margin="0,0,10,0" VerticalAlignment="Center">
+                                        <TextBlock Text="v1.3.1" FontSize="11" FontWeight="Bold"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}" FontFamily="Consolas"/>
+                                    </Border>
+                                    <TextBlock Text="Translation Coverage + Bugfixes"
+                                               FontFamily="Verdana" FontSize="13" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextPrimaryBrush}"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Expander.Header>
+                            <StackPanel Margin="16,8,0,8">
+                                <TextBlock Text="• 90+ additional translations: Scan, PortScan, NetworkInfo, Report, Settings"
+                                           FontFamily="Verdana" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• Column headers, buttons, hint texts, notification labels"
+                                           FontFamily="Verdana" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• Fix: 'ABHÖREN' encoding bug for active connections"
+                                           FontFamily="Verdana" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• Fix: Connection state language-aware (LISTEN, ESTABLISHED, ...)"
+                                           FontFamily="Verdana" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• Fix: Report compare dropdowns show date + subnet instead of class name"
+                                           FontFamily="Verdana" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="• Footer 'devices / Geräte' follows the language"
+                                           FontFamily="Verdana" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                            </StackPanel>
+                        </Expander>
+
+                        <Border Height="1" Background="{DynamicResource BorderBrush}" Margin="0,4,0,8"/>
+
+                        <!-- v1.3.0 -->
+                        <Expander Margin="0,0,0,8" IsExpanded="False">
+                            <Expander.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Background="{DynamicResource BgDeepBrush}"
+                                            BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+                                            CornerRadius="4" Padding="7,2" Margin="0,0,10,0" VerticalAlignment="Center">
+                                        <TextBlock Text="v1.3.0" FontSize="11" FontWeight="Bold"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}" FontFamily="Consolas"/>
                                     </Border>
                                     <TextBlock Text="Internationalization (DE / EN)"
                                                FontFamily="Verdana" FontSize="13" FontWeight="SemiBold"
@@ -441,19 +561,19 @@
                                 </StackPanel>
                             </Expander.Header>
                             <StackPanel Margin="16,8,0,8">
-                                <TextBlock Text="• Volle Mehrsprachigkeit: Deutsch und Englisch"
+                                <TextBlock Text="• Full multilingual support: German and English"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Auto-Erkennung der Windows-Systemsprache beim ersten Start"
+                                <TextBlock Text="• Auto-detect Windows system language on first start"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Live-Wechsel ohne Neustart"
+                                <TextBlock Text="• Live switch without restart"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Wikipedia-Links sprachabhängig (de / en)"
+                                <TextBlock Text="• Wikipedia links language-aware (de / en)"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Sprachwahl wird gespeichert (language.json)"
+                                <TextBlock Text="• Language preference saved (language.json)"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
                             </StackPanel>
@@ -469,8 +589,7 @@
                                             BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
                                             CornerRadius="4" Padding="7,2" Margin="0,0,10,0" VerticalAlignment="Center">
                                         <TextBlock Text="v1.2.1" FontSize="11" FontWeight="Bold"
-                                                   Foreground="{DynamicResource TextSecondaryBrush}"
-                                                   FontFamily="Consolas"/>
+                                                   Foreground="{DynamicResource TextSecondaryBrush}" FontFamily="Consolas"/>
                                     </Border>
                                     <TextBlock Text="Polish &amp; Bugfixes"
                                                FontFamily="Verdana" FontSize="13" FontWeight="SemiBold"
@@ -479,22 +598,22 @@
                                 </StackPanel>
                             </Expander.Header>
                             <StackPanel Margin="16,8,0,8">
-                                <TextBlock Text="• HTML Report folgt dem aktuellen App-Theme beim Export"
+                                <TextBlock Text="• HTML report follows the current app theme on export"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• HTML Report: Theme-Toggle-Button im Browser"
+                                <TextBlock Text="• HTML report: theme toggle button in the browser"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• HTML Report: Filter-Clear-Button (×) zum Leeren der Suche"
+                                <TextBlock Text="• HTML report: filter clear button (×) to empty the search"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Ember-Orange Scrollbars in App und Report"
+                                <TextBlock Text="• Ember-orange scrollbars in app and report"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Kontextmenü: einheitliche Ausrichtung ohne Emoji-Breitenprobleme"
+                                <TextBlock Text="• Context menu: consistent alignment without emoji width issues"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Such-Symbol auf Sideforge-konformes ⌕ umgestellt"
+                                <TextBlock Text="• Search symbol updated to Sideforge-conformant ⌕"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
                             </StackPanel>
@@ -506,10 +625,11 @@
                         <Expander Margin="0,0,0,8" IsExpanded="False">
                             <Expander.Header>
                                 <StackPanel Orientation="Horizontal">
-                                    <Border Background="{DynamicResource AccentBrush}" CornerRadius="4"
-                                            Padding="7,2" Margin="0,0,10,0" VerticalAlignment="Center">
+                                    <Border Background="{DynamicResource BgDeepBrush}"
+                                            BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+                                            CornerRadius="4" Padding="7,2" Margin="0,0,10,0" VerticalAlignment="Center">
                                         <TextBlock Text="v1.2.0" FontSize="11" FontWeight="Bold"
-                                                   Foreground="#FF000000" FontFamily="Consolas"/>
+                                                   Foreground="{DynamicResource TextSecondaryBrush}" FontFamily="Consolas"/>
                                     </Border>
                                     <TextBlock Text="Sideforge Design System"
                                                FontFamily="Verdana" FontSize="13" FontWeight="SemiBold"
@@ -518,22 +638,22 @@
                                 </StackPanel>
                             </Expander.Header>
                             <StackPanel Margin="16,8,0,8">
-                                <TextBlock Text="• Migration auf das Sideforge Design-System (Ember / Moss / Anvil)"
+                                <TextBlock Text="• Migration to the Sideforge design language"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Neue Akzentfarbe: Ember-Orange statt Cyan"
+                                <TextBlock Text="• Ember-orange primary accent (replaces Cyan)"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Warme Anvil-Grautöne ersetzen kühles Blaugrau"
+                                <TextBlock Text="• Warm Anvil grayscale (replaces cool blue-gray)"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• SF-Logo + Sideforge Wordmark im Header"
+                                <TextBlock Text="• SF logo + Sideforge wordmark in app header"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Schriftart: Verdana (UI), Georgia italic (Logo), Consolas (Mono)"
+                                <TextBlock Text="• Verdana for UI, Georgia italic for logo, Consolas for monospace"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Light + Dark Mode neu kalibriert für die Sideforge-Palette"
+                                <TextBlock Text="• Light + Dark mode recalibrated for the Sideforge palette"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
                             </StackPanel>
@@ -545,10 +665,11 @@
                         <Expander Margin="0,0,0,8" IsExpanded="False">
                             <Expander.Header>
                                 <StackPanel Orientation="Horizontal">
-                                    <Border Background="{DynamicResource AccentBrush}" CornerRadius="4"
-                                            Padding="7,2" Margin="0,0,10,0" VerticalAlignment="Center">
+                                    <Border Background="{DynamicResource BgDeepBrush}"
+                                            BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+                                            CornerRadius="4" Padding="7,2" Margin="0,0,10,0" VerticalAlignment="Center">
                                         <TextBlock Text="v1.1.0" FontSize="11" FontWeight="Bold"
-                                                   Foreground="#FF000000" FontFamily="Consolas"/>
+                                                   Foreground="{DynamicResource TextSecondaryBrush}" FontFamily="Consolas"/>
                                     </Border>
                                     <TextBlock Text="Light / Dark Theme"
                                                FontFamily="Verdana" FontSize="13" FontWeight="SemiBold"
@@ -557,19 +678,19 @@
                                 </StackPanel>
                             </Expander.Header>
                             <StackPanel Margin="16,8,0,8">
-                                <TextBlock Text="• Light Mode und Dark Mode Toggle in Einstellungen"
+                                <TextBlock Text="• Light Mode and Dark Mode toggle in Settings"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Theme wechselt sofort ohne Neustart"
+                                <TextBlock Text="• Theme switches instantly without restart"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Theme-Wahl wird gespeichert und beim Start geladen"
+                                <TextBlock Text="• Theme preference saved and restored on next launch"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Kontextmenü, Monitor, Graph-Fenster folgen dem Theme"
+                                <TextBlock Text="• Context menu, monitor, graph window follow theme"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• HTML Report erkennt System-Theme automatisch"
+                                <TextBlock Text="• HTML report respects system theme automatically"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
                             </StackPanel>
@@ -578,62 +699,44 @@
                         <Border Height="1" Background="{DynamicResource BorderBrush}" Margin="0,4,0,8"/>
 
                         <!-- v1.0.0 -->
-                        <Expander Margin="0,0,0,0" IsExpanded="False">
+                        <Expander Margin="0,0,0,8" IsExpanded="False">
                             <Expander.Header>
                                 <StackPanel Orientation="Horizontal">
                                     <Border Background="{DynamicResource BgDeepBrush}"
                                             BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
                                             CornerRadius="4" Padding="7,2" Margin="0,0,10,0" VerticalAlignment="Center">
                                         <TextBlock Text="v1.0.0" FontSize="11" FontWeight="Bold"
-                                                   Foreground="{DynamicResource TextSecondaryBrush}"
-                                                   FontFamily="Consolas"/>
+                                                   Foreground="{DynamicResource TextSecondaryBrush}" FontFamily="Consolas"/>
                                     </Border>
                                     <TextBlock Text="Initial Release"
                                                FontFamily="Verdana" FontSize="13" FontWeight="SemiBold"
                                                Foreground="{DynamicResource TextPrimaryBrush}"
                                                VerticalAlignment="Center"/>
-                                    <Border Background="#1A00E676" BorderBrush="#3300E676" BorderThickness="1"
-                                            CornerRadius="4" Padding="6,2" Margin="10,0,0,0" VerticalAlignment="Center">
-                                        <TextBlock Text="STABLE" FontSize="10" FontWeight="Bold"
-                                                   Foreground="{DynamicResource StatusOnlineBrush}"/>
-                                    </Border>
                                 </StackPanel>
                             </Expander.Header>
                             <StackPanel Margin="16,8,0,8">
-                                <TextBlock Text="• Netzwerk-Scan: Paralleler Ping-Sweep, Live-Ergebnisse, DNS, MAC, Hersteller"
+                                <TextBlock Text="• Network scan with live results, DNS, MAC, manufacturer detection"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Port-Scanner: Quick / Standard / Full / Custom Profile, Banner-Grabbing"
+                                <TextBlock Text="• Port scanner: Quick / Standard / Full / Custom profiles, banner grabbing"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Netzwerk-Info: IP, Gateway, DNS, WLAN-SSID, Adapter, netstat"
+                                <TextBlock Text="• Network info: IP, gateway, DNS, WLAN SSID, adapters, netstat"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Live-Monitor: Ping/Jitter Graph, Packet Loss, Doppelklick Vollbild"
+                                <TextBlock Text="• Live monitor: Ping/Jitter graph, Packet Loss counter, double-click fullscreen"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Intervalle: 1s / 5s / 10s / 30s / 60s / Dauerhaft"
+                                <TextBlock Text="• Device management: alias, category, favorites (persistent per MAC)"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Erklärungen: Ping, Jitter, Packet Loss mit Wikipedia-Links"
+                                <TextBlock Text="• Reports: HTML (interactive), CSV, JSON, scan comparison"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Geräte-Verwaltung: Alias, Kategorie, Favoriten (persistent per MAC)"
+                                <TextBlock Text="• Context menu: HTTP/HTTPS/FTP/SSH/Telnet/Traceroute/GeoLocate"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Reports: HTML (interaktiv), CSV, JSON, Scan-Vergleich"
-                                           FontFamily="Verdana" FontSize="12"
-                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Kontextmenü: HTTP/HTTPS/FTP/SSH/Telnet/Traceroute/GeoLocate"
-                                           FontFamily="Verdana" FontSize="12"
-                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Live-Ergebnisse während des Scans"
-                                           FontFamily="Verdana" FontSize="12"
-                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Auto-Subnetz-Erkennung beim Start"
-                                           FontFamily="Verdana" FontSize="12"
-                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Self-Contained .exe — kein .NET nötig, Self-Signed Certificate, MIT License"
+                                <TextBlock Text="• Self-contained .exe, MIT License"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
                             </StackPanel>
