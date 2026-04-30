@@ -476,5 +476,9 @@ internal static class Strings
         // ── CSV Header ───────────────────────────
         ["Csv_Header"]              = ("IP-Adresse,Hostname,Alias,MAC-Adresse,Hersteller,Status,Ping (ms),Offene Ports,Kategorie,Zuletzt gesehen",
                                        "IP Address,Hostname,Alias,MAC Address,Manufacturer,Status,Ping (ms),Open Ports,Category,Last Seen"),
+
+        // ── Monitor card footer ──────────────────
+        ["Mon_PingsSent"]           = ("Pings gesendet",                     "pings sent"),
+        ["Mon_Lost"]                = ("verloren",                           "lost"),
     };
 }

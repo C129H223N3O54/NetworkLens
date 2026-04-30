@@ -369,9 +369,9 @@
                                                Foreground="{DynamicResource TextMutedBrush}"
                                                HorizontalAlignment="Right">
                                         <Run Text="{Binding TotalPings}"/>
-                                        <Run Text=" Pings gesendet · "/>
+                                        <Run Text=" "/><Run Text="{Binding [Mon_PingsSent], Source={x:Static loc:LocalizationManager.Instance}, Mode=OneWay}"/><Run Text=" · "/>
                                         <Run Text="{Binding LostPings}"/>
-                                        <Run Text=" verloren"/>
+                                        <Run Text=" "/><Run Text="{Binding [Mon_Lost], Source={x:Static loc:LocalizationManager.Instance}, Mode=OneWay}"/>
                                     </TextBlock>
                                 </StackPanel>
                             </Border>
