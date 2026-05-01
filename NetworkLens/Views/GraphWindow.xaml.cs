@@ -36,7 +36,7 @@ public partial class GraphWindow : Window
         TxtMax.Text         = _entry.MaxPing.ToString();
         TxtLoss.Text        = $"{_entry.PacketLoss:F1}";
         TxtLossCount.Text   = $"{_entry.LostPings} / {_entry.TotalPings}";
-        TxtPointCount.Text  = $"{_entry.PingHistory.Count} Messpunkte";
+        TxtPointCount.Text  = $"{_entry.PingHistory.Count} {NetworkLens.Localization.LocalizationManager.Instance.T("Mon_DataPoints")}";
     }
 
     public void Redraw()

@@ -86,7 +86,7 @@ public partial class NetworkInfoView : UserControl
                     if (ip.StartsWith("169.254.")) continue;
 
                     TxtLocalIp.Text = ip;
-                    TxtSubnetMask.Text = $"Maske: {addr.IPv4Mask}";
+                    TxtSubnetMask.Text = $"{Localization.LocalizationManager.Instance.T("Net_MaskLabel")}: {addr.IPv4Mask}";
                     TxtDhcp.Text = addr.PrefixOrigin == PrefixOrigin.Dhcp ? "DHCP" : "Statisch";
 
                     // Gateway
@@ -176,7 +176,7 @@ public partial class NetworkInfoView : UserControl
             var reply = await ping.SendPingAsync(gw, 1000);
             TxtGatewayPing.Text = reply.Status == IPStatus.Success
                 ? $"Ping: {reply.RoundtripTime} ms"
-                : "Ping: Keine Antwort";
+                : Localization.LocalizationManager.Instance.T("Net_NoReply");
         }
         catch { TxtGatewayPing.Text = Localization.LocalizationManager.Instance.T("Stat_PingError"); }
     }
@@ -193,7 +193,7 @@ public partial class NetworkInfoView : UserControl
         }
         catch
         {
-            TxtPublicIp.Text = "Nicht verfügbar";
+            TxtPublicIp.Text = Localization.LocalizationManager.Instance.T("Net_Unavailable");
         }
     }
 
@@ -260,7 +260,7 @@ public partial class NetworkInfoView : UserControl
         }
 
         AdapterList.ItemsSource = adapters;
-        TxtAdapterCount.Text = $"{active} aktiv / {adapters.Count} gesamt";
+        TxtAdapterCount.Text = string.Format(Localization.LocalizationManager.Instance.T("Net_AdapterStatsFmt"), active, adapters.Count);
     }
 
     // ── Active Connections (netstat) ──────────────

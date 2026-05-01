@@ -213,7 +213,7 @@
                                     </StackPanel>
                                 </Border>
 
-                                <TextBlock Text="Sideforge · NetworkLens v1.3.5" FontSize="10"
+                                <TextBlock Text="Sideforge · NetworkLens v1.3.6" FontSize="10"
                                            Foreground="{DynamicResource TextMutedBrush}"
                                            HorizontalAlignment="Center"/>
                             </StackPanel>

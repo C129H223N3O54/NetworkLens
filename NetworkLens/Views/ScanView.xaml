@@ -55,9 +55,9 @@
                                Foreground="{DynamicResource TextSecondaryBrush}" FontSize="13"
                                VerticalAlignment="Center" Margin="0,0,10,0"/>
                     <ComboBox Grid.Column="4" x:Name="CmbTimeout" SelectedIndex="1">
-                        <ComboBoxItem Content="500ms (schnell)"/>
+                        <ComboBoxItem Content="{Binding [Scan_TimeoutFast], Source={x:Static loc:LocalizationManager.Instance}}"/>
                         <ComboBoxItem Content="{Binding [Scan_TimeoutDefault], Source={x:Static loc:LocalizationManager.Instance}}"/>
-                        <ComboBoxItem Content="2000ms (langsam)"/>
+                        <ComboBoxItem Content="{Binding [Scan_TimeoutSlow], Source={x:Static loc:LocalizationManager.Instance}}"/>
                     </ComboBox>
 
                     <Button Grid.Column="6" Content="{Binding [Scan_AutoDetect], Source={x:Static loc:LocalizationManager.Instance}}"

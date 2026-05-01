@@ -278,7 +278,7 @@ public partial class ScanView : UserControl
                 var reply = await ping.SendPingAsync(device.IpAddress!, 1000);
                 string info = reply.Status == System.Net.NetworkInformation.IPStatus.Success
                     ? $"TTL: {reply.Options?.Ttl ?? 0}\n\nTypischer Rückschluss:\n64  → Linux / macOS\n128 → Windows\n255 → Router / Switch"
-                    : "Keine Antwort erhalten";
+                    : Localization.LocalizationManager.Instance.T("Scan_NoReply");
                 System.Windows.Application.Current.Dispatcher.Invoke(
                     () => ShowInfo("TTL", info, device.IpAddress));
             }
@@ -293,12 +293,12 @@ public partial class ScanView : UserControl
                    $"Hostname:     {d.Hostname     ?? "—"}\n" +
                    $"Alias:        {d.Alias        ?? "—"}\n" +
                    $"MAC-Adresse:  {d.MacAddress   ?? "—"}\n" +
-                   $"Hersteller:   {d.Manufacturer ?? "—"}\n" +
+                   $"{Localization.LocalizationManager.Instance.T("Scan_DetailManufacturer")}:   {d.Manufacturer ?? "—"}\n" +
                    $"Ping:         {(d.ResponseTime >= 0 ? d.ResponseTime + " ms" : "—")}\n" +
                    $"Kategorie:    {d.Category}\n" +
                    $"Offene Ports: {d.OpenPortCount}\n" +
                    $"Zuletzt ges.: {d.LastSeen:dd.MM.yyyy HH:mm:ss}\n" +
-                   $"Neu erkannt:  {(d.IsNew ? "Ja" : "Nein")}";
+                   $"{Localization.LocalizationManager.Instance.T("Scan_DetailNewlyFound")}:  {(d.IsNew ? Localization.LocalizationManager.Instance.T("Scan_DetailYes") : Localization.LocalizationManager.Instance.T("Scan_DetailNo"))}";
         ShowInfo("Alle Details", info, d.IpAddress);
     }
 

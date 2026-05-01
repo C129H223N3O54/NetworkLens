@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using NetworkLens.Localization;
 using NetworkLens.Models;
 using NetworkLens.Services;
 
@@ -92,13 +93,13 @@ public class PortScanViewModel : BaseViewModel
                         Results.Add(result);
                         done++;
                         Progress = (int)((double)done / ports.Length * 100);
-                        StatusText = $"{done}/{ports.Length} Ports — {Results.Count(r => r.Status == PortStatus.Open)} offen";
+                        StatusText = string.Format(LocalizationManager.Instance.T("Port_ProgressFmt"), done, ports.Length, Results.Count(r => r.Status == PortStatus.Open));
                     });
                 },
                 cancellationToken: _cts.Token
             );
 
-            StatusText = $"Fertig — {Results.Count(r => r.Status == PortStatus.Open)} offene Ports";
+            StatusText = string.Format(LocalizationManager.Instance.T("Port_DoneFmt"), Results.Count(r => r.Status == PortStatus.Open));
         }
         catch (OperationCanceledException)
         {

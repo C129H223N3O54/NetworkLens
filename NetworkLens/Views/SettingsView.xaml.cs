@@ -142,8 +142,9 @@ public partial class SettingsView : UserControl
 
     private void BtnReset_Click(object sender, RoutedEventArgs e)
     {
-        var r = MessageBox.Show("Alle Einstellungen auf Standard zurücksetzen?",
-            "Zurücksetzen", MessageBoxButton.YesNo, MessageBoxImage.Question);
+        var L = Localization.LocalizationManager.Instance;
+        var r = MessageBox.Show(L.T("Set_ConfirmReset"),
+            L.T("Set_ResetTitle"), MessageBoxButton.YesNo, MessageBoxImage.Question);
         if (r != MessageBoxResult.Yes) return;
 
         _settings = new AppSettings();
@@ -155,8 +156,8 @@ public partial class SettingsView : UserControl
         // WPF-nativer Ordner-Dialog über SaveFileDialog-Trick
         var dlg = new Microsoft.Win32.SaveFileDialog
         {
-            Title            = "Ausgabe-Ordner für Reports wählen",
-            FileName         = "Ordner wählen",
+            Title            = Localization.LocalizationManager.Instance.T("Set_ChooseFolder"),
+            FileName         = Localization.LocalizationManager.Instance.T("Set_ChooseFolderShort"),
             Filter           = "Ordner|*.thisDoesNotExist",
             CheckFileExists  = false,
             CheckPathExists  = true,

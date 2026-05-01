@@ -134,7 +134,7 @@ public partial class PortScanView : UserControl
         int filtered = _vm.Results.Count(r => r.Status == PortStatus.Filtered);
         int total    = _vm.Results.Count;
         TxtOpenCount.Text = total > 0
-            ? $"{open} offen  ·  {filtered} gefiltert  ·  {total} geprüft"
+            ? string.Format(Localization.LocalizationManager.Instance.T("Port_StatusFmt"), open, filtered, total)
             : "Warte auf Ergebnis…";
     }
 

@@ -118,7 +118,7 @@
                             <StackPanel>
                                 <Grid Margin="0,0,0,12">
                                     <TextBlock Text="{Binding [Report_Compare], Source={x:Static loc:LocalizationManager.Instance}}" Style="{StaticResource Label}"/>
-                                    <Button HorizontalAlignment="Right" Content="🔄 Vergleichen"
+                                    <Button HorizontalAlignment="Right" Content="{Binding [Rep_CompareIcon], Source={x:Static loc:LocalizationManager.Instance}}"
                                             Style="{StaticResource SecondaryButton}"
                                             Padding="10,5" FontSize="12"
                                             Click="BtnCompare_Click"/>

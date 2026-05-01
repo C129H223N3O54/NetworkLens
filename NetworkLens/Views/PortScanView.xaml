@@ -61,7 +61,7 @@
                     <ComboBox Grid.Column="4" x:Name="CmbProfile"
                               SelectionChanged="CmbProfile_SelectionChanged">
                         <ComboBoxItem Content="⚡ Quick (Top 20)"/>
-                        <ComboBoxItem Content="📋 Standard (Top 100)" IsSelected="True"/>
+                        <ComboBoxItem Content="{Binding [Port_StandardWithIcon], Source={x:Static loc:LocalizationManager.Instance}}" IsSelected="True"/>
                         <ComboBoxItem Content="🔍 Full (1–65535)"/>
                         <ComboBoxItem Content="✏ Custom"/>
                     </ComboBox>
@@ -124,13 +124,13 @@
                         <Border x:Name="PillOpen" Margin="6,0,0,0" CornerRadius="12" Padding="10,3"
                                 Background="{DynamicResource BgDeepBrush}" Cursor="Hand"
                                 BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1">
-                            <TextBlock Text="Offen" FontSize="11"
+                            <TextBlock Text="{Binding [Port_StatusOpen], Source={x:Static loc:LocalizationManager.Instance}}" FontSize="11"
                                        Foreground="{DynamicResource StatusOnlineBrush}"/>
                         </Border>
                         <Border x:Name="PillFiltered" Margin="6,0,0,0" CornerRadius="12" Padding="10,3"
                                 Background="{DynamicResource BgDeepBrush}" Cursor="Hand"
                                 BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1">
-                            <TextBlock Text="Gefiltert" FontSize="11"
+                            <TextBlock Text="{Binding [Port_StatusFiltered], Source={x:Static loc:LocalizationManager.Instance}}" FontSize="11"
                                        Foreground="{DynamicResource StatusWarningBrush}"/>
                         </Border>
                     </StackPanel>
@@ -185,7 +185,7 @@
                         </DataGridTextColumn>
 
                         <!-- Status Text -->
-                        <DataGridTemplateColumn Header="Status" Width="100" SortMemberPath="StatusText">
+                        <DataGridTemplateColumn Header="{Binding [Port_ColStatus], Source={x:Static loc:LocalizationManager.Instance}}" Width="100" SortMemberPath="StatusText">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Border CornerRadius="4" Padding="7,2"
@@ -199,7 +199,7 @@
                         </DataGridTemplateColumn>
 
                         <!-- Service -->
-                        <DataGridTextColumn Header="Dienst" Binding="{Binding DisplayService}" Width="140">
+                        <DataGridTextColumn Header="{Binding [Port_ColService], Source={x:Static loc:LocalizationManager.Instance}}" Binding="{Binding DisplayService}" Width="140">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="FontFamily" Value="Verdana"/>
@@ -211,7 +211,7 @@
                         </DataGridTextColumn>
 
                         <!-- Banner -->
-                        <DataGridTextColumn Header="Banner / Antwort" Binding="{Binding Banner}" Width="*">
+                        <DataGridTextColumn Header="{Binding [Port_ColBanner], Source={x:Static loc:LocalizationManager.Instance}}" Binding="{Binding Banner}" Width="*">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="FontFamily" Value="Consolas"/>

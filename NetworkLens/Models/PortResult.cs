@@ -107,9 +107,9 @@ public class PortResult
 
     [JsonIgnore] public string StatusText => Status switch
     {
-        PortStatus.Open     => "Offen",
-        PortStatus.Filtered => "Gefiltert",
-        PortStatus.Closed   => "Geschlossen",
+        PortStatus.Open      => NetworkLens.Localization.LocalizationManager.Instance.T("Port_StatusOpen"),
+        PortStatus.Filtered  => NetworkLens.Localization.LocalizationManager.Instance.T("Port_StatusFiltered"),
+        PortStatus.Closed    => NetworkLens.Localization.LocalizationManager.Instance.T("Port_StatusClosed"),
         _                   => "Unbekannt"
     };
 

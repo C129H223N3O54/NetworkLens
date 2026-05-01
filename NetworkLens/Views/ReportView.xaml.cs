@@ -186,7 +186,7 @@ public partial class ReportView : UserControl
 
     private void BtnClearHistory_Click(object sender, RoutedEventArgs e)
     {
-        var r = MessageBox.Show("Scan-Verlauf wirklich löschen?", "Verlauf löschen",
+        var r = MessageBox.Show(Localization.LocalizationManager.Instance.T("Rep_ConfirmClear"), Localization.LocalizationManager.Instance.T("Rep_ClearTitle"),
             MessageBoxButton.YesNo, MessageBoxImage.Question);
         if (r != MessageBoxResult.Yes) return;
 

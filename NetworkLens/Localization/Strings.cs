@@ -480,5 +480,85 @@ internal static class Strings
         // ── Monitor card footer ──────────────────
         ["Mon_PingsSent"]           = ("Pings gesendet",                     "pings sent"),
         ["Mon_Lost"]                = ("verloren",                           "lost"),
+
+        // ── Final mischmasch fixes ────────────────
+        // Sidebar limited mode
+        ["Side_Limited"]            = ("Eingeschränkter Modus",              "Limited mode"),
+        ["Side_LimitedHint"]        = ("Einige Features benötigen
+Administrator-Rechte.",
+                                       "Some features require
+administrator rights."),
+        ["Side_RestartAdmin"]       = ("Als Admin neu starten",              "Restart as admin"),
+
+        // Scan timeout combobox - speed labels
+        ["TO_500Fast"]              = ("500ms (schnell)",                    "500ms (fast)"),
+        ["TO_1000Default"]          = ("1000ms (Standard)",                  "1000ms (default)"),
+        ["TO_2000Slow"]             = ("2000ms (langsam)",                   "2000ms (slow)"),
+
+        // Port scanner stats / filter / status / columns
+        ["Port_StatsOpen"]          = ("offen",                              "open"),
+        ["Port_StatsFiltered"]      = ("gefiltert",                          "filtered"),
+        ["Port_StatsChecked"]       = ("geprüft",                            "checked"),
+        ["Port_BadgeOpen"]          = ("Offen",                              "Open"),
+        ["Port_BadgeFiltered"]      = ("Gefiltert",                          "Filtered"),
+        ["Port_BadgeClosed"]        = ("Geschlossen",                        "Closed"),
+        ["Port_ColPort"]            = ("Port",                               "Port"),
+        ["Port_ColStatus"]          = ("Status",                             "Status"),
+        ["Port_ColService"]         = ("Dienst",                             "Service"),
+        ["Port_ColBanner"]          = ("Banner / Antwort",                   "Banner / Response"),
+        ["Port_ColMs"]              = ("ms",                                 "ms"),
+
+        // Network info
+        ["NI_Mask"]                 = ("Maske",                              "Mask"),
+        ["NI_AdapterStats"]         = ("aktiv",                              "active"),
+        ["NI_AdapterTotal"]         = ("gesamt",                             "total"),
+        ["NI_BadgeActive"]          = ("AKTIV",                              "ACTIVE"),
+        ["NI_BadgeInactive"]        = ("INAKTIV",                            "INACTIVE"),
+
+        // Monitor popup
+        ["Mon_DataPoints"]          = ("Messpunkte",                         "data points"),
+        ["Mon_JitterDashed"]        = ("Jitter (gestrichelt)",               "Jitter (dashed)"),
+
+        // ── Misc remaining ──────────────────────
+        ["Net_RefreshIcon"]         = ("↺ Aktualisieren",                    "↺ Refresh"),
+        ["Net_ReloadIcon"]          = ("↺ Neu laden",                        "↺ Reload"),
+        ["Net_MaskLabel"]           = ("Maske",                              "Mask"),
+        ["Net_NoReply"]             = ("Ping: Keine Antwort",                "Ping: no reply"),
+        ["Net_Unavailable"]         = ("Nicht verfügbar",                    "Not available"),
+        ["Net_AdapterStatsFmt"]     = ("{0} aktiv / {1} gesamt",             "{0} active / {1} total"),
+
+        ["Port_StandardWithIcon"]   = ("📋 Standard (Top 100)",              "📋 Standard (Top 100)"),
+        ["Port_StatusOpen"]         = ("Offen",                              "Open"),
+        ["Port_StatusFiltered"]     = ("Gefiltert",                          "Filtered"),
+        ["Port_StatusClosed"]       = ("Geschlossen",                        "Closed"),
+        ["Port_ColStatus"]          = ("Status",                             "Status"),
+        ["Port_ColService"]         = ("Dienst",                             "Service"),
+        ["Port_ColBanner"]          = ("Banner / Antwort",                   "Banner / Response"),
+        ["Port_StatusFmt"]          = ("{0} offen  ·  {1} gefiltert  ·  {2} geprüft",
+                                       "{0} open  ·  {1} filtered  ·  {2} checked"),
+        ["Port_ProgressFmt"]        = ("{0}/{1} Ports — {2} offen",
+                                       "{0}/{1} ports — {2} open"),
+        ["Port_DoneFmt"]            = ("Fertig — {0} offene Ports",
+                                       "Done — {0} open ports"),
+
+        ["Rep_CompareIcon"]         = ("🔄 Vergleichen",                     "🔄 Compare"),
+        ["Rep_ConfirmClear"]        = ("Scan-Verlauf wirklich löschen?",     "Really clear scan history?"),
+        ["Rep_ClearTitle"]          = ("Verlauf löschen",                    "Clear history"),
+
+        ["Scan_TimeoutFast"]        = ("500ms (schnell)",                    "500ms (fast)"),
+        ["Scan_TimeoutSlow"]        = ("2000ms (langsam)",                   "2000ms (slow)"),
+        ["Scan_NoReply"]            = ("Keine Antwort erhalten",             "No reply received"),
+        ["Scan_DetailManufacturer"] = ("Hersteller",                         "Manufacturer"),
+        ["Scan_DetailNewlyFound"]   = ("Neu erkannt",                        "Newly detected"),
+        ["Scan_DetailYes"]          = ("Ja",                                 "Yes"),
+        ["Scan_DetailNo"]           = ("Nein",                               "No"),
+
+        ["Mon_DataPoints"]          = ("Messpunkte",                         "data points"),
+
+        ["Set_ConfirmReset"]        = ("Alle Einstellungen auf Standard zurücksetzen?",
+                                       "Reset all settings to default?"),
+        ["Set_ResetTitle"]          = ("Zurücksetzen",                       "Reset"),
+        ["Set_ChooseFolder"]        = ("Ausgabe-Ordner für Reports wählen",  "Choose output folder for reports"),
+        ["Set_ChooseFolderShort"]   = ("Ordner wählen",                      "Select folder"),
     };
 }
