@@ -206,7 +206,7 @@
                                         <TextBlock Text="{Binding [Adm_LimitedHint], Source={x:Static loc:LocalizationManager.Instance}}"
                                                    FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}"
                                                    TextWrapping="Wrap" Margin="0,3,0,6"/>
-                                        <Button Content="Als Admin neu starten"
+                                        <Button Content="{Binding [Side_RestartAdmin], Source={x:Static loc:LocalizationManager.Instance}}"
                                                 Style="{StaticResource SecondaryButton}"
                                                 Padding="8,5" FontSize="11"
                                                 Click="BtnRestartAdmin_Click"/>

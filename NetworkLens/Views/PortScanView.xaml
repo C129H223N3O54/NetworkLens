@@ -119,7 +119,7 @@
                         <!-- Filter pills -->
                         <Border x:Name="PillAll" Margin="12,0,0,0" CornerRadius="12" Padding="10,3"
                                 Background="{DynamicResource AccentBrush}" Cursor="Hand">
-                            <TextBlock Text="Alle" FontSize="11" FontWeight="Bold" Foreground="#FF000000"/>
+                            <TextBlock Text="{Binding [Port_FilterAll], Source={x:Static loc:LocalizationManager.Instance}}" FontSize="11" FontWeight="Bold" Foreground="#FF000000"/>
                         </Border>
                         <Border x:Name="PillOpen" Margin="6,0,0,0" CornerRadius="12" Padding="10,3"
                                 Background="{DynamicResource BgDeepBrush}" Cursor="Hand"
