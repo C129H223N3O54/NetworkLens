@@ -198,15 +198,12 @@ internal static class Strings
         ["NetInfo_Title"]           = ("Netzwerk-Info",                      "Network Info"),
         ["NetInfo_Subtitle"]        = ("Informationen über lokales Netzwerk und Verbindungen",
                                        "Local network and connection details"),
-        ["NetInfo_Refresh"]         = ("Aktualisieren",                      "Refresh"),
         ["NetInfo_LocalIP"]         = ("Lokale IP",                          "Local IP"),
         ["NetInfo_Gateway"]         = ("Gateway",                            "Gateway"),
         ["NetInfo_Subnet"]          = ("Subnetz",                            "Subnet"),
         ["NetInfo_DNS"]             = ("DNS-Server",                         "DNS Servers"),
         ["NetInfo_PublicIP"]        = ("Öffentliche IP",                     "Public IP"),
         ["NetInfo_WLAN"]            = ("WLAN",                               "WLAN"),
-        ["NetInfo_Adapters"]        = ("Adapter",                            "Adapters"),
-        ["NetInfo_Connections"]     = ("Aktive Verbindungen",                "Active Connections"),
 
         // ── Report View ──────────────────────────
         ["Report_Title"]            = ("Report",                             "Report"),
@@ -215,7 +212,6 @@ internal static class Strings
         ["Report_Html"]             = ("HTML-Report exportieren",            "Export HTML report"),
         ["Report_Csv"]              = ("CSV exportieren",                    "Export CSV"),
         ["Report_Json"]             = ("JSON exportieren",                   "Export JSON"),
-        ["Report_Compare"]          = ("Mit vorherigem Scan vergleichen",    "Compare with previous scan"),
         ["Report_NoData"]           = ("Noch kein Scan-Ergebnis vorhanden",  "No scan result available yet"),
 
         // ── Notifications / Errors ───────────────
@@ -481,13 +477,11 @@ internal static class Strings
         ["Mon_PingsSent"]           = ("Pings gesendet",                     "pings sent"),
         ["Mon_Lost"]                = ("verloren",                           "lost"),
 
-        // ── Final mischmasch fixes ────────────────
+        // ── Final fixes block ────────────────────
         // Sidebar limited mode
         ["Side_Limited"]            = ("Eingeschränkter Modus",              "Limited mode"),
-        ["Side_LimitedHint"]        = ("Einige Features benötigen
-Administrator-Rechte.",
-                                       "Some features require
-administrator rights."),
+        ["Side_LimitedHint"]        = ("Einige Features benötigen Administrator-Rechte.",
+                                       "Some features require administrator rights."),
         ["Side_RestartAdmin"]       = ("Als Admin neu starten",              "Restart as admin"),
 
         // Scan timeout combobox - speed labels
@@ -495,7 +489,7 @@ administrator rights."),
         ["TO_1000Default"]          = ("1000ms (Standard)",                  "1000ms (default)"),
         ["TO_2000Slow"]             = ("2000ms (langsam)",                   "2000ms (slow)"),
 
-        // Port scanner stats / filter / status / columns
+        // Port scanner stats / filter / status / columns (extended)
         ["Port_StatsOpen"]          = ("offen",                              "open"),
         ["Port_StatsFiltered"]      = ("gefiltert",                          "filtered"),
         ["Port_StatsChecked"]       = ("geprüft",                            "checked"),
@@ -503,12 +497,9 @@ administrator rights."),
         ["Port_BadgeFiltered"]      = ("Gefiltert",                          "Filtered"),
         ["Port_BadgeClosed"]        = ("Geschlossen",                        "Closed"),
         ["Port_ColPort"]            = ("Port",                               "Port"),
-        ["Port_ColStatus"]          = ("Status",                             "Status"),
-        ["Port_ColService"]         = ("Dienst",                             "Service"),
-        ["Port_ColBanner"]          = ("Banner / Antwort",                   "Banner / Response"),
         ["Port_ColMs"]              = ("ms",                                 "ms"),
 
-        // Network info
+        // Network info (extended)
         ["NI_Mask"]                 = ("Maske",                              "Mask"),
         ["NI_AdapterStats"]         = ("aktiv",                              "active"),
         ["NI_AdapterTotal"]         = ("gesamt",                             "total"),
@@ -516,7 +507,6 @@ administrator rights."),
         ["NI_BadgeInactive"]        = ("INAKTIV",                            "INACTIVE"),
 
         // Monitor popup
-        ["Mon_DataPoints"]          = ("Messpunkte",                         "data points"),
         ["Mon_JitterDashed"]        = ("Jitter (gestrichelt)",               "Jitter (dashed)"),
 
         // ── Misc remaining ──────────────────────
@@ -531,9 +521,9 @@ administrator rights."),
         ["Port_StatusOpen"]         = ("Offen",                              "Open"),
         ["Port_StatusFiltered"]     = ("Gefiltert",                          "Filtered"),
         ["Port_StatusClosed"]       = ("Geschlossen",                        "Closed"),
-        ["Port_ColStatus"]          = ("Status",                             "Status"),
-        ["Port_ColService"]         = ("Dienst",                             "Service"),
-        ["Port_ColBanner"]          = ("Banner / Antwort",                   "Banner / Response"),
+        ["Port_ColStatusV2"]        = ("Status",                             "Status"),
+        ["Port_ColServiceV2"]       = ("Dienst",                             "Service"),
+        ["Port_ColBannerV2"]        = ("Banner / Antwort",                   "Banner / Response"),
         ["Port_StatusFmt"]          = ("{0} offen  ·  {1} gefiltert  ·  {2} geprüft",
                                        "{0} open  ·  {1} filtered  ·  {2} checked"),
         ["Port_ProgressFmt"]        = ("{0}/{1} Ports — {2} offen",
@@ -553,7 +543,7 @@ administrator rights."),
         ["Scan_DetailYes"]          = ("Ja",                                 "Yes"),
         ["Scan_DetailNo"]           = ("Nein",                               "No"),
 
-        ["Mon_DataPoints"]          = ("Messpunkte",                         "data points"),
+        ["Mon_DataPointsV2"]        = ("Messpunkte",                         "data points"),
 
         ["Set_ConfirmReset"]        = ("Alle Einstellungen auf Standard zurücksetzen?",
                                        "Reset all settings to default?"),
