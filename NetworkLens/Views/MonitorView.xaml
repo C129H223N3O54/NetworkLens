@@ -253,7 +253,7 @@
                                         <StackPanel Grid.Column="0" HorizontalAlignment="Center">
                                             <TextBlock Style="{StaticResource Label}"
                                                        HorizontalAlignment="Center" Margin="0,0,0,2"
-                                                       ToolTip="Niedrigster gemessener Ping-Wert seit Start des Monitors.">
+                                                       ToolTip="{Binding [Tip_MinPing], Source={x:Static loc:LocalizationManager.Instance}}">
                                                 MIN</TextBlock>
                                             <TextBlock FontFamily="Consolas" FontSize="14"
                                                        HorizontalAlignment="Center"
@@ -329,7 +329,7 @@
                                             CornerRadius="6" Padding="8,6" Margin="0,0,0,8"
                                             Cursor="Hand"
                                             MouseLeftButtonDown="SparkCanvas_DoubleClick"
-                                            ToolTip="Doppelklick zum Vergr&#246;&#223;ern">
+                                            ToolTip="{Binding [Tip_DoubleClickEnlarge], Source={x:Static loc:LocalizationManager.Instance}}">
                                         <StackPanel>
                                             <Grid Margin="0,0,0,4">
                                                 <StackPanel Orientation="Horizontal">
@@ -360,7 +360,7 @@
                                                     SizeChanged="SparkCanvas_SizeChanged"
                                                     MouseLeftButtonDown="SparkCanvas_DoubleClick"
                                                     Cursor="Hand"
-                                                    ToolTip="Doppelklick zum Vergr&#246;&#223;ern"/>
+                                                    ToolTip="{Binding [Tip_DoubleClickEnlarge], Source={x:Static loc:LocalizationManager.Instance}}"/>
                                         </StackPanel>
                                     </Border>
 

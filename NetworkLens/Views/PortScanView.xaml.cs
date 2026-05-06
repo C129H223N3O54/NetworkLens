@@ -145,9 +145,10 @@ public partial class PortScanView : UserControl
 
         if (CmbProfile.SelectedIndex == 2) // Full scan
         {
+            var L = Localization.LocalizationManager.Instance;
             var result = MessageBox.Show(
-                "Full-Scan prüft alle 65.535 Ports.\nDas kann mehrere Minuten dauern.\n\nFortfahren?",
-                "Full Port-Scan", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                L.T("Port_FullScanWarn"),
+                L.T("Port_FullScanTitle"), MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (result != MessageBoxResult.Yes) return;
         }
 

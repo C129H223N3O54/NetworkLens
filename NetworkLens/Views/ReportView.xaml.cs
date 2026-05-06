@@ -81,7 +81,7 @@ public partial class ReportView : UserControl
         try
         {
             var file = await _generator.GenerateHtmlAsync(_currentScan, path);
-            TxtLastExport.Text = $"Gespeichert: {file}";
+            TxtLastExport.Text = string.Format(Localization.LocalizationManager.Instance.T("Rpt_SavedFmt"), file);
             TxtLastExport.Visibility = Visibility.Visible;
             ExportHelper.OpenFile(file);
         }
@@ -100,7 +100,7 @@ public partial class ReportView : UserControl
         try
         {
             var file = await _generator.GenerateCsvAsync(_currentScan, path);
-            TxtLastExport.Text = $"Gespeichert: {file}";
+            TxtLastExport.Text = string.Format(Localization.LocalizationManager.Instance.T("Rpt_SavedFmt"), file);
             TxtLastExport.Visibility = Visibility.Visible;
             ExportHelper.OpenFolder(path);
         }
@@ -118,7 +118,7 @@ public partial class ReportView : UserControl
         try
         {
             var file = await _generator.GenerateJsonAsync(_currentScan, path);
-            TxtLastExport.Text = $"Gespeichert: {file}";
+            TxtLastExport.Text = string.Format(Localization.LocalizationManager.Instance.T("Rpt_SavedFmt"), file);
             TxtLastExport.Visibility = Visibility.Visible;
         }
         catch (Exception ex)
@@ -175,7 +175,7 @@ public partial class ReportView : UserControl
         if (diff.DisappearedDevices.Count > 0)
         {
             GoneDevSection.Visibility = Visibility.Visible;
-            TxtGoneCount.Text = $"{diff.DisappearedDevices.Count} verschwunden";
+            TxtGoneCount.Text = string.Format(Localization.LocalizationManager.Instance.T("Rpt_DisappearedDevices"), diff.DisappearedDevices.Count);
             GoneDevList.ItemsSource = diff.DisappearedDevices;
         }
         else

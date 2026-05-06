@@ -52,7 +52,7 @@
                                     Click="BtnExportCsv_Click">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="📊" Margin="0,0,6,0"/>
-                                    <TextBlock Text="CSV exportieren"/>
+                                    <TextBlock Text="{Binding [Rpt_ExportCsv], Source={x:Static loc:LocalizationManager.Instance}}"/>
                                 </StackPanel>
                             </Button>
                             <Button Style="{StaticResource SecondaryButton}"
@@ -60,7 +60,7 @@
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="JSON" Margin="0,0,6,0"
                                                FontFamily="Consolas" FontSize="12"/>
-                                    <TextBlock Text="JSON exportieren"/>
+                                    <TextBlock Text="{Binding [Rpt_ExportJson], Source={x:Static loc:LocalizationManager.Instance}}"/>
                                 </StackPanel>
                             </Button>
                         </StackPanel>
@@ -186,7 +186,7 @@
                                                    FontSize="11" FontWeight="Bold"
                                                    Foreground="{DynamicResource StatusOnlineBrush}"/>
                                     </Border>
-                                    <TextBlock Text="seit dem letzten Scan aufgetaucht" VerticalAlignment="Center"
+                                    <TextBlock Text="{Binding [Rpt_AppearedLabel], Source={x:Static loc:LocalizationManager.Instance}}" VerticalAlignment="Center"
                                                FontFamily="Verdana" FontSize="12"
                                                Foreground="{DynamicResource TextSecondaryBrush}"/>
                                 </StackPanel>
@@ -219,11 +219,11 @@
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                                     <Border CornerRadius="4" Padding="8,3" Margin="0,0,8,0"
                                             Background="#1AFF1744" BorderBrush="#33FF1744" BorderThickness="1">
-                                        <TextBlock x:Name="TxtGoneCount" Text="0 verschwunden"
+                                        <TextBlock x:Name="TxtGoneCount" Text="0"
                                                    FontSize="11" FontWeight="Bold"
                                                    Foreground="{DynamicResource StatusOfflineBrush}"/>
                                     </Border>
-                                    <TextBlock Text="nicht mehr im Netz" VerticalAlignment="Center"
+                                    <TextBlock Text="{Binding [Rpt_GoneLabel], Source={x:Static loc:LocalizationManager.Instance}}" VerticalAlignment="Center"
                                                FontFamily="Verdana" FontSize="12"
                                                Foreground="{DynamicResource TextSecondaryBrush}"/>
                                 </StackPanel>

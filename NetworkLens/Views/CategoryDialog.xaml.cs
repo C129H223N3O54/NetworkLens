@@ -10,21 +10,21 @@ public partial class CategoryDialog : Window
 {
     public DeviceCategory SelectedCategory { get; private set; }
 
-    private static readonly (DeviceCategory Cat, string Icon, string Label)[] _categories =
+    private static readonly (DeviceCategory Cat, string Icon, string LabelKey)[] _categories =
     {
-        (DeviceCategory.Unknown,  "❓", "Unbekannt"),
-        (DeviceCategory.PC,       "🖥",  "PC / Desktop"),
-        (DeviceCategory.Laptop,   "💻", "Laptop"),
-        (DeviceCategory.Phone,    "📱", "Smartphone"),
-        (DeviceCategory.Tablet,   "📱", "Tablet"),
-        (DeviceCategory.Server,   "🖳",  "Server"),
-        (DeviceCategory.NAS,      "💾", "NAS"),
-        (DeviceCategory.Printer,  "🖨",  "Drucker"),
-        (DeviceCategory.Router,   "📡", "Router / Switch"),
-        (DeviceCategory.IoT,      "⚡", "IoT / Smart Home"),
-        (DeviceCategory.TV,       "📺", "Smart TV"),
-        (DeviceCategory.Console,  "🎮", "Spielkonsole"),
-        (DeviceCategory.Other,    "⬡",  "Sonstiges"),
+        (DeviceCategory.Unknown,  "❓", "Cat_Unknown"),
+        (DeviceCategory.PC,       "🖥",  "Cat_PC"),
+        (DeviceCategory.Laptop,   "💻", "Cat_Laptop"),
+        (DeviceCategory.Phone,    "📱", "Cat_Phone"),
+        (DeviceCategory.Tablet,   "📱", "Cat_Tablet"),
+        (DeviceCategory.Server,   "🖳",  "Cat_Server"),
+        (DeviceCategory.NAS,      "💾", "Cat_NAS"),
+        (DeviceCategory.Printer,  "🖨",  "Cat_Printer"),
+        (DeviceCategory.Router,   "📡", "Cat_Router"),
+        (DeviceCategory.IoT,      "⚡", "Cat_IoT"),
+        (DeviceCategory.TV,       "📺", "Cat_TV"),
+        (DeviceCategory.Console,  "🎮", "Cat_Console"),
+        (DeviceCategory.Other,    "⬡",  "Cat_Other"),
     };
 
     public CategoryDialog(DeviceCategory current)
@@ -36,8 +36,10 @@ public partial class CategoryDialog : Window
 
     private void BuildButtons()
     {
-        foreach (var (cat, icon, label) in _categories)
+        var L = NetworkLens.Localization.LocalizationManager.Instance;
+        foreach (var (cat, icon, labelKey) in _categories)
         {
+            var label = L.T(labelKey);
             var isSelected = cat == SelectedCategory;
 
             var btn = new Border

@@ -155,7 +155,7 @@
 
                     <!-- Packet Loss -->
                     <StackPanel Grid.Column="5" HorizontalAlignment="Center">
-                        <TextBlock Text="PACKET LOSS" FontSize="10" FontWeight="Bold"
+                        <TextBlock Text="{Binding [Graph_PacketLoss], Source={x:Static loc:LocalizationManager.Instance}}" FontSize="10" FontWeight="Bold"
                                    Foreground="{DynamicResource TextMutedBrush}" FontFamily="Verdana"
                                    HorizontalAlignment="Center" Margin="0,0,0,2"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">

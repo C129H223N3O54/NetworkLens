@@ -114,7 +114,7 @@ public class NetworkDevice : INotifyPropertyChanged
 
     [JsonIgnore] public string DisplayName => !string.IsNullOrWhiteSpace(Alias) ? Alias
         : !string.IsNullOrWhiteSpace(Hostname) ? Hostname
-        : IpAddress ?? "Unbekannt";
+        : IpAddress ?? NetworkLens.Localization.LocalizationManager.Instance.T("Common_Unknown");
 
     [JsonIgnore] public string FavoriteIcon => IsFavorite ? "⭐" : "☆";
 

@@ -76,7 +76,7 @@
                     <Border Grid.Column="4" Style="{StaticResource CardBorder}">
                         <StackPanel>
                             <TextBlock Text="{Binding [NetInfo_PublicIPCard], Source={x:Static loc:LocalizationManager.Instance}}" Style="{StaticResource Label}" Margin="0,0,0,8"/>
-                            <TextBlock x:Name="TxtPublicIp" Text="Wird geladen…"
+                            <TextBlock x:Name="TxtPublicIp" Text="{Binding [Common_Loading], Source={x:Static loc:LocalizationManager.Instance}}"
                                        FontFamily="Consolas" FontSize="18"
                                        Foreground="{DynamicResource AccentBrush}" FontWeight="Light"/>
                             <Button x:Name="BtnCopyPublicIp" Content="{Binding [NetInfo_Copy], Source={x:Static loc:LocalizationManager.Instance}}"
@@ -124,7 +124,7 @@
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
                                     <Ellipse Width="8" Height="8" Fill="{DynamicResource StatusOnlineBrush}"
                                              VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                    <TextBlock Text="Verbunden" FontFamily="Verdana" FontSize="12"
+                                    <TextBlock Text="{Binding [NetInfo_Connected], Source={x:Static loc:LocalizationManager.Instance}}" FontFamily="Verdana" FontSize="12"
                                                Foreground="{DynamicResource StatusOnlineBrush}"/>
                                 </StackPanel>
                                 <TextBlock Text="SSID" Style="{StaticResource Label}" Margin="0,6,0,3"/>

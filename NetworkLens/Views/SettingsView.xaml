@@ -386,7 +386,7 @@
                                     <TextBlock Text="Claude (Anthropic)"
                                                FontFamily="Verdana" FontSize="13" FontWeight="SemiBold"
                                                Foreground="{DynamicResource TextPrimaryBrush}"/>
-                                    <TextBlock Text=" — KI-Assistent von Anthropic"
+                                    <TextBlock Text="{Binding [About_AiCredit], Source={x:Static loc:LocalizationManager.Instance}}"
                                                FontFamily="Verdana" FontSize="12"
                                                Foreground="{DynamicResource TextSecondaryBrush}"/>
                                 </StackPanel>
@@ -425,35 +425,78 @@
                     <StackPanel>
                         <TextBlock Text="{Binding [Section_Changelog], Source={x:Static loc:LocalizationManager.Instance}}" Style="{StaticResource Label}" Margin="0,0,0,16"/>
 
-                        <!-- v1.3.6 -->
+                        <!-- v1.3.7 -->
                         <Expander Margin="0,0,0,8" IsExpanded="True">
                             <Expander.Header>
                                 <StackPanel Orientation="Horizontal">
                                     <Border Background="{DynamicResource AccentBrush}"
                                             CornerRadius="4" Padding="7,2" Margin="0,0,10,0" VerticalAlignment="Center">
-                                        <TextBlock Text="v1.3.6" FontSize="11" FontWeight="Bold"
+                                        <TextBlock Text="v1.3.7" FontSize="11" FontWeight="Bold"
                                                    Foreground="#FF000000" FontFamily="Consolas"/>
                                     </Border>
-                                    <TextBlock Text="Final Translation Polish"
+                                    <TextBlock Text="{Binding [Cl_v137_Title], Source={x:Static loc:LocalizationManager.Instance}}"
                                                FontFamily="Verdana" FontSize="13" FontWeight="SemiBold"
                                                Foreground="{DynamicResource TextPrimaryBrush}"
                                                VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Expander.Header>
                             <StackPanel Margin="16,8,0,8">
-                                <TextBlock Text="• Category dialog fully localized (Title, header, Apply button)"
+                                <TextBlock Text="{Binding [Cl_v137_1], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Admin hint panel: 'Limited mode' + description translated"
+                                <TextBlock Text="{Binding [Cl_v137_2], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Monitor AVG tooltip and ScanView progress text translated"
+                                <TextBlock Text="{Binding [Cl_v137_3], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Report buttons: 'Open HTML report' and comparison status messages"
+                                <TextBlock Text="{Binding [Cl_v137_4], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• 290 translation keys in Strings.cs"
+                                <TextBlock Text="{Binding [Cl_v137_5], Source={x:Static loc:LocalizationManager.Instance}}"
+                                           FontFamily="Verdana" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="{Binding [Cl_v137_6], Source={x:Static loc:LocalizationManager.Instance}}"
+                                           FontFamily="Verdana" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                            </StackPanel>
+                        </Expander>
+
+                        <Border Height="1" Background="{DynamicResource BorderBrush}" Margin="0,4,0,8"/>
+
+                        <!-- v1.3.6 -->
+                        <Expander Margin="0,0,0,8" IsExpanded="False">
+                            <Expander.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Background="{DynamicResource BgDeepBrush}"
+                                            BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+                                            CornerRadius="4" Padding="7,2" Margin="0,0,10,0" VerticalAlignment="Center">
+                                        <TextBlock Text="v1.3.6" FontSize="11" FontWeight="Bold"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}" FontFamily="Consolas"/>
+                                    </Border>
+                                    <TextBlock Text="{Binding [Cl_v136_Title], Source={x:Static loc:LocalizationManager.Instance}}"
+                                               FontFamily="Verdana" FontSize="13" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextPrimaryBrush}"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Expander.Header>
+                            <StackPanel Margin="16,8,0,8">
+                                <TextBlock Text="{Binding [Cl_v136_1], Source={x:Static loc:LocalizationManager.Instance}}"
+                                           FontFamily="Verdana" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="{Binding [Cl_v136_2], Source={x:Static loc:LocalizationManager.Instance}}"
+                                           FontFamily="Verdana" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="{Binding [Cl_v136_3], Source={x:Static loc:LocalizationManager.Instance}}"
+                                           FontFamily="Verdana" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="{Binding [Cl_v136_4], Source={x:Static loc:LocalizationManager.Instance}}"
+                                           FontFamily="Verdana" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="{Binding [Cl_v136_5], Source={x:Static loc:LocalizationManager.Instance}}"
+                                           FontFamily="Verdana" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="{Binding [Cl_v136_6], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
                             </StackPanel>
@@ -471,32 +514,32 @@
                                         <TextBlock Text="v1.3.2" FontSize="11" FontWeight="Bold"
                                                    Foreground="{DynamicResource TextSecondaryBrush}" FontFamily="Consolas"/>
                                     </Border>
-                                    <TextBlock Text="Full Translation Coverage"
+                                    <TextBlock Text="{Binding [Cl_v132_Title], Source={x:Static loc:LocalizationManager.Instance}}"
                                                FontFamily="Verdana" FontSize="13" FontWeight="SemiBold"
                                                Foreground="{DynamicResource TextPrimaryBrush}"
                                                VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Expander.Header>
                             <StackPanel Margin="16,8,0,8">
-                                <TextBlock Text="• All dialogs translated: Alias, Category, Graph window"
+                                <TextBlock Text="{Binding [Cl_v132_1], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• All MessageBoxes (errors, confirmations, hints) translated"
+                                <TextBlock Text="{Binding [Cl_v132_2], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Status texts: 'X devices found', 'Scan complete', error messages"
+                                <TextBlock Text="{Binding [Cl_v132_3], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Toast notifications: titles and descriptions"
+                                <TextBlock Text="{Binding [Cl_v132_4], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Tooltips: MIN / AVG / MAX explanations"
+                                <TextBlock Text="{Binding [Cl_v132_5], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Notification checkboxes with icon prefix"
+                                <TextBlock Text="{Binding [Cl_v132_6], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• 280+ translation keys in Strings.cs"
+                                <TextBlock Text="{Binding [Cl_v132_7], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
                             </StackPanel>
@@ -514,29 +557,29 @@
                                         <TextBlock Text="v1.3.1" FontSize="11" FontWeight="Bold"
                                                    Foreground="{DynamicResource TextSecondaryBrush}" FontFamily="Consolas"/>
                                     </Border>
-                                    <TextBlock Text="Translation Coverage + Bugfixes"
+                                    <TextBlock Text="{Binding [Cl_v131_Title], Source={x:Static loc:LocalizationManager.Instance}}"
                                                FontFamily="Verdana" FontSize="13" FontWeight="SemiBold"
                                                Foreground="{DynamicResource TextPrimaryBrush}"
                                                VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Expander.Header>
                             <StackPanel Margin="16,8,0,8">
-                                <TextBlock Text="• 90+ additional translations: Scan, PortScan, NetworkInfo, Report, Settings"
+                                <TextBlock Text="{Binding [Cl_v131_1], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Column headers, buttons, hint texts, notification labels"
+                                <TextBlock Text="{Binding [Cl_v131_2], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Fix: 'ABHÖREN' encoding bug for active connections"
+                                <TextBlock Text="{Binding [Cl_v131_3], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Fix: Connection state language-aware (LISTEN, ESTABLISHED, ...)"
+                                <TextBlock Text="{Binding [Cl_v131_4], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Fix: Report compare dropdowns show date + subnet instead of class name"
+                                <TextBlock Text="{Binding [Cl_v131_5], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Footer 'devices / Geräte' follows the language"
+                                <TextBlock Text="{Binding [Cl_v131_6], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
                             </StackPanel>
@@ -554,26 +597,26 @@
                                         <TextBlock Text="v1.3.0" FontSize="11" FontWeight="Bold"
                                                    Foreground="{DynamicResource TextSecondaryBrush}" FontFamily="Consolas"/>
                                     </Border>
-                                    <TextBlock Text="Internationalization (DE / EN)"
+                                    <TextBlock Text="{Binding [Cl_v130_Title], Source={x:Static loc:LocalizationManager.Instance}}"
                                                FontFamily="Verdana" FontSize="13" FontWeight="SemiBold"
                                                Foreground="{DynamicResource TextPrimaryBrush}"
                                                VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Expander.Header>
                             <StackPanel Margin="16,8,0,8">
-                                <TextBlock Text="• Full multilingual support: German and English"
+                                <TextBlock Text="{Binding [Cl_v130_1], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Auto-detect Windows system language on first start"
+                                <TextBlock Text="{Binding [Cl_v130_2], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Live switch without restart"
+                                <TextBlock Text="{Binding [Cl_v130_3], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Wikipedia links language-aware (de / en)"
+                                <TextBlock Text="{Binding [Cl_v130_4], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Language preference saved (language.json)"
+                                <TextBlock Text="{Binding [Cl_v130_5], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
                             </StackPanel>
@@ -591,29 +634,29 @@
                                         <TextBlock Text="v1.2.1" FontSize="11" FontWeight="Bold"
                                                    Foreground="{DynamicResource TextSecondaryBrush}" FontFamily="Consolas"/>
                                     </Border>
-                                    <TextBlock Text="Polish &amp; Bugfixes"
+                                    <TextBlock Text="{Binding [Cl_v121_Title], Source={x:Static loc:LocalizationManager.Instance}}"
                                                FontFamily="Verdana" FontSize="13" FontWeight="SemiBold"
                                                Foreground="{DynamicResource TextPrimaryBrush}"
                                                VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Expander.Header>
                             <StackPanel Margin="16,8,0,8">
-                                <TextBlock Text="• HTML report follows the current app theme on export"
+                                <TextBlock Text="{Binding [Cl_v121_1], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• HTML report: theme toggle button in the browser"
+                                <TextBlock Text="{Binding [Cl_v121_2], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• HTML report: filter clear button (×) to empty the search"
+                                <TextBlock Text="{Binding [Cl_v121_3], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Ember-orange scrollbars in app and report"
+                                <TextBlock Text="{Binding [Cl_v121_4], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Context menu: consistent alignment without emoji width issues"
+                                <TextBlock Text="{Binding [Cl_v121_5], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Search symbol updated to Sideforge-conformant ⌕"
+                                <TextBlock Text="{Binding [Cl_v121_6], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
                             </StackPanel>
@@ -631,29 +674,29 @@
                                         <TextBlock Text="v1.2.0" FontSize="11" FontWeight="Bold"
                                                    Foreground="{DynamicResource TextSecondaryBrush}" FontFamily="Consolas"/>
                                     </Border>
-                                    <TextBlock Text="Sideforge Design System"
+                                    <TextBlock Text="{Binding [Cl_v120_Title], Source={x:Static loc:LocalizationManager.Instance}}"
                                                FontFamily="Verdana" FontSize="13" FontWeight="SemiBold"
                                                Foreground="{DynamicResource TextPrimaryBrush}"
                                                VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Expander.Header>
                             <StackPanel Margin="16,8,0,8">
-                                <TextBlock Text="• Migration to the Sideforge design language"
+                                <TextBlock Text="{Binding [Cl_v120_1], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Ember-orange primary accent (replaces Cyan)"
+                                <TextBlock Text="{Binding [Cl_v120_2], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Warm Anvil grayscale (replaces cool blue-gray)"
+                                <TextBlock Text="{Binding [Cl_v120_3], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• SF logo + Sideforge wordmark in app header"
+                                <TextBlock Text="{Binding [Cl_v120_4], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Verdana for UI, Georgia italic for logo, Consolas for monospace"
+                                <TextBlock Text="{Binding [Cl_v120_5], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Light + Dark mode recalibrated for the Sideforge palette"
+                                <TextBlock Text="{Binding [Cl_v120_6], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
                             </StackPanel>
@@ -671,26 +714,26 @@
                                         <TextBlock Text="v1.1.0" FontSize="11" FontWeight="Bold"
                                                    Foreground="{DynamicResource TextSecondaryBrush}" FontFamily="Consolas"/>
                                     </Border>
-                                    <TextBlock Text="Light / Dark Theme"
+                                    <TextBlock Text="{Binding [Cl_v110_Title], Source={x:Static loc:LocalizationManager.Instance}}"
                                                FontFamily="Verdana" FontSize="13" FontWeight="SemiBold"
                                                Foreground="{DynamicResource TextPrimaryBrush}"
                                                VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Expander.Header>
                             <StackPanel Margin="16,8,0,8">
-                                <TextBlock Text="• Light Mode and Dark Mode toggle in Settings"
+                                <TextBlock Text="{Binding [Cl_v110_1], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Theme switches instantly without restart"
+                                <TextBlock Text="{Binding [Cl_v110_2], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Theme preference saved and restored on next launch"
+                                <TextBlock Text="{Binding [Cl_v110_3], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Context menu, monitor, graph window follow theme"
+                                <TextBlock Text="{Binding [Cl_v110_4], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• HTML report respects system theme automatically"
+                                <TextBlock Text="{Binding [Cl_v110_5], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
                             </StackPanel>
@@ -708,35 +751,35 @@
                                         <TextBlock Text="v1.0.0" FontSize="11" FontWeight="Bold"
                                                    Foreground="{DynamicResource TextSecondaryBrush}" FontFamily="Consolas"/>
                                     </Border>
-                                    <TextBlock Text="Initial Release"
+                                    <TextBlock Text="{Binding [Cl_v100_Title], Source={x:Static loc:LocalizationManager.Instance}}"
                                                FontFamily="Verdana" FontSize="13" FontWeight="SemiBold"
                                                Foreground="{DynamicResource TextPrimaryBrush}"
                                                VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Expander.Header>
                             <StackPanel Margin="16,8,0,8">
-                                <TextBlock Text="• Network scan with live results, DNS, MAC, manufacturer detection"
+                                <TextBlock Text="{Binding [Cl_v100_1], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Port scanner: Quick / Standard / Full / Custom profiles, banner grabbing"
+                                <TextBlock Text="{Binding [Cl_v100_2], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Network info: IP, gateway, DNS, WLAN SSID, adapters, netstat"
+                                <TextBlock Text="{Binding [Cl_v100_3], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Live monitor: Ping/Jitter graph, Packet Loss counter, double-click fullscreen"
+                                <TextBlock Text="{Binding [Cl_v100_4], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Device management: alias, category, favorites (persistent per MAC)"
+                                <TextBlock Text="{Binding [Cl_v100_5], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Reports: HTML (interactive), CSV, JSON, scan comparison"
+                                <TextBlock Text="{Binding [Cl_v100_6], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Context menu: HTTP/HTTPS/FTP/SSH/Telnet/Traceroute/GeoLocate"
+                                <TextBlock Text="{Binding [Cl_v100_7], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
-                                <TextBlock Text="• Self-contained .exe, MIT License"
+                                <TextBlock Text="{Binding [Cl_v100_8], Source={x:Static loc:LocalizationManager.Instance}}"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
                             </StackPanel>

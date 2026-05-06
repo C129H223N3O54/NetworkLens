@@ -110,7 +110,7 @@ public class PortResult
         PortStatus.Open      => NetworkLens.Localization.LocalizationManager.Instance.T("Port_StatusOpen"),
         PortStatus.Filtered  => NetworkLens.Localization.LocalizationManager.Instance.T("Port_StatusFiltered"),
         PortStatus.Closed    => NetworkLens.Localization.LocalizationManager.Instance.T("Port_StatusClosed"),
-        _                   => "Unbekannt"
+        _                   => NetworkLens.Localization.LocalizationManager.Instance.T("Common_Unknown")
     };
 
     [JsonIgnore] public string DisplayService => !string.IsNullOrEmpty(ServiceName)

@@ -84,7 +84,7 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Grid Grid.Row="0" Margin="0,0,0,8">
-                        <TextBlock x:Name="ProgressLabel" Text="Scanne 192.168.1.0/24 ..."
+                        <TextBlock x:Name="ProgressLabel" Text="{Binding [Status_Ready], Source={x:Static loc:LocalizationManager.Instance}}"
                                    FontFamily="Verdana" Foreground="{DynamicResource TextSecondaryBrush}"/>
                         <TextBlock x:Name="ProgressPercent" Text="0%"
                                    HorizontalAlignment="Right"

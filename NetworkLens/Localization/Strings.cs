@@ -550,5 +550,223 @@ internal static class Strings
         ["Set_ResetTitle"]          = ("Zurücksetzen",                       "Reset"),
         ["Set_ChooseFolder"]        = ("Ausgabe-Ordner für Reports wählen",  "Choose output folder for reports"),
         ["Set_ChooseFolderShort"]   = ("Ordner wählen",                      "Select folder"),
+
+        // ── v1.3.7 — additions ──────────────────────
+        // Common
+        ["Common_Unknown"]          = ("Unbekannt",                          "Unknown"),
+        ["Common_Cancelled"]        = ("Abgebrochen",                        "Cancelled"),
+        ["Common_Loading"]          = ("Wird geladen…",                      "Loading…"),
+
+        // Admin restart error
+        ["Msg_AdminRestartFail"]    = ("Konnte nicht als Admin neu starten:\n{0}",
+                                       "Could not restart as admin:\n{0}"),
+
+        // Network info — extra
+        ["Net_Static"]              = ("Statisch",                           "Static"),
+        ["NetInfo_Connected"]       = ("Verbunden",                          "Connected"),
+
+        // Port scanner — extra
+        ["Port_PortsLabel"]         = ("Ports:",                             "Ports:"),
+        ["Port_CustomPortsTip"]     = ("Kommagetrennt: 80,443 oder Bereich: 8000-8100",
+                                       "Comma-separated: 80,443 or range: 8000-8100"),
+        ["Port_FullScanWarn"]       = ("Full-Scan prüft alle 65.535 Ports.\nDas kann mehrere Minuten dauern.\n\nFortfahren?",
+                                       "Full scan probes all 65,535 ports.\nThis can take several minutes.\n\nContinue?"),
+        ["Port_FullScanTitle"]      = ("Full Port-Scan",                     "Full port scan"),
+        ["Port_ScanningFmt"]        = ("Scanne {0} Ports auf {1} ...",       "Scanning {0} ports on {1} ..."),
+
+        // Scan view — extra
+        ["Scan_ScanningFmt"]        = ("Scanne {0} ...",                     "Scanning {0} ..."),
+        ["Scan_ScanningStatusFmt"]  = ("Scanne {0}",                         "Scanning {0}"),
+        ["Scan_Cancelled"]          = ("Scan abgebrochen",                   "Scan cancelled"),
+        ["Scan_TtlInfoFmt"]         = ("TTL: {0}\n\nTypischer Rückschluss:\n64  → Linux / macOS\n128 → Windows\n255 → Router / Switch",
+                                       "TTL: {0}\n\nTypical inference:\n64  → Linux / macOS\n128 → Windows\n255 → Router / switch"),
+
+        // Device details dialog
+        ["Det_AllTitle"]            = ("Alle Details",                       "All details"),
+        ["Det_IP"]                  = ("IP-Adresse",                         "IP address"),
+        ["Det_Hostname"]            = ("Hostname",                           "Hostname"),
+        ["Det_Alias"]               = ("Alias",                              "Alias"),
+        ["Det_MAC"]                 = ("MAC-Adresse",                        "MAC address"),
+        ["Det_Ping"]                = ("Ping",                               "Ping"),
+        ["Det_Category"]            = ("Kategorie",                          "Category"),
+        ["Det_OpenPorts"]           = ("Offene Ports",                       "Open ports"),
+        ["Det_LastSeen"]            = ("Zuletzt gesehen",                    "Last seen"),
+
+        // Alias dialog
+        ["Alias_Title"]             = ("Alias setzen",                       "Set alias"),
+
+        // Monitor — extra tooltip
+        ["Tip_DoubleClickEnlarge"]  = ("Doppelklick zum Vergrößern",         "Double-click to enlarge"),
+
+        // Categories
+        ["Cat_Unknown"]             = ("Unbekannt",                          "Unknown"),
+        ["Cat_PC"]                  = ("PC / Desktop",                       "PC / Desktop"),
+        ["Cat_Laptop"]              = ("Laptop",                             "Laptop"),
+        ["Cat_Phone"]               = ("Smartphone",                         "Smartphone"),
+        ["Cat_Tablet"]              = ("Tablet",                             "Tablet"),
+        ["Cat_Server"]              = ("Server",                             "Server"),
+        ["Cat_NAS"]                 = ("NAS",                                "NAS"),
+        ["Cat_Printer"]             = ("Drucker",                            "Printer"),
+        ["Cat_Router"]              = ("Router / Switch",                    "Router / Switch"),
+        ["Cat_IoT"]                 = ("IoT / Smart Home",                   "IoT / Smart Home"),
+        ["Cat_TV"]                  = ("Smart TV",                           "Smart TV"),
+        ["Cat_Console"]             = ("Spielkonsole",                       "Game console"),
+        ["Cat_Other"]               = ("Sonstiges",                          "Other"),
+
+        // Report view — extra
+        ["Rpt_ExportCsv"]           = ("CSV exportieren",                    "Export CSV"),
+        ["Rpt_ExportJson"]          = ("JSON exportieren",                   "Export JSON"),
+        ["Rpt_AppearedLabel"]       = ("seit dem letzten Scan aufgetaucht",  "appeared since the last scan"),
+        ["Rpt_GoneLabel"]           = ("nicht mehr im Netz",                 "no longer on the network"),
+        ["Rpt_SavedFmt"]            = ("Gespeichert: {0}",                   "Saved: {0}"),
+
+        // Graph window
+        ["Graph_PacketLoss"]        = ("PAKETVERLUST",                       "PACKET LOSS"),
+
+        // Settings — about
+        ["About_AiCredit"]          = (" — KI-Assistent von Anthropic",      " — AI assistant by Anthropic"),
+
+        // ── Changelog (bilingual) ─────────────────────
+        // v1.3.7
+        ["Cl_v137_Title"]           = ("Letzte Übersetzungs-Politur",        "Final Translation Polish"),
+        ["Cl_v137_1"]               = ("• Restliche hardcoded deutsche Strings entfernt (Dialoge, Tooltips, Statustexte)",
+                                       "• Removed remaining hardcoded German strings (dialogs, tooltips, status texts)"),
+        ["Cl_v137_2"]               = ("• Geräte-Kategorien jetzt vollständig zweisprachig",
+                                       "• Device categories now fully bilingual"),
+        ["Cl_v137_3"]               = ("• Details-Dialog, TTL-Info, Full-Scan-Warnung übersetzt",
+                                       "• Details dialog, TTL info, full-scan warning translated"),
+        ["Cl_v137_4"]               = ("• Report-Diff-Labels (verschwunden / aufgetaucht) übersetzt",
+                                       "• Report diff labels (disappeared / appeared) translated"),
+        ["Cl_v137_5"]               = ("• Changelog-Einträge selbst jetzt bilingual",
+                                       "• Changelog entries themselves now bilingual"),
+        ["Cl_v137_6"]               = ("• 499 Übersetzungs-Keys insgesamt", "• 499 translation keys in total"),
+
+        // v1.3.6
+        ["Cl_v136_Title"]           = ("Übersetzungs-Durchlauf",             "Translation Sweep"),
+        ["Cl_v136_1"]               = ("• Network Info, Port Scanner, Report, Settings durchgehend übersetzt",
+                                       "• Network Info, Port Scanner, Report, Settings fully translated"),
+        ["Cl_v136_2"]               = ("• Spaltenüberschriften, Buttons, Hinweistexte, Notification-Labels",
+                                       "• Column headers, buttons, hint texts, notification labels"),
+        ["Cl_v136_3"]               = ("• Fix: Encoding-Bug bei ABHÖREN für aktive Verbindungen",
+                                       "• Fix: ABHÖREN encoding bug for active connections"),
+        ["Cl_v136_4"]               = ("• Fix: Connection-States sprachabhängig (LISTEN, ESTABLISHED, …)",
+                                       "• Fix: Connection state language-aware (LISTEN, ESTABLISHED, ...)"),
+        ["Cl_v136_5"]               = ("• Fix: Report-Vergleichs-Dropdowns zeigen Datum + Subnetz statt Klassenname",
+                                       "• Fix: Report compare dropdowns show date + subnet instead of class name"),
+        ["Cl_v136_6"]               = ("• Footer Geräte / devices folgt der Sprache",
+                                       "• Footer devices / Geräte follows the language"),
+
+        // v1.3.2
+        ["Cl_v132_Title"]           = ("Vollständige Übersetzungs-Abdeckung", "Full Translation Coverage"),
+        ["Cl_v132_1"]               = ("• Alle Dialoge übersetzt: Alias, Kategorie, Graph-Fenster",
+                                       "• All dialogs translated: Alias, Category, Graph window"),
+        ["Cl_v132_2"]               = ("• Alle MessageBoxen (Fehler, Bestätigungen, Hinweise) übersetzt",
+                                       "• All MessageBoxes (errors, confirmations, hints) translated"),
+        ["Cl_v132_3"]               = ("• Status-Texte: X Geräte gefunden, Scan abgeschlossen, Fehlermeldungen",
+                                       "• Status texts: X devices found, Scan complete, error messages"),
+        ["Cl_v132_4"]               = ("• Toast-Notifications: Titel und Beschreibungen",
+                                       "• Toast notifications: titles and descriptions"),
+        ["Cl_v132_5"]               = ("• Tooltips: MIN / AVG / MAX Erklärungen",
+                                       "• Tooltips: MIN / AVG / MAX explanations"),
+        ["Cl_v132_6"]               = ("• Notification-Checkboxen mit Icon-Präfix",
+                                       "• Notification checkboxes with icon prefix"),
+        ["Cl_v132_7"]               = ("• 280+ Übersetzungs-Keys in Strings.cs",
+                                       "• 280+ translation keys in Strings.cs"),
+
+        // v1.3.1
+        ["Cl_v131_Title"]           = ("Übersetzungs-Abdeckung + Bugfixes",   "Translation Coverage + Bugfixes"),
+        ["Cl_v131_1"]               = ("• 90+ zusätzliche Übersetzungen: Scan, Port-Scan, Netzwerk-Info, Report, Settings",
+                                       "• 90+ additional translations: Scan, PortScan, NetworkInfo, Report, Settings"),
+        ["Cl_v131_2"]               = ("• Spaltenüberschriften, Buttons, Hinweistexte, Notification-Labels",
+                                       "• Column headers, buttons, hint texts, notification labels"),
+        ["Cl_v131_3"]               = ("• Fix: Encoding-Bug bei ABHÖREN für aktive Verbindungen",
+                                       "• Fix: ABHÖREN encoding bug for active connections"),
+        ["Cl_v131_4"]               = ("• Fix: Connection-States sprachabhängig (LISTEN, ESTABLISHED, …)",
+                                       "• Fix: Connection state language-aware (LISTEN, ESTABLISHED, ...)"),
+        ["Cl_v131_5"]               = ("• Fix: Report-Vergleichs-Dropdowns zeigen Datum + Subnetz statt Klassenname",
+                                       "• Fix: Report compare dropdowns show date + subnet instead of class name"),
+        ["Cl_v131_6"]               = ("• Footer Geräte / devices folgt der Sprache",
+                                       "• Footer devices / Geräte follows the language"),
+
+        // v1.3.0
+        ["Cl_v130_Title"]           = ("Internationalisierung (DE / EN)",    "Internationalization (DE / EN)"),
+        ["Cl_v130_1"]               = ("• Volle Mehrsprachigkeit: Deutsch und Englisch",
+                                       "• Full multilingual support: German and English"),
+        ["Cl_v130_2"]               = ("• Auto-Erkennung der Windows-System-Sprache beim ersten Start",
+                                       "• Auto-detect Windows system language on first start"),
+        ["Cl_v130_3"]               = ("• Live-Wechsel ohne Neustart",
+                                       "• Live switch without restart"),
+        ["Cl_v130_4"]               = ("• Wikipedia-Links sprachabhängig (de / en)",
+                                       "• Wikipedia links language-aware (de / en)"),
+        ["Cl_v130_5"]               = ("• Sprach-Einstellung gespeichert (language.json)",
+                                       "• Language preference saved (language.json)"),
+
+        // v1.2.1
+        ["Cl_v121_Title"]           = ("Politur & Bugfixes",                 "Polish & Bugfixes"),
+        ["Cl_v121_1"]               = ("• HTML-Report folgt beim Export dem aktuellen App-Theme",
+                                       "• HTML report follows the current app theme on export"),
+        ["Cl_v121_2"]               = ("• HTML-Report: Theme-Toggle-Button im Browser",
+                                       "• HTML report: theme toggle button in the browser"),
+        ["Cl_v121_3"]               = ("• HTML-Report: Filter-Clear-Button (×) leert die Suche",
+                                       "• HTML report: filter clear button (×) to empty the search"),
+        ["Cl_v121_4"]               = ("• Ember-orange Scrollbalken in App und Report",
+                                       "• Ember-orange scrollbars in app and report"),
+        ["Cl_v121_5"]               = ("• Kontextmenü: konsistente Ausrichtung ohne Emoji-Breiten-Probleme",
+                                       "• Context menu: consistent alignment without emoji width issues"),
+        ["Cl_v121_6"]               = ("• Such-Symbol auf Sideforge-konformes ⌕ aktualisiert",
+                                       "• Search symbol updated to Sideforge-conformant ⌕"),
+
+        // v1.2.0
+        ["Cl_v120_Title"]           = ("Sideforge Design System",            "Sideforge Design System"),
+        ["Cl_v120_1"]               = ("• Migration zur Sideforge-Designsprache",
+                                       "• Migration to the Sideforge design language"),
+        ["Cl_v120_2"]               = ("• Ember-Orange als Primärakzent (ersetzt Cyan)",
+                                       "• Ember-orange primary accent (replaces Cyan)"),
+        ["Cl_v120_3"]               = ("• Warmes Anvil-Grau (ersetzt kühles Blaugrau)",
+                                       "• Warm Anvil grayscale (replaces cool blue-gray)"),
+        ["Cl_v120_4"]               = ("• SF-Logo + Sideforge-Wortmarke im App-Header",
+                                       "• SF logo + Sideforge wordmark in app header"),
+        ["Cl_v120_5"]               = ("• Verdana für UI, Georgia kursiv für Logo, Consolas für Monospace",
+                                       "• Verdana for UI, Georgia italic for logo, Consolas for monospace"),
+        ["Cl_v120_6"]               = ("• Light- und Dark-Mode neu auf die Sideforge-Palette kalibriert",
+                                       "• Light + Dark mode recalibrated for the Sideforge palette"),
+
+        // v1.1.0
+        ["Cl_v110_Title"]           = ("Light / Dark Theme",                 "Light / Dark Theme"),
+        ["Cl_v110_1"]               = ("• Light-Mode und Dark-Mode-Umschalter in den Einstellungen",
+                                       "• Light Mode and Dark Mode toggle in Settings"),
+        ["Cl_v110_2"]               = ("• Theme wechselt sofort ohne Neustart",
+                                       "• Theme switches instantly without restart"),
+        ["Cl_v110_3"]               = ("• Theme-Einstellung gespeichert und beim nächsten Start wiederhergestellt",
+                                       "• Theme preference saved and restored on next launch"),
+        ["Cl_v110_4"]               = ("• Kontextmenü, Monitor, Graph-Fenster folgen dem Theme",
+                                       "• Context menu, monitor, graph window follow theme"),
+        ["Cl_v110_5"]               = ("• HTML-Report respektiert das Theme automatisch",
+                                       "• HTML report respects system theme automatically"),
+
+        // v1.0.0
+        ["Cl_v100_Title"]           = ("Erstveröffentlichung",               "Initial Release"),
+        ["Cl_v100_1"]               = ("• Netzwerk-Scan mit Live-Ergebnissen, DNS, MAC, Hersteller-Erkennung",
+                                       "• Network scan with live results, DNS, MAC, manufacturer detection"),
+        ["Cl_v100_2"]               = ("• Port-Scanner: Quick / Standard / Full / Custom Profile, Banner-Grabbing",
+                                       "• Port scanner: Quick / Standard / Full / Custom profiles, banner grabbing"),
+        ["Cl_v100_3"]               = ("• Netzwerk-Info: IP, Gateway, DNS, WLAN-SSID, Adapter, netstat",
+                                       "• Network info: IP, gateway, DNS, WLAN SSID, adapters, netstat"),
+        ["Cl_v100_4"]               = ("• Live-Monitor: Ping/Jitter-Graph, Paketverlust-Zähler, Doppelklick für Vollbild",
+                                       "• Live monitor: Ping/Jitter graph, Packet Loss counter, double-click fullscreen"),
+        ["Cl_v100_5"]               = ("• Geräte-Verwaltung: Alias, Kategorie, Favoriten (persistent per MAC)",
+                                       "• Device management: alias, category, favorites (persistent per MAC)"),
+        ["Cl_v100_6"]               = ("• Reports: HTML (interaktiv), CSV, JSON, Scan-Vergleich",
+                                       "• Reports: HTML (interactive), CSV, JSON, scan comparison"),
+        ["Cl_v100_7"]               = ("• Kontextmenü: HTTP/HTTPS/FTP/SSH/Telnet/Traceroute/GeoLocate",
+                                       "• Context menu: HTTP/HTTPS/FTP/SSH/Telnet/Traceroute/GeoLocate"),
+        ["Cl_v100_8"]               = ("• Self-contained .exe, MIT-Lizenz",
+                                       "• Self-contained .exe, MIT License"),
+
+        // ── Legacy-Aliases (V1 Keys still referenced in some places) ──
+        ["Port_ColStatus"]          = ("Status",                             "Status"),
+        ["Port_ColService"]         = ("Dienst",                             "Service"),
+        ["Port_ColBanner"]          = ("Banner / Antwort",                   "Banner / Response"),
+        ["Mon_DataPoints"]          = ("Messpunkte",                         "data points"),
     };
 }

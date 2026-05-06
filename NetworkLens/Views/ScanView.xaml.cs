@@ -276,9 +276,10 @@ public partial class ScanView : UserControl
             {
                 using var ping = new System.Net.NetworkInformation.Ping();
                 var reply = await ping.SendPingAsync(device.IpAddress!, 1000);
+                var L = Localization.LocalizationManager.Instance;
                 string info = reply.Status == System.Net.NetworkInformation.IPStatus.Success
-                    ? $"TTL: {reply.Options?.Ttl ?? 0}\n\nTypischer Rückschluss:\n64  → Linux / macOS\n128 → Windows\n255 → Router / Switch"
-                    : Localization.LocalizationManager.Instance.T("Scan_NoReply");
+                    ? string.Format(L.T("Scan_TtlInfoFmt"), reply.Options?.Ttl ?? 0)
+                    : L.T("Scan_NoReply");
                 System.Windows.Application.Current.Dispatcher.Invoke(
                     () => ShowInfo("TTL", info, device.IpAddress));
             }
@@ -289,17 +290,18 @@ public partial class ScanView : UserControl
 
     private static void ShowAll(NetworkDevice d)
     {
-        var info = $"IP-Adresse:   {d.IpAddress}\n" +
-                   $"Hostname:     {d.Hostname     ?? "—"}\n" +
-                   $"Alias:        {d.Alias        ?? "—"}\n" +
-                   $"MAC-Adresse:  {d.MacAddress   ?? "—"}\n" +
-                   $"{Localization.LocalizationManager.Instance.T("Scan_DetailManufacturer")}:   {d.Manufacturer ?? "—"}\n" +
-                   $"Ping:         {(d.ResponseTime >= 0 ? d.ResponseTime + " ms" : "—")}\n" +
-                   $"Kategorie:    {d.Category}\n" +
-                   $"Offene Ports: {d.OpenPortCount}\n" +
-                   $"Zuletzt ges.: {d.LastSeen:dd.MM.yyyy HH:mm:ss}\n" +
-                   $"{Localization.LocalizationManager.Instance.T("Scan_DetailNewlyFound")}:  {(d.IsNew ? Localization.LocalizationManager.Instance.T("Scan_DetailYes") : Localization.LocalizationManager.Instance.T("Scan_DetailNo"))}";
-        ShowInfo("Alle Details", info, d.IpAddress);
+        var L = Localization.LocalizationManager.Instance;
+        var info = $"{L.T("Det_IP")}:   {d.IpAddress}\n" +
+                   $"{L.T("Det_Hostname")}:     {d.Hostname     ?? "—"}\n" +
+                   $"{L.T("Det_Alias")}:        {d.Alias        ?? "—"}\n" +
+                   $"{L.T("Det_MAC")}:  {d.MacAddress   ?? "—"}\n" +
+                   $"{L.T("Scan_DetailManufacturer")}:   {d.Manufacturer ?? "—"}\n" +
+                   $"{L.T("Det_Ping")}:         {(d.ResponseTime >= 0 ? d.ResponseTime + " ms" : "—")}\n" +
+                   $"{L.T("Det_Category")}:    {d.Category}\n" +
+                   $"{L.T("Det_OpenPorts")}: {d.OpenPortCount}\n" +
+                   $"{L.T("Det_LastSeen")}: {d.LastSeen:dd.MM.yyyy HH:mm:ss}\n" +
+                   $"{L.T("Scan_DetailNewlyFound")}:  {(d.IsNew ? L.T("Scan_DetailYes") : L.T("Scan_DetailNo"))}";
+        ShowInfo(L.T("Det_AllTitle"), info, d.IpAddress);
     }
 
     private NetworkDevice? GetSelectedDevice()

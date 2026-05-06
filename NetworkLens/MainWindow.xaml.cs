@@ -161,8 +161,9 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Konnte nicht als Admin neu starten:\n{ex.Message}",
-                Localization.LocalizationManager.Instance.T("Msg_Error"), MessageBoxButton.OK, MessageBoxImage.Warning);
+            var L = Localization.LocalizationManager.Instance;
+            MessageBox.Show(string.Format(L.T("Msg_AdminRestartFail"), ex.Message),
+                L.T("Msg_Error"), MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 

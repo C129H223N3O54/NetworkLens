@@ -1,4 +1,4 @@
-// Build: 2026-05-01 10:47:50 (v1.3.6 translation sweep)
+// Build: 2026-05-06 (v1.3.7 final translation polish)
 using System.IO;
 using System.Windows;
 using NetworkLens.ViewModels;

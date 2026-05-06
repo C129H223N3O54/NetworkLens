@@ -50,7 +50,7 @@ public class ScanViewModel : BaseViewModel
         set => Set(ref _progress, value);
     }
 
-    private string _progressLabel = "Bereit";
+    private string _progressLabel = LocalizationManager.Instance.T("Status_Ready");
     public string ProgressLabel
     {
         get => _progressLabel;
@@ -64,7 +64,7 @@ public class ScanViewModel : BaseViewModel
         set => Set(ref _progressDetail, value);
     }
 
-    private string _statusText = "Bereit";
+    private string _statusText = LocalizationManager.Instance.T("Status_Ready");
     public string StatusText
     {
         get => _statusText;
@@ -149,8 +149,8 @@ public class ScanViewModel : BaseViewModel
 
         try
         {
-            ProgressLabel = $"Scanne {Subnet} ...";
-            StatusText = $"Scanne {Subnet}";
+            ProgressLabel = string.Format(LocalizationManager.Instance.T("Scan_ScanningFmt"), Subnet);
+            StatusText = string.Format(LocalizationManager.Instance.T("Scan_ScanningStatusFmt"), Subnet);
 
             var previousDevices = await _deviceManager.LoadDevicesAsync();
 
@@ -219,15 +219,15 @@ public class ScanViewModel : BaseViewModel
             await SaveScanHistoryAsync(scanResult);
 
             StatusText = string.Format(LocalizationManager.Instance.T("Stat_ScanComplete"), Devices.Count);
-            ProgressLabel = "Scan abgeschlossen";
+            ProgressLabel = LocalizationManager.Instance.T("Status_Done");
             Progress = 100;
         }
         catch (OperationCanceledException)
         {
             sw.Stop();
             ScanDuration = sw.Elapsed;
-            StatusText = "Scan abgebrochen";
-            ProgressLabel = "Abgebrochen";
+            StatusText = LocalizationManager.Instance.T("Scan_Cancelled");
+            ProgressLabel = LocalizationManager.Instance.T("Common_Cancelled");
         }
         catch (Exception ex)
         {

@@ -66,14 +66,14 @@
                         <ComboBoxItem Content="✏ Custom"/>
                     </ComboBox>
 
-                    <TextBlock Grid.Column="6" Text="Ports:" VerticalAlignment="Center"
+                    <TextBlock Grid.Column="6" Text="{Binding [Port_PortsLabel], Source={x:Static loc:LocalizationManager.Instance}}" VerticalAlignment="Center"
                                FontFamily="Verdana" FontSize="13"
                                Foreground="{DynamicResource TextSecondaryBrush}"
                                Margin="20,0,10,0" x:Name="LblCustomPorts" Visibility="Collapsed"/>
                     <TextBox Grid.Column="7" x:Name="TxtCustomPorts"
                              Text="80,443,8080,22,3389" Visibility="Collapsed"
                              FontFamily="Consolas" FontSize="12"
-                             ToolTip="Kommagetrennt: 80,443 oder Bereich: 8000-8100"/>
+                             ToolTip="{Binding [Port_CustomPortsTip], Source={x:Static loc:LocalizationManager.Instance}}"/>
                 </Grid>
             </Border>
         </Border>

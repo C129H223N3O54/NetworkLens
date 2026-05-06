@@ -87,7 +87,9 @@ public partial class NetworkInfoView : UserControl
 
                     TxtLocalIp.Text = ip;
                     TxtSubnetMask.Text = $"{Localization.LocalizationManager.Instance.T("Net_MaskLabel")}: {addr.IPv4Mask}";
-                    TxtDhcp.Text = addr.PrefixOrigin == PrefixOrigin.Dhcp ? "DHCP" : "Statisch";
+                    TxtDhcp.Text = addr.PrefixOrigin == PrefixOrigin.Dhcp
+                        ? "DHCP"
+                        : Localization.LocalizationManager.Instance.T("Net_Static");
 
                     // Gateway
                     var gw = props.GatewayAddresses

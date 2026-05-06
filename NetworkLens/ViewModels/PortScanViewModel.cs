@@ -51,7 +51,7 @@ public class PortScanViewModel : BaseViewModel
         set => Set(ref _progress, value);
     }
 
-    private string _statusText = "Bereit";
+    private string _statusText = LocalizationManager.Instance.T("Status_Ready");
     public string StatusText
     {
         get => _statusText;
@@ -78,7 +78,7 @@ public class PortScanViewModel : BaseViewModel
         _cts = new CancellationTokenSource();
 
         var ports = GetPortsForProfile();
-        StatusText = $"Scanne {ports.Length} Ports auf {TargetIp} ...";
+        StatusText = string.Format(LocalizationManager.Instance.T("Port_ScanningFmt"), ports.Length, TargetIp);
 
         try
         {
@@ -103,7 +103,7 @@ public class PortScanViewModel : BaseViewModel
         }
         catch (OperationCanceledException)
         {
-            StatusText = "Abgebrochen";
+            StatusText = LocalizationManager.Instance.T("Common_Cancelled");
         }
         finally
         {
