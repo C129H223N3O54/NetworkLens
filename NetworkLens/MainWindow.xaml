@@ -12,9 +12,9 @@
         AllowsTransparency="True"
         ResizeMode="CanResizeWithGrip">
 
-    <Window.Effect>
-        <DropShadowEffect Color="#FF000000" BlurRadius="30" ShadowDepth="0" Opacity="0.6"/>
-    </Window.Effect>
+    <!-- No Window.Effect here: a DropShadowEffect on the root forced the whole window
+         through a blur shader on every frame, yet was never visible (opaque
+         background, no margin → the shadow is clipped at the window edge). -->
 
     <Border Background="{DynamicResource BgMainBrush}" CornerRadius="10" BorderThickness="1"
             BorderBrush="{DynamicResource BorderBrush}">
