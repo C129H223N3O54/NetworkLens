@@ -7,7 +7,6 @@ namespace NetworkLens.Views;
 public partial class SettingsView : UserControl
 {
     private AppSettings _settings = new();
-    private bool _loading = false;
 
     public SettingsView()
     {
@@ -27,8 +26,6 @@ public partial class SettingsView : UserControl
 
     private void PopulateUi()
     {
-        _loading = true;
-
         CmbScanTimeout.SelectedIndex = _settings.ScanTimeoutMs switch
         {
             500  => 0,
@@ -72,7 +69,6 @@ public partial class SettingsView : UserControl
 
         UpdateThemeButtons();
         UpdateLanguageButtons();
-        _loading = false;
     }
 
     private void CollectSettings()
