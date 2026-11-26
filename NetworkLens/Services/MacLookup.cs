@@ -1,11 +1,11 @@
-using System.IO;
 using System.Reflection;
 
 namespace NetworkLens.Services;
 
 /// <summary>
 /// Looks up manufacturer names from MAC address OUI prefixes.
-/// The database is loaded from the embedded resource oui.txt.
+/// The database is loaded from the embedded resource oui.txt on first use
+/// (not at app start). Release builds replace oui.txt with the full IEEE list.
 ///
 /// Format of oui.txt (one entry per line):
 ///   AA-BB-CC   (hex)   Manufacturer Name
@@ -14,104 +14,81 @@ namespace NetworkLens.Services;
 /// </summary>
 public class MacLookup
 {
-    private static readonly Dictionary<string, string> _db = new(StringComparer.OrdinalIgnoreCase);
-    private static bool _loaded = false;
-    private static readonly object _lock = new();
+    private static readonly Lazy<Dictionary<string, string>> Db =
+        new(LoadDatabase, LazyThreadSafetyMode.ExecutionAndPublication);
 
-    public MacLookup()
+    private static Dictionary<string, string> LoadDatabase()
     {
-        EnsureLoaded();
-    }
-
-    private static void EnsureLoaded()
-    {
-        if (_loaded) return;
-        lock (_lock)
-        {
-            if (_loaded) return;
-            LoadDatabase();
-            _loaded = true;
-        }
-    }
-
-    private static void LoadDatabase()
-    {
+        var db = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         try
         {
             var asm = Assembly.GetExecutingAssembly();
-            // Try embedded resource first
             var resourceName = asm.GetManifestResourceNames()
                 .FirstOrDefault(n => n.EndsWith("oui.txt", StringComparison.OrdinalIgnoreCase));
 
-            if (resourceName == null)
+            using var stream = resourceName == null ? null : asm.GetManifestResourceStream(resourceName);
+            if (stream != null)
             {
-                LoadMinimalFallback();
-                return;
-            }
-
-            using var stream = asm.GetManifestResourceStream(resourceName);
-            if (stream == null) { LoadMinimalFallback(); return; }
-
-            using var reader = new StreamReader(stream);
-            string? line;
-            while ((line = reader.ReadLine()) != null)
-            {
-                ParseLine(line);
+                using var reader = new StreamReader(stream);
+                string? line;
+                while ((line = reader.ReadLine()) != null)
+                    ParseLine(line, db);
             }
         }
-        catch
+        catch (Exception ex)
         {
-            LoadMinimalFallback();
+            Helpers.Log.Warn("MacLookup.LoadDatabase", ex);
         }
+
+        AddMinimalFallback(db);
+        return db;
     }
 
-    private static void ParseLine(string line)
+    private static void ParseLine(string line, Dictionary<string, string> db)
     {
-        // Skip comments and empty lines
-        if (string.IsNullOrWhiteSpace(line) || line.StartsWith('#')) return;
+        // Cheap pre-check before allocating: "AA-BB-CC" / "AA:BB:CC" / "AA.BB.CC"
+        if (line.Length < 10 || line[0] == '#') return;
+        if (!IsSeparator(line[2]) || !IsSeparator(line[5])) return;
 
-        // IEEE format: "00-00-0C   (hex)\t\tCisco Systems, Inc"
-        // Or simple:   "00:00:0C\tCisco Systems"
-        try
+        var prefix = string.Create(8, line, static (span, src) =>
         {
-            // Normalize separators
-            var normalized = line.Replace(':', '-').Replace('.', '-').ToUpperInvariant();
-
-            // Extract prefix (first 8 chars like "AA-BB-CC")
-            if (normalized.Length < 8) return;
-            var prefix = normalized[..8]; // e.g. "AA-BB-CC"
-
-            // Validate format
-            if (prefix[2] != '-' || prefix[5] != '-') return;
-
-            // Find manufacturer name (after the (hex) marker if present, or after tab)
-            int nameStart = line.IndexOf("(hex)", StringComparison.OrdinalIgnoreCase);
-            string name;
-            if (nameStart >= 0)
+            for (int i = 0; i < 8; i++)
             {
-                name = line[(nameStart + 5)..].Trim();
+                var c = src[i];
+                span[i] = IsSeparator(c) ? '-' : char.ToUpperInvariant(c);
             }
-            else
-            {
-                var tabIdx = line.IndexOf('\t');
-                name = tabIdx >= 0 ? line[(tabIdx + 1)..].Trim() : line[9..].Trim();
-            }
+        });
+        if (!Uri.IsHexDigit(prefix[0]) || !Uri.IsHexDigit(prefix[7])) return;
 
-            if (!string.IsNullOrWhiteSpace(name) && !_db.ContainsKey(prefix))
-                _db[prefix] = name;
+        // Manufacturer name: after the "(hex)" marker, after a tab, or after the prefix.
+        int hex = line.IndexOf("(hex)", StringComparison.OrdinalIgnoreCase);
+        string name;
+        if (hex >= 0)
+        {
+            name = line[(hex + 5)..].Trim();
         }
-        catch { }
+        else
+        {
+            int tab = line.IndexOf('\t');
+            name = tab >= 0 ? line[(tab + 1)..].Trim() : line[8..].Trim();
+        }
+
+        if (name.Length > 0)
+            db.TryAdd(prefix, name);
     }
+
+    private static bool IsSeparator(char c) => c is '-' or ':' or '.';
 
     /// <summary>Minimal hardcoded fallback for common vendors.</summary>
-    private static void LoadMinimalFallback()
+    private static void AddMinimalFallback(Dictionary<string, string> db)
     {
-        var entries = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        var entries = new Dictionary<string, string>
         {
             ["00-00-0C"] = "Cisco",
             ["00-1A-A0"] = "Dell",
             ["00-50-56"] = "VMware",
             ["00-0C-29"] = "VMware",
+            ["00-15-5D"] = "Microsoft (Hyper-V)",
             ["B8-27-EB"] = "Raspberry Pi",
             ["DC-A6-32"] = "Raspberry Pi",
             ["E4-5F-01"] = "Raspberry Pi",
@@ -138,7 +115,7 @@ public class MacLookup
         };
 
         foreach (var (k, v) in entries)
-            _db.TryAdd(k, v);
+            db.TryAdd(k, v);
     }
 
     /// <summary>
@@ -149,24 +126,13 @@ public class MacLookup
     {
         if (string.IsNullOrWhiteSpace(mac)) return null;
 
-        try
-        {
-            // Normalize to XX-XX-XX format
-            var clean = mac.Replace(":", "-").Replace(".", "-").ToUpperInvariant().Trim();
+        var clean = mac.Trim().Replace(':', '-').Replace('.', '-').ToUpperInvariant();
 
-            // Handle compact format AABBCCDDEEFF
-            if (!clean.Contains('-') && clean.Length >= 6)
-            {
-                clean = $"{clean[0..2]}-{clean[2..4]}-{clean[4..6]}";
-            }
+        // Compact format AABBCCDDEEFF
+        if (!clean.Contains('-') && clean.Length >= 6)
+            clean = $"{clean[0..2]}-{clean[2..4]}-{clean[4..6]}";
 
-            if (clean.Length < 8) return null;
-            var prefix = clean[..8];
-
-            return _db.TryGetValue(prefix, out var name) ? name : null;
-        }
-        catch { return null; }
+        if (clean.Length < 8) return null;
+        return Db.Value.TryGetValue(clean[..8], out var name) ? name : null;
     }
-
-    public int DatabaseSize => _db.Count;
 }

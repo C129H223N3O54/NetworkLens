@@ -1,25 +1,32 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Text.Json;
 using System.Windows.Data;
+using System.Windows.Threading;
+using NetworkLens.Helpers;
 using NetworkLens.Localization;
 using NetworkLens.Models;
 using NetworkLens.Services;
-using NetworkLens.ViewModels;
 
 namespace NetworkLens.ViewModels;
 
 public class ScanViewModel : BaseViewModel
 {
-    private readonly NetworkScanner _scanner;
-    private readonly MacLookup _macLookup;
-    private readonly DeviceManager _deviceManager;
-    private readonly AlertService _alerts;
+    private const int MaxSavedScans = 50;
+    private static readonly JsonSerializerOptions JsonOpts = new() { WriteIndented = true };
+
+    private readonly NetworkScanner _scanner = new();
+    private readonly MacLookup _macLookup = new();
+    private readonly DeviceManager _deviceManager = new();
+    private readonly AlertService _alerts = new();
+    private readonly Dispatcher _dispatcher;
     private CancellationTokenSource? _cts;
 
-    // ── Observable Data ────────────────────────────
-    public ObservableCollection<NetworkDevice> Devices { get; } = new();
+    private static LocalizationManager L => LocalizationManager.Instance;
 
-    private readonly object _devicesLock = new();
+    // ── Observable Data ────────────────────────────
+    // Only ever modified on the UI thread (results are marshalled via the dispatcher).
+    public ObservableCollection<NetworkDevice> Devices { get; } = new();
 
     private string _subnet = "192.168.1.0/24";
     public string Subnet
@@ -50,7 +57,7 @@ public class ScanViewModel : BaseViewModel
         set => Set(ref _progress, value);
     }
 
-    private string _progressLabel = LocalizationManager.Instance.T("Status_Ready");
+    private string _progressLabel;
     public string ProgressLabel
     {
         get => _progressLabel;
@@ -64,7 +71,7 @@ public class ScanViewModel : BaseViewModel
         set => Set(ref _progressDetail, value);
     }
 
-    private string _statusText = LocalizationManager.Instance.T("Status_Ready");
+    private string _statusText;
     public string StatusText
     {
         get => _statusText;
@@ -101,7 +108,7 @@ public class ScanViewModel : BaseViewModel
         }
     }
 
-    public ICollectionView? DevicesView { get; private set; }
+    public ICollectionView? DevicesView { get; }
 
     // ── Last scan result (for Report export) ──────
     public ScanResult? LastScanResult { get; private set; }
@@ -113,21 +120,14 @@ public class ScanViewModel : BaseViewModel
 
     public ScanViewModel()
     {
-        _scanner = new NetworkScanner();
-        _macLookup = new MacLookup();
-        _deviceManager = new DeviceManager();
-        _alerts = new AlertService(SettingsViewModel.LoadStatic());
-
-        BindingOperations.EnableCollectionSynchronization(Devices, _devicesLock);
+        _dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
+        _progressLabel = L.T("Status_Ready");
+        _statusText = L.T("Status_Ready");
 
         DevicesView = CollectionViewSource.GetDefaultView(Devices);
         DevicesView.Filter = FilterDevice;
-
-        // Default sort: IP ascending
         DevicesView.SortDescriptions.Add(
-            new System.ComponentModel.SortDescription(
-                nameof(NetworkDevice.IpSort),
-                System.ComponentModel.ListSortDirection.Ascending));
+            new SortDescription(nameof(NetworkDevice.IpSort), ListSortDirection.Ascending));
 
         StartScanCommand = new AsyncRelayCommand(StartScanAsync, () => CanScan);
         StopScanCommand = new RelayCommand(StopScan, () => CanStop);
@@ -139,100 +139,122 @@ public class ScanViewModel : BaseViewModel
     {
         if (IsScanning) return;
 
+        // Validate input before touching any state
+        var subnet = Subnet?.Trim() ?? "";
+        if (!IpHelper.TryGetHostRange(subnet, out uint first, out uint last))
+        {
+            StatusText = ProgressLabel = string.Format(L.T("Err_SubnetInvalid"), subnet);
+            return;
+        }
+        long hostCount = IpHelper.HostCount(first, last);
+        if (hostCount > NetworkScanner.MaxHosts)
+        {
+            StatusText = ProgressLabel = string.Format(L.T("Err_SubnetTooLargeFmt"), hostCount, NetworkScanner.MaxHosts);
+            return;
+        }
+
         IsScanning = true;
         Progress = 0;
+        ProgressDetail = "";
         NewDeviceCount = 0;
         Devices.Clear();
 
+        var settings = SettingsStore.Current;
+        _scanner.Configure(settings.ScanTimeoutMs, settings.MaxParallelThreads);
+
         _cts = new CancellationTokenSource();
         var sw = System.Diagnostics.Stopwatch.StartNew();
+        int total = (int)hostCount, online = 0, lastReportedPct = -1;
 
         try
         {
-            ProgressLabel = string.Format(LocalizationManager.Instance.T("Scan_ScanningFmt"), Subnet);
-            StatusText = string.Format(LocalizationManager.Instance.T("Scan_ScanningStatusFmt"), Subnet);
+            ProgressLabel = string.Format(L.T("Scan_ScanningFmt"), subnet);
+            StatusText = string.Format(L.T("Scan_ScanningStatusFmt"), subnet);
 
             var previousDevices = await _deviceManager.LoadDevicesAsync();
 
-            int total = 0, done = 0, online = 0;
-
             await _scanner.ScanAsync(
-                Subnet,
+                subnet,
                 onHostFound: device =>
                 {
-                    // Restore alias/category from device manager
-                    if (previousDevices.TryGetValue(device.MacAddress ?? device.IpAddress ?? "", out var saved))
+                    // Runs on a worker thread: enrich the device, then hand it to the UI thread.
+                    bool isNew = false;
+                    var key = !string.IsNullOrEmpty(device.MacAddress) ? device.MacAddress : device.IpAddress ?? "";
+                    if (previousDevices.TryGetValue(key, out var saved))
                     {
-                        device.Alias    = saved.Alias;
-                        device.Category = saved.Category;
-                        device.Notes    = saved.Notes;
+                        device.Alias      = saved.Alias;
+                        device.Category   = saved.Category;
+                        device.Notes      = saved.Notes;
                         device.IsFavorite = saved.IsFavorite;
                     }
                     else if (!string.IsNullOrEmpty(device.MacAddress))
                     {
-                        device.IsNew = true;
-                        System.Threading.Interlocked.Increment(ref _newDeviceCount);
-                        OnPropertyChanged(nameof(NewDeviceCount));
+                        device.IsNew = isNew = true;
                         _alerts.NotifyNewDevice(device);
                     }
 
-                    // Manufacturer lookup
                     device.Manufacturer = _macLookup.Lookup(device.MacAddress);
+                    Interlocked.Increment(ref online);
 
-                    lock (_devicesLock)
-                        System.Windows.Application.Current.Dispatcher.Invoke(
-                            () => Devices.Add(device));
-
-                    System.Threading.Interlocked.Increment(ref online);
+                    // Non-blocking hand-off; no lock is held while waiting for the UI thread.
+                    _dispatcher.InvokeAsync(() =>
+                    {
+                        Devices.Add(device);
+                        if (isNew) NewDeviceCount++;
+                    });
                 },
                 onProgress: (scanned, totalHosts) =>
                 {
-                    total = totalHosts;
-                    done = scanned;
-                    var pct = total > 0 ? (int)((double)done / total * 100) : 0;
-                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                    // Throttle UI updates to percent steps instead of one per host.
+                    int pct = totalHosts > 0 ? (int)(scanned * 100L / totalHosts) : 100;
+                    if (Interlocked.Exchange(ref lastReportedPct, pct) == pct && scanned != totalHosts)
+                        return;
+
+                    _dispatcher.InvokeAsync(() =>
                     {
                         Progress = pct;
-                        ProgressDetail = string.Format(LocalizationManager.Instance.T("Scan_Progress"), done, total, online);
+                        ProgressDetail = string.Format(L.T("Scan_Progress"), scanned, totalHosts, Volatile.Read(ref online));
                     });
                 },
-                cancellationToken: _cts.Token
-            );
+                cancellationToken: _cts.Token);
+
+            // Let all queued UI hand-offs run before taking the snapshot.
+            await _dispatcher.InvokeAsync(() => { }, DispatcherPriority.Background);
 
             sw.Stop();
             ScanDuration = sw.Elapsed;
 
-            // Save to device manager
-            await _deviceManager.MergeAndSaveAsync(Devices);
+            var snapshot = Devices.ToList();
+            await _deviceManager.MergeAndSaveAsync(snapshot);
 
-            // Build scan result snapshot
             var scanResult = new ScanResult
             {
-                Subnet            = Subnet,
+                Subnet            = subnet,
                 TotalHostsScanned = total,
                 Duration          = sw.Elapsed,
-                Devices           = Devices.ToList(),
+                Devices           = snapshot,
                 NewDeviceCount    = NewDeviceCount,
                 Timestamp         = DateTime.Now
             };
             LastScanResult = scanResult;
             await SaveScanHistoryAsync(scanResult);
 
-            StatusText = string.Format(LocalizationManager.Instance.T("Stat_ScanComplete"), Devices.Count);
-            ProgressLabel = LocalizationManager.Instance.T("Status_Done");
+            StatusText = string.Format(L.T("Stat_ScanComplete"), Devices.Count);
+            ProgressLabel = L.T("Status_Done");
             Progress = 100;
         }
         catch (OperationCanceledException)
         {
             sw.Stop();
             ScanDuration = sw.Elapsed;
-            StatusText = LocalizationManager.Instance.T("Scan_Cancelled");
-            ProgressLabel = LocalizationManager.Instance.T("Common_Cancelled");
+            StatusText = L.T("Scan_Cancelled");
+            ProgressLabel = L.T("Common_Cancelled");
         }
         catch (Exception ex)
         {
-            StatusText = string.Format(LocalizationManager.Instance.T("Stat_Error"), ex.Message);
-            ProgressLabel = LocalizationManager.Instance.T("Stat_ScanError");
+            Log.Error("Network scan", ex);
+            StatusText = string.Format(L.T("Stat_Error"), ex.Message);
+            ProgressLabel = L.T("Stat_ScanError");
         }
         finally
         {
@@ -242,10 +264,7 @@ public class ScanViewModel : BaseViewModel
         }
     }
 
-    public void StopScan()
-    {
-        _cts?.Cancel();
-    }
+    public void StopScan() => _cts?.Cancel();
 
     private void AutoDetectSubnet()
     {
@@ -257,32 +276,36 @@ public class ScanViewModel : BaseViewModel
     {
         try
         {
-            var path = System.IO.Path.Combine(App.ScansPath,
-                $"scan_{scan.FilenameSlug}.json");
-            var json = System.Text.Json.JsonSerializer.Serialize(scan,
-                new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
-            await System.IO.File.WriteAllTextAsync(path, json);
+            var path = Path.Combine(App.ScansPath, $"scan_{scan.FilenameSlug}.json");
+            var json = await Task.Run(() => JsonSerializer.Serialize(scan, JsonOpts));
+            await AtomicFile.WriteAllTextAsync(path, json);
 
-            // Keep only last 50 scans
-            var files = System.IO.Directory.GetFiles(App.ScansPath, "scan_*.json")
-                .OrderByDescending(f => f).Skip(50).ToArray();
-            foreach (var f in files)
-                try { System.IO.File.Delete(f); } catch { }
+            // Keep only the newest scans
+            foreach (var old in Directory.GetFiles(App.ScansPath, "scan_*.json")
+                         .OrderByDescending(f => f, StringComparer.Ordinal)
+                         .Skip(MaxSavedScans))
+            {
+                try { File.Delete(old); }
+                catch (Exception ex) { Log.Warn("Delete old scan", ex); }
+            }
         }
-        catch { /* best effort */ }
+        catch (Exception ex)
+        {
+            Log.Warn("SaveScanHistory", ex);
+        }
     }
 
     // ── Filter ─────────────────────────────────────
     private bool FilterDevice(object obj)
     {
         if (obj is not NetworkDevice d) return false;
-        if (string.IsNullOrWhiteSpace(SearchText)) return true;
+        var q = SearchText;
+        if (string.IsNullOrWhiteSpace(q)) return true;
 
-        var q = SearchText.ToLowerInvariant();
-        return (d.IpAddress?.ToLower().Contains(q) ?? false)
-            || (d.Hostname?.ToLower().Contains(q) ?? false)
-            || (d.Alias?.ToLower().Contains(q) ?? false)
-            || (d.MacAddress?.ToLower().Contains(q) ?? false)
-            || (d.Manufacturer?.ToLower().Contains(q) ?? false);
+        return Contains(d.IpAddress) || Contains(d.Hostname) || Contains(d.Alias)
+            || Contains(d.MacAddress) || Contains(d.Manufacturer);
+
+        bool Contains(string? field) =>
+            field != null && field.Contains(q, StringComparison.OrdinalIgnoreCase);
     }
 }

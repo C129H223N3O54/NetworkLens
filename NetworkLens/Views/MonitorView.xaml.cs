@@ -4,6 +4,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
 using System.Windows.Shapes;
+using NetworkLens.Helpers;
 using NetworkLens.Models;
 using NetworkLens.ViewModels;
 
@@ -12,25 +13,53 @@ namespace NetworkLens.Views;
 public partial class MonitorView : UserControl
 {
     private MonitorViewModel _vm = null!;
+    private bool _bound;
     // Track open graph windows per entry
     private readonly Dictionary<MonitorEntry, GraphWindow> _graphWindows = new();
+
+    // Frozen (shared, immutable) brushes for the sparkline — no allocations per redraw
+    private static readonly Brush GridLineBrush  = UiBrushes.Solid(Color.FromArgb(0x22, 0xFF, 0xFF, 0xFF));
+    private static readonly Brush GridLabelBrush = UiBrushes.Solid(Color.FromArgb(0x77, 0xFF, 0xFF, 0xFF));
+    private static readonly Brush JitterBrush    = UiBrushes.Solid(Color.FromArgb(0xDD, 0xBA, 0x75, 0x17));
+    private static readonly Brush AreaBrush      = CreateAreaBrush();
+    private static readonly FontFamily GraphFont = new("Verdana");
+
+    private static Brush CreateAreaBrush()
+    {
+        var b = new LinearGradientBrush(
+            Color.FromArgb(0x55, 0xE8, 0x60, 0x0A),
+            Color.FromArgb(0x05, 0xE8, 0x60, 0x0A),
+            new Point(0, 0), new Point(0, 1));
+        b.Freeze();
+        return b;
+    }
 
     public MonitorView() => InitializeComponent();
 
     public void SetViewModel(MonitorViewModel vm)
     {
+        if (_bound) return;
         _vm = vm;
-        if (IsLoaded) BindVm();
+        BindVm();
     }
 
     private void UserControl_Loaded(object sender, RoutedEventArgs e)
     {
-        _vm ??= new MonitorViewModel();
-        BindVm();
+        if (!_bound) SetViewModel(App.MonitorVm);
     }
 
     private void BindVm()
     {
+        _bound = true;
+        CmbInterval.SelectedIndex = _vm.IntervalSeconds switch
+        {
+            1  => 0,
+            5  => 1,
+            30 => 3,
+            60 => 4,
+            0  => 5,
+            _  => 2
+        };
         MonitorCards.ItemsSource = _vm.Entries;
         _vm.Entries.CollectionChanged += (_, args) =>
         {
@@ -56,13 +85,8 @@ public partial class MonitorView : UserControl
         entry.PropertyChanged += (_, pe) =>
         {
             if (pe.PropertyName != nameof(MonitorEntry.PingHistory)) return;
-            Dispatcher.Invoke(() =>
-            {
-                RedrawEntryGraph(entry);
-                // Update graph window if open
-                if (_graphWindows.TryGetValue(entry, out var win) && win.IsVisible)
-                    win.Redraw();
-            });
+            // The detached GraphWindow subscribes and redraws itself.
+            Dispatcher.InvokeAsync(() => RedrawEntryGraph(entry));
         };
     }
 
@@ -93,6 +117,7 @@ public partial class MonitorView : UserControl
         {
             _vm.Entries.Remove(entry);
             if (_graphWindows.TryGetValue(entry, out var win)) win.Close();
+            _graphWindows.Remove(entry);
             UpdateVisibility();
         }
     }
@@ -117,10 +142,7 @@ public partial class MonitorView : UserControl
         if (sender is System.Windows.Controls.Button btn && btn.Tag is string key)
         {
             var loc = Localization.LocalizationManager.Instance;
-            var slug = loc.T(key);
-            var url = loc.WikiPrefix + slug;
-            System.Diagnostics.Process.Start(
-                new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
+            ShellHelper.OpenUrl(loc.WikiPrefix + loc.T(key)); // slugs are already URL-encoded
         }
     }
 
@@ -204,6 +226,7 @@ public partial class MonitorView : UserControl
         }
 
         var win = new GraphWindow(entry);
+        win.Closed += (_, _) => _graphWindows.Remove(entry);
         _graphWindows[entry] = win;
         win.Show();
     }
@@ -263,7 +286,7 @@ public partial class MonitorView : UserControl
             canvas.Children.Add(new Line
             {
                 X1 = 0, X2 = w, Y1 = y, Y2 = y,
-                Stroke = new SolidColorBrush(Color.FromArgb(0x22, 0xFF, 0xFF, 0xFF)),
+                Stroke = GridLineBrush,
                 StrokeThickness = 1,
                 StrokeDashArray = new DoubleCollection { 3, 3 }
             });
@@ -271,8 +294,8 @@ public partial class MonitorView : UserControl
             var lbl = new TextBlock
             {
                 Text = $"{val:F0}ms", FontSize = large ? 10 : 9,
-                Foreground = new SolidColorBrush(Color.FromArgb(0x77, 0xFF, 0xFF, 0xFF)),
-                FontFamily = new FontFamily("Verdana")
+                Foreground = GridLabelBrush,
+                FontFamily = GraphFont
             };
             Canvas.SetLeft(lbl, 3); Canvas.SetTop(lbl, y + 1);
             canvas.Children.Add(lbl);
@@ -298,15 +321,12 @@ public partial class MonitorView : UserControl
         canvas.Children.Add(new Polygon
         {
             Points = new PointCollection(pPts) { new Point(w, h), new Point(0, h) },
-            Fill = new LinearGradientBrush(
-                Color.FromArgb(0x55, 0xE8, 0x60, 0x0A),
-                Color.FromArgb(0x05, 0xE8, 0x60, 0x0A),
-                new Point(0, 0), new Point(0, 1))
+            Fill = AreaBrush
         });
         canvas.Children.Add(new Polyline
         {
             Points = pPts,
-            Stroke = new SolidColorBrush(Color.FromRgb(0xE8, 0x60, 0x0A)),
+            Stroke = UiBrushes.Accent,
             StrokeThickness = large ? 2 : 1.8,
             StrokeLineJoin = PenLineJoin.Round
         });
@@ -316,7 +336,7 @@ public partial class MonitorView : UserControl
             canvas.Children.Add(new Polyline
             {
                 Points = Pts(jitter, 0, jMax, w, h),
-                Stroke = new SolidColorBrush(Color.FromArgb(0xDD, 0xBA, 0x75, 0x17)),
+                Stroke = JitterBrush,
                 StrokeThickness = large ? 1.5 : 1.2,
                 StrokeLineJoin = PenLineJoin.Round,
                 StrokeDashArray = new DoubleCollection { 4, 2 }
@@ -330,7 +350,7 @@ public partial class MonitorView : UserControl
             var dot = new Ellipse
             {
                 Width = r * 2, Height = r * 2,
-                Fill = new SolidColorBrush(Color.FromRgb(0xE8, 0x60, 0x0A)),
+                Fill = UiBrushes.Accent,
                 Effect = new DropShadowEffect
                 {
                     Color = Color.FromRgb(0xE8, 0x60, 0x0A),

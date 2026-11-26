@@ -1,33 +1,17 @@
 using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
+using NetworkLens.Localization;
 using NetworkLens.Models;
 using NetworkLens.ViewModels;
 
 namespace NetworkLens.Views;
 
-// Extended PortResult for UI binding extras
-public class PortResultUi : PortResult
-{
-    public Brush StatusBgColor => Status switch
-    {
-        PortStatus.Open     => new SolidColorBrush(Color.FromArgb(0x22, 0x74, 0xA7, 0x32)),
-        PortStatus.Filtered => new SolidColorBrush(Color.FromArgb(0x22, 0xBA, 0x75, 0x17)),
-        _                   => new SolidColorBrush(Color.FromArgb(0x18, 0x4A, 0x55, 0x68))
-    };
-    public Color StatusColorRaw => Status switch
-    {
-        PortStatus.Open     => Color.FromRgb(0x74, 0xA7, 0x32),
-        PortStatus.Filtered => Color.FromRgb(0xBA, 0x75, 0x17),
-        _                   => Color.FromRgb(0x4A, 0x55, 0x68)
-    };
-}
-
 public partial class PortScanView : UserControl
 {
-    private PortScanViewModel _vm = null!;
-    private PortStatus? _activeFilter = null;
+    private PortScanViewModel? _vm;
+    private PortStatus? _activeFilter;
+    private string? _pendingTarget;
+
+    private static LocalizationManager L => LocalizationManager.Instance;
 
     public PortScanView()
     {
@@ -40,48 +24,47 @@ public partial class PortScanView : UserControl
     {
         TxtTargetIp.Text = ip;
         if (_vm != null) _vm.TargetIp = ip;
+        else _pendingTarget = ip;
     }
 
     private void UserControl_Loaded(object sender, RoutedEventArgs e) { }
 
     private void SetupViewModel()
     {
-        _vm = new PortScanViewModel();
+        if (_vm != null) return; // Loaded can fire more than once
+        var vm = new PortScanViewModel();
+        _vm = vm;
 
-        TxtTargetIp.TextChanged += (_, _) => _vm.TargetIp = TxtTargetIp.Text.Trim();
-        TxtCustomPorts.TextChanged += (_, _) => _vm.CustomPorts = TxtCustomPorts.Text;
+        if (_pendingTarget != null) vm.TargetIp = _pendingTarget;
 
-        _vm.PropertyChanged += (_, e) =>
+        TxtTargetIp.TextChanged += (_, _) => vm.TargetIp = TxtTargetIp.Text.Trim();
+        TxtCustomPorts.TextChanged += (_, _) => vm.CustomPorts = TxtCustomPorts.Text;
+
+        vm.PropertyChanged += (_, e) =>
         {
-            Dispatcher.Invoke(() =>
+            switch (e.PropertyName)
             {
-                switch (e.PropertyName)
-                {
-                    case nameof(PortScanViewModel.IsScanning):
-                        BtnScan.IsEnabled = _vm.CanScan;
-                        BtnStop.IsEnabled = _vm.IsScanning;
-                        ProgressPanel.Visibility = _vm.IsScanning ? Visibility.Visible : Visibility.Collapsed;
-                        break;
-                    case nameof(PortScanViewModel.Progress):
-                        ScanProgress.Value = _vm.Progress;
-                        TxtProgressPct.Text = $"{_vm.Progress}%";
-                        break;
-                    case nameof(PortScanViewModel.StatusText):
-                        TxtProgressLabel.Text = _vm.StatusText;
-                        UpdateOpenCount();
-                        break;
-                }
-            });
+                case nameof(PortScanViewModel.IsScanning):
+                    BtnScan.IsEnabled = vm.CanScan;
+                    BtnStop.IsEnabled = vm.IsScanning;
+                    ProgressPanel.Visibility = vm.IsScanning ? Visibility.Visible : Visibility.Collapsed;
+                    break;
+                case nameof(PortScanViewModel.Progress):
+                    ScanProgress.Value = vm.Progress;
+                    TxtProgressPct.Text = $"{vm.Progress}%";
+                    break;
+                case nameof(PortScanViewModel.StatusText):
+                    TxtProgressLabel.Text = vm.StatusText;
+                    UpdateOpenCount();
+                    break;
+            }
         };
 
-        // Live-add results as they come in
-        _vm.Results.CollectionChanged += (_, _) =>
+        // One grid refresh per result batch (raised on the UI thread)
+        vm.ResultsChanged += (_, _) =>
         {
-            Dispatcher.Invoke(() =>
-            {
-                RefreshGrid();
-                UpdateOpenCount();
-            });
+            RefreshGrid();
+            UpdateOpenCount();
         };
 
         // Filter pill clicks
@@ -94,9 +77,8 @@ public partial class PortScanView : UserControl
     {
         _activeFilter = f;
 
-        var accent   = FindResource("AccentBrush") as Brush;
-        var deep     = FindResource("BgDeepBrush") as Brush;
-        var border   = FindResource("BorderBrush") as Brush;
+        var accent = FindResource("AccentBrush") as Brush;
+        var deep   = FindResource("BgDeepBrush") as Brush;
 
         PillAll.Background      = f == null ? accent : deep;
         PillOpen.Background     = f == PortStatus.Open ? accent : deep;
@@ -107,21 +89,12 @@ public partial class PortScanView : UserControl
 
     private void RefreshGrid()
     {
-        var filtered = _vm.Results
-            .Cast<PortResult>()
+        if (_vm == null) return;
+
+        PortGrid.ItemsSource = _vm.Results
             .Where(r => _activeFilter == null || r.Status == _activeFilter)
-            .Select(r => new PortResultUi
-            {
-                Port         = r.Port,
-                Status       = r.Status,
-                ServiceName  = r.ServiceName,
-                Banner       = r.Banner,
-                ResponseTime = r.ResponseTime
-            })
             .OrderBy(r => r.Port)
             .ToList();
-
-        PortGrid.ItemsSource = filtered;
 
         bool hasData = _vm.Results.Count > 0;
         EmptyState.Visibility = hasData ? Visibility.Collapsed : Visibility.Visible;
@@ -130,12 +103,11 @@ public partial class PortScanView : UserControl
 
     private void UpdateOpenCount()
     {
-        int open     = _vm.Results.Count(r => r.Status == PortStatus.Open);
-        int filtered = _vm.Results.Count(r => r.Status == PortStatus.Filtered);
-        int total    = _vm.Results.Count;
+        if (_vm == null) return;
+        int total = _vm.Results.Count;
         TxtOpenCount.Text = total > 0
-            ? string.Format(Localization.LocalizationManager.Instance.T("Port_StatusFmt"), open, filtered, total)
-            : "Warte auf Ergebnis…";
+            ? string.Format(L.T("Port_StatusFmt"), _vm.OpenCount, _vm.FilteredCount, total)
+            : L.T("Port_WaitingResult");
     }
 
     // ── Full-scan warning ─────────────────────────
@@ -145,7 +117,6 @@ public partial class PortScanView : UserControl
 
         if (CmbProfile.SelectedIndex == 2) // Full scan
         {
-            var L = Localization.LocalizationManager.Instance;
             var result = MessageBox.Show(
                 L.T("Port_FullScanWarn"),
                 L.T("Port_FullScanTitle"), MessageBoxButton.YesNo, MessageBoxImage.Warning);
@@ -159,13 +130,14 @@ public partial class PortScanView : UserControl
             3 => PortScanProfile.Custom,
             _ => PortScanProfile.Standard
         };
-        _vm.TargetIp   = TxtTargetIp.Text.Trim();
+        _vm.TargetIp    = TxtTargetIp.Text.Trim();
         _vm.CustomPorts = TxtCustomPorts.Text;
 
         EmptyState.Visibility = Visibility.Collapsed;
         PortGrid.Visibility   = Visibility.Collapsed;
 
         await _vm.StartScanAsync();
+        TxtProgressLabel.Text = _vm.StatusText;
     }
 
     private void BtnStop_Click(object sender, RoutedEventArgs e) => _vm?.StopScanCommand.Execute(null);
@@ -180,6 +152,7 @@ public partial class PortScanView : UserControl
 
     private void BtnCopyResults_Click(object sender, RoutedEventArgs e)
     {
+        if (_vm == null) return;
         var sb = new StringBuilder();
         sb.AppendLine($"Port-Scan: {TxtTargetIp.Text}");
         sb.AppendLine(new string('-', 50));

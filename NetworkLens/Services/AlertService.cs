@@ -2,46 +2,31 @@ using NetworkLens.Models;
 
 namespace NetworkLens.Services;
 
-public class AlertService : IDisposable
+/// <summary>
+/// Decides whether an event should notify the user, based on the
+/// <b>current</b> settings (changes in Settings apply without restart).
+/// </summary>
+public class AlertService
 {
-    private AppSettings _settings;
-    private readonly ToastService _toast;
+    private readonly ToastService _toast = new();
 
-    public AlertService(AppSettings settings)
-    {
-        _settings = settings;
-        _toast = new ToastService(settings);
-    }
-
-    public void UpdateSettings(AppSettings settings)
-    {
-        _settings = settings;
-        _toast.UpdateSettings(settings);
-    }
+    private static AppSettings Settings => SettingsStore.Current;
 
     public void NotifyNewDevice(NetworkDevice device)
     {
-        if (!_settings.NotificationsEnabled || !_settings.Alerts.NewDeviceAlert) return;
+        if (!Settings.NotificationsEnabled || !Settings.Alerts.NewDeviceAlert) return;
         _toast.AlertNewDevice(device);
     }
 
     public void NotifyDeviceOffline(NetworkDevice device)
     {
-        if (!_settings.NotificationsEnabled || !_settings.Alerts.DeviceOfflineAlert) return;
+        if (!Settings.NotificationsEnabled || !Settings.Alerts.DeviceOfflineAlert) return;
         _toast.AlertDeviceOffline(device);
     }
 
     public void NotifyDeviceOnline(NetworkDevice device)
     {
-        if (!_settings.NotificationsEnabled || !_settings.Alerts.DeviceOnlineAlert) return;
+        if (!Settings.NotificationsEnabled || !Settings.Alerts.DeviceOnlineAlert) return;
         _toast.AlertDeviceOnline(device);
     }
-
-    public void NotifyNewOpenPort(NetworkDevice device, PortResult port)
-    {
-        if (!_settings.NotificationsEnabled || !_settings.Alerts.NewOpenPortAlert) return;
-        _toast.AlertNewPort(device, port);
-    }
-
-    public void Dispose() => _toast.Dispose();
 }

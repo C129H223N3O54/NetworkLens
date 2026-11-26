@@ -1,6 +1,5 @@
-// Build: 2026-05-06 (v1.3.7 final translation polish)
-using System.IO;
-using System.Windows;
+using NetworkLens.Helpers;
+using NetworkLens.Localization;
 using NetworkLens.ViewModels;
 
 namespace NetworkLens;
@@ -14,8 +13,10 @@ public partial class App : Application
     public static string ConfigPath  { get; } = Path.Combine(AppDataPath, "config.json");
     public static string DevicesPath { get; } = Path.Combine(AppDataPath, "devices.json");
 
-    public static ScanViewModel    ScanVm    { get; } = new();
-    public static MonitorViewModel MonitorVm { get; } = new();
+    // Created in OnStartup — after the language is known and the data folders exist.
+    // (As static initializers they ran before OnStartup, so initial texts were always German.)
+    public static ScanViewModel    ScanVm    { get; private set; } = null!;
+    public static MonitorViewModel MonitorVm { get; private set; } = null!;
 
     // ── Theme ─────────────────────────────────────
     private static bool _isDark = true;
@@ -41,6 +42,8 @@ public partial class App : Application
 
     protected override void OnStartup(StartupEventArgs e)
     {
+        RegisterGlobalExceptionHandlers();
+
         base.OnStartup(e);
 
         // Register code page encodings (for OEM CP 850 used by netstat etc.)
@@ -50,21 +53,38 @@ public partial class App : Application
         Directory.CreateDirectory(ScansPath);
 
         // Load saved theme preference
-        bool dark = Views.SettingsView.LoadThemePreference();
-        ApplyTheme(dark);
+        ApplyTheme(Views.SettingsView.LoadThemePreference());
 
         // Detect / load language preference (auto-detect Windows lang on first start)
-        Localization.LocalizationManager.Instance.Language =
-            Localization.LocalizationManager.DetectInitialLanguage();
+        LocalizationManager.Instance.Language = LocalizationManager.DetectInitialLanguage();
 
-        DispatcherUnhandledException += (s, ex) =>
+        ScanVm    = new ScanViewModel();
+        MonitorVm = new MonitorViewModel();
+    }
+
+    private void RegisterGlobalExceptionHandlers()
+    {
+        DispatcherUnhandledException += (_, ex) =>
         {
+            Log.Error("Unhandled UI exception", ex.Exception);
             MessageBox.Show(
-                $"{Localization.LocalizationManager.Instance.T("Err_Generic")}\n\n{ex.Exception.Message}",
-                Localization.LocalizationManager.Instance.T("Err_Title"),
+                $"{LocalizationManager.Instance.T("Err_Generic")}\n\n{ex.Exception.Message}\n\n{Log.LogPath}",
+                LocalizationManager.Instance.T("Err_Title"),
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
             ex.Handled = true;
+        };
+
+        AppDomain.CurrentDomain.UnhandledException += (_, ex) =>
+        {
+            if (ex.ExceptionObject is Exception exception)
+                Log.Error("Unhandled exception (terminating)", exception);
+        };
+
+        TaskScheduler.UnobservedTaskException += (_, ex) =>
+        {
+            Log.Error("Unobserved task exception", ex.Exception);
+            ex.SetObserved();
         };
     }
 }

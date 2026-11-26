@@ -258,7 +258,7 @@
                                             <TextBlock FontFamily="Consolas" FontSize="14"
                                                        HorizontalAlignment="Center"
                                                        Foreground="{DynamicResource StatusOnlineBrush}">
-                                                <Run Text="{Binding MinPing}"/><Run Text="ms" FontSize="11"/>
+                                                <Run Text="{Binding MinPingText, Mode=OneWay}"/><Run Text="ms" FontSize="11"/>
                                             </TextBlock>
                                         </StackPanel>
                                         <StackPanel Grid.Column="1" HorizontalAlignment="Center">

@@ -763,6 +763,34 @@ internal static class Strings
         ["Cl_v100_8"]               = ("• Self-contained .exe, MIT-Lizenz",
                                        "• Self-contained .exe, MIT License"),
 
+        // ── v1.3.8 — code review ───────────────────
+        ["Scan_NewBadgeFmt"]        = ("{0} neue",                           "{0} new"),
+        ["Port_WaitingResult"]      = ("Warte auf Ergebnis…",                "Waiting for results…"),
+        ["Port_NoValidPorts"]       = ("Keine gültigen Ports angegeben (1–65535, z. B. 80,443,8000-8100).",
+                                       "No valid ports specified (1–65535, e.g. 80,443,8000-8100)."),
+        ["Err_SubnetInvalid"]       = ("Ungültiges Subnetz: {0} — Format z. B. 192.168.1.0/24",
+                                       "Invalid subnet: {0} — format e.g. 192.168.1.0/24"),
+        ["Err_SubnetTooLargeFmt"]   = ("Subnetz zu groß: {0:N0} Hosts (maximal {1:N0}, also /16)",
+                                       "Subnet too large: {0:N0} hosts (maximum {1:N0}, i.e. /16)"),
+        ["Ctx_ShowDetails"]         = ("Alle Details…",                      "All details…"),
+        ["Ctx_ShowTtl"]             = ("TTL / Betriebssystem-Hinweis",       "TTL / operating system hint"),
+
+        // Changelog v1.3.8
+        ["Cl_v138_Title"]           = ("Code-Review: Tempo, Sicherheit, Stabilität",
+                                       "Code review: speed, security, stability"),
+        ["Cl_v138_1"]               = ("• Fix: Scan-Timeout, Threads und Port-Timeout aus den Einstellungen werden jetzt wirklich angewendet",
+                                       "• Fix: scan timeout, threads and port timeout from Settings are now actually applied"),
+        ["Cl_v138_2"]               = ("• Full-Port-Scan (65.535 Ports) ohne UI-Einfrieren — Ergebnisse werden gebündelt angezeigt",
+                                       "• Full port scan (65,535 ports) no longer freezes the UI — results are shown in batches"),
+        ["Cl_v138_3"]               = ("• Schnellerer App-Start: Netzwerk-Info und Verlauf laden im Hintergrund bzw. erst beim Öffnen",
+                                       "• Faster startup: network info and history load in the background / on first open"),
+        ["Cl_v138_4"]               = ("• Sicherheit: Systemtools nur noch per vollständigem Pfad, CSV-Formel-Schutz, CSP im HTML-Report",
+                                       "• Security: system tools started by full path only, CSV formula protection, CSP in HTML report"),
+        ["Cl_v138_5"]               = ("• Fix: HTML-Report sortiert IP, Ping und Datum korrekt; ungültige Subnetze und Port-Bereiche werden abgefangen",
+                                       "• Fix: HTML report sorts IP, ping and date correctly; invalid subnets and port ranges are caught"),
+        ["Cl_v138_6"]               = ("• Kontextmenü: Alle Details und TTL-Hinweis; Fehlerprotokoll unter %AppData%\\NetworkLens",
+                                       "• Context menu: all details and TTL hint; error log in %AppData%\\NetworkLens"),
+
         // ── Legacy-Aliases (V1 Keys still referenced in some places) ──
         ["Port_ColStatus"]          = ("Status",                             "Status"),
         ["Port_ColService"]         = ("Dienst",                             "Service"),

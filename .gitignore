@@ -53,3 +53,11 @@ logs/
 *.zip
 *.tar.gz
 NetworkLens.exe
+
+# Leftovers from the old PowerShell deploy scripts
+.*-trigger
+.sideforge-migration
+.theme-update
+
+# Atomic-write temp files
+*.tmp

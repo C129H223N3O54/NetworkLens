@@ -50,12 +50,20 @@ public class ReportGenerator
         return filePath;
     }
 
+    private static readonly char[] CsvQuoteChars = { ',', '"', '\n', '\r' };
+
     private static string CsvEscape(string? s)
     {
         if (string.IsNullOrEmpty(s)) return "";
-        if (s.Contains(',') || s.Contains('"') || s.Contains('\n'))
-            return $"\"{s.Replace("\"", "\"\"")}\"";
-        return s;
+
+        // CSV/formula injection (CWE-1236): hostnames and aliases come from the network
+        // or the user. A value starting with = + - @ would be executed as a formula by Excel.
+        if (s[0] is '=' or '+' or '-' or '@' or '\t' or '\r')
+            s = "'" + s;
+
+        return s.IndexOfAny(CsvQuoteChars) >= 0
+            ? $"\"{s.Replace("\"", "\"\"")}\""
+            : s;
     }
 
     private static string BuildHtml(ScanResult scan, string initialTheme)
@@ -77,20 +85,21 @@ public class ReportGenerator
             };
             var portsHtml = d.OpenPorts.Count > 0
                 ? string.Join(", ", d.OpenPorts.Where(p => p.Status == PortStatus.Open)
-                    .Select(p => $"<span class='port'>{p.Port}{(!string.IsNullOrEmpty(p.DisplayService) ? $"/{p.DisplayService}" : "")}</span>"))
+                    .Select(p => $"<span class='port'>{p.Port}{(!string.IsNullOrEmpty(p.DisplayService) ? $"/{H(p.DisplayService)}" : "")}</span>"))
                 : "<span style='color:#4A5568'>—</span>";
 
-            rows.AppendLine($@"<tr class='device-row' data-search=""{H(d.IpAddress)} {H(d.Hostname)} {H(d.Alias)} {H(d.MacAddress)} {H(d.Manufacturer)}"">
+            var pingSort = d.ResponseTime >= 0 ? d.ResponseTime : int.MaxValue;
+            rows.AppendLine($@"<tr class='device-row' data-status='{d.Status}' data-search=""{H(d.IpAddress)} {H(d.Hostname)} {H(d.Alias)} {H(d.MacAddress)} {H(d.Manufacturer)}"">
   <td><span class='dot' style='background:{statusColor};box-shadow:0 0 6px {statusColor}88'></span></td>
-  <td><code>{H(d.IpAddress)}</code>{(d.IsNew ? $" <span class='badge new'>{L.T("Rep_BadgeNew")}</span>" : "")}</td>
+  <td data-sort='{d.IpSort}'><code>{H(d.IpAddress)}</code>{(d.IsNew ? $" <span class='badge new'>{H(L.T("Rep_BadgeNew"))}</span>" : "")}</td>
   <td>{H(d.Hostname)}</td>
   <td><em>{H(d.Alias)}</em></td>
   <td><code>{H(d.MacAddress)}</code></td>
   <td>{H(d.Manufacturer)}</td>
-  <td>{(d.ResponseTime >= 0 ? $"{d.ResponseTime} ms" : "—")}</td>
+  <td data-sort='{pingSort}'>{(d.ResponseTime >= 0 ? $"{d.ResponseTime} ms" : "—")}</td>
   <td class='ports'>{portsHtml}</td>
   <td>{d.Category}</td>
-  <td>{d.LastSeen:dd.MM.yyyy HH:mm}</td>
+  <td data-sort='{d.LastSeen:yyyyMMddHHmmss}'>{d.LastSeen:dd.MM.yyyy HH:mm}</td>
 </tr>");
         }
 
@@ -99,6 +108,7 @@ public class ReportGenerator
 <head>
 <meta charset=""UTF-8""/>
 <meta name=""viewport"" content=""width=device-width, initial-scale=1""/>
+<meta http-equiv=""Content-Security-Policy"" content=""default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:""/>
 <title>Sideforge / NetworkLens {L.T("Rep_Title")} — {H(scan.Subnet)} — {scan.TimestampFormatted}</title>
 <style>
 :root[data-theme=""dark""] {{
@@ -142,7 +152,7 @@ select{{background:var(--bg2);border:1px solid var(--border);border-radius:5px;c
 table{{width:100%;border-collapse:collapse;background:var(--card);border-radius:8px;overflow:hidden;border:1px solid var(--border)}}
 th{{background:var(--bg);color:var(--text2);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;padding:11px 14px;text-align:left;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}}
 th:hover{{color:var(--text)}}
-td{{padding:10px 14px;border-bottom:1px solid #1a1e24;vertical-align:middle}}
+td{{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:middle}}
 tr.device-row:hover td{{background:var(--hover)}}
 .dot{{display:inline-block;width:8px;height:8px;border-radius:50%}}
 code{{font-family:'Cascadia Code',Consolas,monospace;font-size:12px;color:var(--accent)}}
@@ -222,28 +232,25 @@ function applyFilters(){{
   const rows=document.querySelectorAll('#tbody .device-row');
   let vis=0;
   rows.forEach(r=>{{
-    const txt=r.dataset.search.toLowerCase();
-    const dot=r.querySelector('.dot');
-    const statusOk=!currentStatus||dot?.style.background===getColor(currentStatus);
-    const searchOk=!currentSearch||txt.includes(currentSearch);
+    const statusOk=!currentStatus||r.dataset.status===currentStatus;
+    const searchOk=!currentSearch||r.dataset.search.toLowerCase().includes(currentSearch);
     const show=statusOk&&searchOk;
     r.classList.toggle('hidden',!show);
     if(show)vis++;
   }});
   document.getElementById('rowcount').textContent=vis+' {L.T("Rep_RowCount")}';
 }}
-function getColor(s){{return{{Online:'rgb(116, 167, 50)',Slow:'rgb(186, 117, 23)',Offline:'rgb(220, 38, 38)'}}[s]||''}}
 function sortTable(col){{
   const tbody=document.getElementById('tbody');
   const rows=[...tbody.querySelectorAll('.device-row')];
-  const asc=tbody.dataset.sortCol==col&&tbody.dataset.sortDir=='asc';
+  const asc=!(tbody.dataset.sortCol==col&&tbody.dataset.sortDir=='asc');
+  const key=r=>{{const c=r.cells[col];if(!c)return'';return c.dataset.sort!==undefined?Number(c.dataset.sort):c.textContent.trim().toLowerCase();}};
   rows.sort((a,b)=>{{
-    const av=a.cells[col]?.textContent.trim()||'';
-    const bv=b.cells[col]?.textContent.trim()||'';
-    const n=v=>parseFloat(v)||0;
-    return(col===1||col===6)?(asc?n(bv)-n(av):n(av)-n(bv)):asc?bv.localeCompare(av):av.localeCompare(bv);
+    const x=key(a),y=key(b);
+    const d=(typeof x==='number'&&typeof y==='number')?x-y:String(x).localeCompare(String(y));
+    return asc?d:-d;
   }});
-  tbody.dataset.sortCol=col; tbody.dataset.sortDir=asc?'desc':'asc';
+  tbody.dataset.sortCol=col; tbody.dataset.sortDir=asc?'asc':'desc';
   rows.forEach(r=>tbody.appendChild(r));
 }}
 </script>

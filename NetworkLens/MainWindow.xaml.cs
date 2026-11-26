@@ -1,8 +1,9 @@
 using System.Security.Principal;
 using System.Windows;
 using System.Windows.Input;
+using NetworkLens.Helpers;
 using NetworkLens.Models;
-using NetworkLens.ViewModels;
+using NetworkLens.Services;
 
 namespace NetworkLens;
 
@@ -35,8 +36,7 @@ public partial class MainWindow : Window
         MonitorViewPage.SetViewModel(App.MonitorVm);
 
         // Auto-scan on startup if configured
-        var settings = ViewModels.SettingsViewModel.LoadStatic();
-        if (settings.AutoScanOnStart)
+        if (SettingsStore.Current.AutoScanOnStart)
         {
             await Task.Delay(400); // let UI settle
             await App.ScanVm.StartScanAsync();
@@ -109,21 +109,6 @@ public partial class MainWindow : Window
             page.Visibility = Visibility.Visible;
     }
 
-    // Update nav button icons to reflect active state
-    private void UpdateNavIcons()
-    {
-        var icons = new Dictionary<Button, string>
-        {
-            [NavScan]     = "⬡",
-            [NavPorts]    = "⬡",
-            [NavInfo]     = "⬡",
-            [NavMonitor]  = "⬡",
-            [NavReport]   = "⬡",
-            [NavSettings] = "⬡"
-        };
-        // Active button uses accent-colored icon (handled via Tag trigger in XAML)
-    }
-
     // ══════════════════════════════════════════════
     // ADMIN CHECK
     // ══════════════════════════════════════════════
@@ -150,17 +135,21 @@ public partial class MainWindow : Window
     {
         try
         {
+            var exe = Environment.ProcessPath
+                      ?? throw new InvalidOperationException("Process path unavailable");
             var psi = new System.Diagnostics.ProcessStartInfo
             {
-                FileName = System.Diagnostics.Process.GetCurrentProcess().MainModule!.FileName,
+                FileName = exe,
                 UseShellExecute = true,
                 Verb = "runas"
             };
-            System.Diagnostics.Process.Start(psi);
+            using (System.Diagnostics.Process.Start(psi)) { }
             Application.Current.Shutdown();
         }
         catch (Exception ex)
         {
+            // Includes the user cancelling the UAC prompt (Win32Exception 1223)
+            Log.Warn("Restart as admin", ex);
             var L = Localization.LocalizationManager.Instance;
             MessageBox.Show(string.Format(L.T("Msg_AdminRestartFail"), ex.Message),
                 L.T("Msg_Error"), MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -201,7 +190,7 @@ public partial class MainWindow : Window
         _lastStatus      = status;
         _lastDeviceCount = deviceCount;
 
-        Dispatcher.Invoke(() =>
+        void Apply()
         {
             StatusText.Text  = status;
             DeviceCount.Text = $"{deviceCount} {Localization.LocalizationManager.Instance.T("Footer_Devices")}";
@@ -217,6 +206,9 @@ public partial class MainWindow : Window
                 ScanDuration.Text       = $"Scan: {duration}";
                 ScanDuration.Visibility = Visibility.Visible;
             }
-        });
+        }
+
+        if (Dispatcher.CheckAccess()) Apply();
+        else Dispatcher.InvokeAsync(Apply);
     }
 }
