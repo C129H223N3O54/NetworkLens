@@ -56,6 +56,9 @@ jobs:
       - name: Build (Debug check)
         run: dotnet build NetworkLens/NetworkLens.csproj -c Debug --no-restore
 
+      # No single-file compression: a compressed bundle has to be unpacked on every
+      # start. Measured on windows-latest (median first frame): 873 ms compressed vs
+      # 486 ms uncompressed — at the cost of a larger exe (72.5 MB → 170.6 MB).
       - name: Publish self-contained single-file exe
         run: |
           dotnet publish NetworkLens/NetworkLens.csproj `
@@ -65,7 +68,7 @@ jobs:
             -p:PublishSingleFile=true `
             -p:IncludeNativeLibrariesForSelfExtract=true `
             -p:PublishReadyToRun=true `
-            -p:EnableCompressionInSingleFile=true `
+            -p:EnableCompressionInSingleFile=false `
             --no-restore `
             -o ./publish
 
