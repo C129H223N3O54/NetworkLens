@@ -183,6 +183,35 @@ ScanView_BulkScanButton    "Ports auf allen scannen…" / "Scan ports on all…"
 
 ---
 
+## Open items from the code review (v1.3.8)
+
+Found during the full code review but intentionally not changed in v1.3.8,
+because they are features or behaviour changes rather than fixes.
+
+- **Real Windows notifications**: "Notifications" currently only play a sound
+  and write to the log (`ToastService`). Real toasts need
+  `CommunityToolkit.WinUI.Notifications` and a Windows 10 target framework
+  (`net8.0-windows10.0.17763.0`).
+- **"New open port" alert**: the checkbox exists in Settings, but no code path
+  raises it yet. It needs a link between port-scan results and known devices
+  (fits well with Bulk Port-Scan above).
+- **Devices that block ICMP**: hosts with a firewall that drops ping are not
+  found. An ARP-based fallback (`SendARP` for every address in the local
+  segment) would find them, at the cost of a longer scan.
+- **Randomized MAC addresses**: phones and tablets use private MACs
+  (locally administered bit set). Show a "Private address" hint instead of
+  an empty manufacturer.
+- **Per-monitor DPI**: an `app.manifest` with `PerMonitorV2` would render
+  sharper on mixed-DPI multi-monitor setups.
+- **Trusted code signing**: release builds are signed with a self-signed
+  certificate, which does not prevent SmartScreen warnings. A real
+  certificate (or Azure Trusted Signing) would.
+- **Settings view as MVVM**: `SettingsView` still maps combo-box indices in
+  code-behind; binding to `AppSettings` would remove the duplicated
+  index↔value tables.
+
+---
+
 ## Future ideas (unscoped)
 
 These are noted for later consideration; no design work yet.

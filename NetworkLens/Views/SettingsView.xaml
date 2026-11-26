@@ -343,7 +343,7 @@
                                                VerticalAlignment="Center" Margin="6,2,0,0"/>
                                 </StackPanel>
                                 <TextBlock x:Name="TxtVersion"
-                                           Text="v1.3.6 — .NET 8 / WPF / Windows x64"
+                                           Text=".NET 8 / WPF / Windows x64"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource AccentBrush}" Margin="0,2,0,0"/>
                             </StackPanel>
@@ -425,14 +425,54 @@
                     <StackPanel>
                         <TextBlock Text="{Binding [Section_Changelog], Source={x:Static loc:LocalizationManager.Instance}}" Style="{StaticResource Label}" Margin="0,0,0,16"/>
 
-                        <!-- v1.3.7 -->
+                        <!-- v1.3.8 -->
                         <Expander Margin="0,0,0,8" IsExpanded="True">
                             <Expander.Header>
                                 <StackPanel Orientation="Horizontal">
                                     <Border Background="{DynamicResource AccentBrush}"
                                             CornerRadius="4" Padding="7,2" Margin="0,0,10,0" VerticalAlignment="Center">
-                                        <TextBlock Text="v1.3.7" FontSize="11" FontWeight="Bold"
+                                        <TextBlock Text="v1.3.8" FontSize="11" FontWeight="Bold"
                                                    Foreground="#FF000000" FontFamily="Consolas"/>
+                                    </Border>
+                                    <TextBlock Text="{Binding [Cl_v138_Title], Source={x:Static loc:LocalizationManager.Instance}}"
+                                               FontFamily="Verdana" FontSize="13" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextPrimaryBrush}"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Expander.Header>
+                            <StackPanel Margin="16,8,0,8">
+                                <TextBlock Text="{Binding [Cl_v138_1], Source={x:Static loc:LocalizationManager.Instance}}"
+                                           FontFamily="Verdana" FontSize="12" TextWrapping="Wrap"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="{Binding [Cl_v138_2], Source={x:Static loc:LocalizationManager.Instance}}"
+                                           FontFamily="Verdana" FontSize="12" TextWrapping="Wrap"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="{Binding [Cl_v138_3], Source={x:Static loc:LocalizationManager.Instance}}"
+                                           FontFamily="Verdana" FontSize="12" TextWrapping="Wrap"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="{Binding [Cl_v138_4], Source={x:Static loc:LocalizationManager.Instance}}"
+                                           FontFamily="Verdana" FontSize="12" TextWrapping="Wrap"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="{Binding [Cl_v138_5], Source={x:Static loc:LocalizationManager.Instance}}"
+                                           FontFamily="Verdana" FontSize="12" TextWrapping="Wrap"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                                <TextBlock Text="{Binding [Cl_v138_6], Source={x:Static loc:LocalizationManager.Instance}}"
+                                           FontFamily="Verdana" FontSize="12" TextWrapping="Wrap"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1"/>
+                            </StackPanel>
+                        </Expander>
+
+                        <Border Height="1" Background="{DynamicResource BorderBrush}" Margin="0,4,0,8"/>
+
+                        <!-- v1.3.7 -->
+                        <Expander Margin="0,0,0,8" IsExpanded="False">
+                            <Expander.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Background="{DynamicResource BgDeepBrush}"
+                                            BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+                                            CornerRadius="4" Padding="7,2" Margin="0,0,10,0" VerticalAlignment="Center">
+                                        <TextBlock Text="v1.3.7" FontSize="11" FontWeight="Bold"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}" FontFamily="Consolas"/>
                                     </Border>
                                     <TextBlock Text="{Binding [Cl_v137_Title], Source={x:Static loc:LocalizationManager.Instance}}"
                                                FontFamily="Verdana" FontSize="13" FontWeight="SemiBold"

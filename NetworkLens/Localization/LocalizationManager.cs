@@ -52,8 +52,7 @@ public sealed class LocalizationManager : INotifyPropertyChanged
         {
             if (File.Exists(LangFile))
             {
-                var json = File.ReadAllText(LangFile);
-                var doc = JsonDocument.Parse(json);
+                using var doc = JsonDocument.Parse(File.ReadAllText(LangFile));
                 if (doc.RootElement.TryGetProperty("language", out var lang))
                     return lang.GetString() == "en" ? "en" : "de";
             }
@@ -69,10 +68,12 @@ public sealed class LocalizationManager : INotifyPropertyChanged
     {
         try
         {
-            Directory.CreateDirectory(App.AppDataPath);
             var json = JsonSerializer.Serialize(new { language = _language });
-            File.WriteAllText(LangFile, json);
+            Helpers.AtomicFile.WriteAllText(LangFile, json);
         }
-        catch { }
+        catch (Exception ex)
+        {
+            Helpers.Log.Warn("SaveLanguage", ex);
+        }
     }
 }

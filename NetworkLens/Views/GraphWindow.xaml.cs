@@ -1,4 +1,4 @@
-using System.Windows;
+using System.ComponentModel;
 using System.Windows.Input;
 using NetworkLens.ViewModels;
 
@@ -18,12 +18,25 @@ public partial class GraphWindow : Window
 
         UpdateStats();
 
-        // Keep stats live even when minimized
-        entry.PropertyChanged += (_, pe) =>
+        // Keep stats live even when minimized — unsubscribed again in OnClosed,
+        // otherwise closed windows would keep redrawing and never be collected.
+        entry.PropertyChanged += Entry_PropertyChanged;
+    }
+
+    private void Entry_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName != nameof(MonitorEntry.PingHistory)) return;
+        Dispatcher.InvokeAsync(() =>
         {
-            if (pe.PropertyName == nameof(MonitorEntry.PingHistory))
-                Dispatcher.Invoke(() => { UpdateStats(); Redraw(); });
-        };
+            UpdateStats();
+            Redraw();
+        });
+    }
+
+    protected override void OnClosed(EventArgs e)
+    {
+        _entry.PropertyChanged -= Entry_PropertyChanged;
+        base.OnClosed(e);
     }
 
     private void UpdateStats()
@@ -31,7 +44,7 @@ public partial class GraphWindow : Window
         TxtPing.Text        = _entry.LastPing >= 0 ? _entry.LastPing.ToString() : "—";
         TxtJitter.Text      = $"{_entry.Jitter:F1}";
         TxtJitterIcon.Text  = _entry.JitterIcon;
-        TxtMin.Text         = _entry.MinPing == long.MaxValue ? "—" : _entry.MinPing.ToString();
+        TxtMin.Text         = _entry.MinPingText;
         TxtAvg.Text         = $"{_entry.AvgPing:F0}";
         TxtMax.Text         = _entry.MaxPing.ToString();
         TxtLoss.Text        = $"{_entry.PacketLoss:F1}";

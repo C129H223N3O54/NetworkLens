@@ -1,15 +1,12 @@
-using System.Windows;
-using System.Windows.Controls;
 using NetworkLens.Helpers;
 using NetworkLens.Models;
-using NetworkLens.ViewModels;
+using NetworkLens.Services;
 
 namespace NetworkLens.Views;
 
 public partial class SettingsView : UserControl
 {
     private AppSettings _settings = new();
-    private bool _loading = false;
 
     public SettingsView()
     {
@@ -18,8 +15,10 @@ public partial class SettingsView : UserControl
 
     private void UserControl_Loaded(object sender, RoutedEventArgs e)
     {
-        _settings = SettingsViewModel.LoadStatic();
+        _settings = SettingsStore.Load();
         PopulateUi();
+
+        TxtVersion.Text = $"{App.VersionText} — .NET 8 / WPF / Windows x64";
 
         // Show app data paths
         TxtPathConfig.Text  = App.ConfigPath;
@@ -29,8 +28,6 @@ public partial class SettingsView : UserControl
 
     private void PopulateUi()
     {
-        _loading = true;
-
         CmbScanTimeout.SelectedIndex = _settings.ScanTimeoutMs switch
         {
             500  => 0,
@@ -74,7 +71,6 @@ public partial class SettingsView : UserControl
 
         UpdateThemeButtons();
         UpdateLanguageButtons();
-        _loading = false;
     }
 
     private void CollectSettings()
@@ -112,7 +108,9 @@ public partial class SettingsView : UserControl
 
         _settings.AutoScanOnStart    = ChkAutoScan.IsChecked == true;
         _settings.NotificationsEnabled = ChkNotifications.IsChecked == true;
-        _settings.ReportOutputPath   = TxtOutputPath.Text.Trim();
+        _settings.ReportOutputPath   = string.IsNullOrWhiteSpace(TxtOutputPath.Text)
+            ? AppSettings.DefaultReportPath
+            : TxtOutputPath.Text.Trim();
 
         _settings.Alerts.NewDeviceAlert    = ChkAlertNewDevice.IsChecked == true;
         _settings.Alerts.DeviceOfflineAlert = ChkAlertOffline.IsChecked == true;
@@ -127,14 +125,16 @@ public partial class SettingsView : UserControl
         CollectSettings();
         try
         {
-            var json = System.Text.Json.JsonSerializer.Serialize(
-                _settings, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
-            System.IO.File.WriteAllText(App.ConfigPath, json);
+            // Saved settings apply immediately (scanner, port scanner, alerts) — no restart needed.
+            SettingsStore.Save(_settings);
+            _settings = SettingsStore.Load();
+            TxtOutputPath.Text = _settings.ReportOutputPath;
             MessageBox.Show(Localization.LocalizationManager.Instance.T("Msg_SettingsSaved"), "NetworkLens",
                 MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception ex)
         {
+            Log.Warn("Save settings", ex);
             MessageBox.Show(string.Format(Localization.LocalizationManager.Instance.T("Msg_SettingsSaveError"), ex.Message), Localization.LocalizationManager.Instance.T("Msg_Error"),
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
@@ -153,22 +153,20 @@ public partial class SettingsView : UserControl
 
     private void BtnBrowseOutput_Click(object sender, RoutedEventArgs e)
     {
-        // WPF-nativer Ordner-Dialog über SaveFileDialog-Trick
-        var dlg = new Microsoft.Win32.SaveFileDialog
+        // Native folder picker (new in .NET 8 WPF) — replaces the SaveFileDialog workaround
+        var dlg = new Microsoft.Win32.OpenFolderDialog
         {
-            Title            = Localization.LocalizationManager.Instance.T("Set_ChooseFolder"),
-            FileName         = Localization.LocalizationManager.Instance.T("Set_ChooseFolderShort"),
-            Filter           = "Ordner|*.thisDoesNotExist",
-            CheckFileExists  = false,
-            CheckPathExists  = true,
-            InitialDirectory = TxtOutputPath.Text
+            Title = Localization.LocalizationManager.Instance.T("Set_ChooseFolder"),
         };
+        if (Directory.Exists(TxtOutputPath.Text))
+            dlg.InitialDirectory = TxtOutputPath.Text;
+
         if (dlg.ShowDialog() == true)
-            TxtOutputPath.Text = System.IO.Path.GetDirectoryName(dlg.FileName) ?? TxtOutputPath.Text;
+            TxtOutputPath.Text = dlg.FolderName;
     }
 
     private void BtnOpenAppData_Click(object sender, RoutedEventArgs e)
-        => ExportHelper.OpenFolder(App.AppDataPath);
+        => ShellHelper.OpenFolder(App.AppDataPath);
 
     private void BtnLangDe_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {
@@ -188,12 +186,8 @@ public partial class SettingsView : UserControl
     {
         bool isEn = Localization.LocalizationManager.Instance.Language == "en";
 
-        BtnLangDe.BorderBrush = isEn
-            ? new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0x88, 0x87, 0x80))
-            : new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0xE8, 0x60, 0x0A));
-        BtnLangEn.BorderBrush = isEn
-            ? new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0xE8, 0x60, 0x0A))
-            : new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0x88, 0x87, 0x80));
+        BtnLangDe.BorderBrush = isEn ? UiBrushes.Muted : UiBrushes.Accent;
+        BtnLangEn.BorderBrush = isEn ? UiBrushes.Accent : UiBrushes.Muted;
     }
 
     private void BtnThemeDark_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -215,45 +209,42 @@ public partial class SettingsView : UserControl
         bool dark = App.IsDarkTheme;
 
         // Dark button: always dark bg/light text, active = accent border, inactive = muted border
-        BtnThemeDark.BorderBrush = dark
-            ? new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0xE8, 0x60, 0x0A))
-            : new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0x4A, 0x55, 0x68));
+        BtnThemeDark.BorderBrush = dark ? UiBrushes.Accent : UiBrushes.Neutral;
 
         // Light button: always light bg/dark text, active = accent border, inactive = muted border
-        BtnThemeLight.BorderBrush = dark
-            ? new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0x4A, 0x55, 0x68))
-            : new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0x00, 0x77, 0xA8));
+        BtnThemeLight.BorderBrush = dark ? UiBrushes.Neutral : UiBrushes.LightBlue;
     }
 
     private static void SaveThemePreference(bool dark)
     {
         try
         {
-            var prefs = new System.Collections.Generic.Dictionary<string, object>
-                { ["darkTheme"] = dark };
-            System.IO.File.WriteAllText(
-                System.IO.Path.Combine(App.AppDataPath, "theme.json"),
+            var prefs = new Dictionary<string, object> { ["darkTheme"] = dark };
+            AtomicFile.WriteAllText(
+                Path.Combine(App.AppDataPath, "theme.json"),
                 System.Text.Json.JsonSerializer.Serialize(prefs));
         }
-        catch { }
+        catch (Exception ex)
+        {
+            Log.Warn("Save theme", ex);
+        }
     }
 
     public static bool LoadThemePreference()
     {
         try
         {
-            var path = System.IO.Path.Combine(App.AppDataPath, "theme.json");
-            if (!System.IO.File.Exists(path)) return true; // default dark
-            var json = System.IO.File.ReadAllText(path);
-            var doc  = System.Text.Json.JsonDocument.Parse(json);
+            var path = Path.Combine(App.AppDataPath, "theme.json");
+            if (!File.Exists(path)) return true; // default dark
+            using var doc = System.Text.Json.JsonDocument.Parse(File.ReadAllText(path));
             return doc.RootElement.GetProperty("darkTheme").GetBoolean();
         }
         catch { return true; }
     }
 
     private void BtnGitHub_Click(object sender, RoutedEventArgs e)
-        => ExportHelper.OpenUrl("https://github.com/C129H223N3O54/NetworkLens");
+        => ShellHelper.OpenUrl("https://github.com/C129H223N3O54/NetworkLens");
 
     private void BtnReleases_Click(object sender, RoutedEventArgs e)
-        => ExportHelper.OpenUrl("https://github.com/C129H223N3O54/NetworkLens/releases");
+        => ShellHelper.OpenUrl("https://github.com/C129H223N3O54/NetworkLens/releases");
 }

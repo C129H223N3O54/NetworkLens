@@ -66,7 +66,7 @@ The monitor tracks each device continuously:
 - **Ping** — Round-trip time in ms
 - **Jitter** — Variation in ping over time (indicates connection stability)
 - **Packet Loss** — Percentage and absolute count of lost packets
-- **Graph** — Live Ping (cyan) + Jitter (yellow dashed) — double-click to open fullscreen window
+- **Graph** — Live Ping (orange) + Jitter (yellow dashed) — double-click to open fullscreen window
 - **Intervals** — 1s / 5s / 10s / 30s / 60s / Continuous
 
 ---
@@ -93,6 +93,11 @@ dotnet publish NetworkLens/NetworkLens.csproj `
   -o ./publish
 ```
 
+**Verify a downloaded release:** every release contains `NetworkLens.exe.sha256`.
+```powershell
+(Get-FileHash .\NetworkLens.exe -Algorithm SHA256).Hash
+```
+
 **Trigger a release via tag:**
 ```bash
 git tag v1.1.0
@@ -109,8 +114,10 @@ All data is stored in `%APPDATA%\NetworkLens\`:
 |---|---|
 | `config.json` | App settings and preferences |
 | `theme.json` | Light / Dark theme preference |
+| `language.json` | UI language (DE / EN) |
 | `devices.json` | Device aliases, categories, favorites |
-| `scans\*.json` | Scan history snapshots |
+| `scans\*.json` | Scan history snapshots (last 50) |
+| `networklens.log` | Error log — attach it to bug reports |
 
 ---
 

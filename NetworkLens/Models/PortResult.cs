@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using System.Windows.Media;
+using NetworkLens.Helpers;
 
 namespace NetworkLens.Models;
 
@@ -96,13 +96,26 @@ public class PortResult
         _     => ""
     };
 
-    // UI helpers
+    // ── UI helpers (shared frozen brushes, no allocation per access) ──
     [JsonIgnore] public Brush StatusColor => Status switch
     {
-        PortStatus.Open     => new SolidColorBrush(Color.FromRgb(0x74, 0xA7, 0x32)),
-        PortStatus.Filtered => new SolidColorBrush(Color.FromRgb(0xBA, 0x75, 0x17)),
-        PortStatus.Closed   => new SolidColorBrush(Color.FromRgb(0x4A, 0x55, 0x68)),
-        _                   => new SolidColorBrush(Color.FromRgb(0x4A, 0x55, 0x68))
+        PortStatus.Open     => UiBrushes.Online,
+        PortStatus.Filtered => UiBrushes.Warn,
+        _                   => UiBrushes.Neutral
+    };
+
+    [JsonIgnore] public Brush StatusBgColor => Status switch
+    {
+        PortStatus.Open     => UiBrushes.OnlineBg,
+        PortStatus.Filtered => UiBrushes.WarnBg,
+        _                   => UiBrushes.NeutralBg
+    };
+
+    [JsonIgnore] public Color StatusColorRaw => Status switch
+    {
+        PortStatus.Open     => UiBrushes.OnlineColor,
+        PortStatus.Filtered => UiBrushes.WarnColor,
+        _                   => UiBrushes.NeutralColor
     };
 
     [JsonIgnore] public string StatusText => Status switch

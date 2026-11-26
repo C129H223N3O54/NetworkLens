@@ -12,9 +12,9 @@
         AllowsTransparency="True"
         ResizeMode="CanResizeWithGrip">
 
-    <Window.Effect>
-        <DropShadowEffect Color="#FF000000" BlurRadius="30" ShadowDepth="0" Opacity="0.6"/>
-    </Window.Effect>
+    <!-- No Window.Effect here: a DropShadowEffect on the root forced the whole window
+         through a blur shader on every frame, yet was never visible (opaque
+         background, no margin → the shadow is clipped at the window edge). -->
 
     <Border Background="{DynamicResource BgMainBrush}" CornerRadius="10" BorderThickness="1"
             BorderBrush="{DynamicResource BorderBrush}">
@@ -213,7 +213,7 @@
                                     </StackPanel>
                                 </Border>
 
-                                <TextBlock Text="Sideforge · NetworkLens v1.3.6" FontSize="10"
+                                <TextBlock x:Name="TxtSidebarVersion" Text="Sideforge · NetworkLens" FontSize="10"
                                            Foreground="{DynamicResource TextMutedBrush}"
                                            HorizontalAlignment="Center"/>
                             </StackPanel>
@@ -230,20 +230,13 @@
                     <!-- Scan View (default) -->
                     <views:ScanView x:Name="ScanViewPage" Visibility="Visible"/>
 
-                    <!-- Port Scan View -->
-                    <views:PortScanView x:Name="PortScanViewPage" Visibility="Collapsed"/>
-
-                    <!-- Network Info View -->
-                    <views:NetworkInfoView x:Name="NetworkInfoViewPage" Visibility="Collapsed"/>
-
-                    <!-- Monitor View -->
-                    <views:MonitorView x:Name="MonitorViewPage" Visibility="Collapsed"/>
-
-                    <!-- Report View -->
-                    <views:ReportView x:Name="ReportViewPage" Visibility="Collapsed"/>
-
-                    <!-- Settings View -->
-                    <views:SettingsView x:Name="SettingsViewPage" Visibility="Collapsed"/>
+                    <!-- The other views are created on first navigation (MainWindow.xaml.cs),
+                         so app start only has to build the scan view. -->
+                    <ContentControl x:Name="PortScanHost"    Visibility="Collapsed" Focusable="False"/>
+                    <ContentControl x:Name="NetworkInfoHost" Visibility="Collapsed" Focusable="False"/>
+                    <ContentControl x:Name="MonitorHost"     Visibility="Collapsed" Focusable="False"/>
+                    <ContentControl x:Name="ReportHost"      Visibility="Collapsed" Focusable="False"/>
+                    <ContentControl x:Name="SettingsHost"    Visibility="Collapsed" Focusable="False"/>
                 </Grid>
             </Grid>
 

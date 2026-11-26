@@ -1,20 +1,49 @@
 using System.Security.Principal;
 using System.Windows;
 using System.Windows.Input;
+using NetworkLens.Helpers;
 using NetworkLens.Models;
-using NetworkLens.ViewModels;
+using NetworkLens.Services;
 
 namespace NetworkLens;
 
 public partial class MainWindow : Window
 {
     private Button? _activeNavButton;
-    private Dictionary<Button, FrameworkElement> _navMap = new();
+
+    // Host element per navigation button + a factory that creates the page on first use.
+    private readonly Dictionary<Button, FrameworkElement> _hosts = new();
+    private readonly Dictionary<Button, Action> _ensurePage = new();
+
+    // Pages other than the scan view are created lazily (on first navigation),
+    // which keeps app start-up down to building a single view.
+    private Views.PortScanView? _portScanPage;
+    private Views.NetworkInfoView? _networkInfoPage;
+    private Views.MonitorView? _monitorPage;
+    private Views.ReportView? _reportPage;
+    private Views.SettingsView? _settingsPage;
+
+    private Views.PortScanView PortScanPage => _portScanPage ??= Mount(new Views.PortScanView(), PortScanHost);
+    private Views.NetworkInfoView NetworkInfoPage => _networkInfoPage ??= Mount(new Views.NetworkInfoView(), NetworkInfoHost);
+    private Views.MonitorView MonitorPage => _monitorPage ??= Mount(new Views.MonitorView(), MonitorHost);
+    private Views.ReportView ReportPage => _reportPage ??= Mount(new Views.ReportView(), ReportHost);
+    private Views.SettingsView SettingsPage => _settingsPage ??= Mount(new Views.SettingsView(), SettingsHost);
+
+    private static T Mount<T>(T page, ContentControl host) where T : FrameworkElement
+    {
+        host.Content = page;
+        return page;
+    }
 
     public MainWindow()
     {
         InitializeComponent();
+        StartupTimer.Mark("MainWindow");
+
+        TxtSidebarVersion.Text = $"Sideforge · NetworkLens {App.VersionText}";
+
         Loaded += MainWindow_Loaded;
+        ContentRendered += MainWindow_ContentRendered;
 
         // Refresh status bar text when language changes
         Localization.LocalizationManager.Instance.LanguageChanged += (_, _) =>
@@ -30,17 +59,22 @@ public partial class MainWindow : Window
         CheckAdminStatus();
         SetActiveNav(NavScan);
 
-        // Wire shared ViewModels into views
+        // Wire the shared ViewModel into the (always present) scan view
         ScanViewPage.SetViewModel(App.ScanVm);
-        MonitorViewPage.SetViewModel(App.MonitorVm);
 
         // Auto-scan on startup if configured
-        var settings = ViewModels.SettingsViewModel.LoadStatic();
-        if (settings.AutoScanOnStart)
+        if (SettingsStore.Current.AutoScanOnStart && !StartupTimer.BenchmarkMode)
         {
             await Task.Delay(400); // let UI settle
             await App.ScanVm.StartScanAsync();
         }
+    }
+
+    private void MainWindow_ContentRendered(object? sender, EventArgs e)
+    {
+        StartupTimer.Complete();
+        if (StartupTimer.BenchmarkMode)
+            Application.Current.Shutdown();
     }
 
     // ══════════════════════════════════════════════
@@ -50,13 +84,14 @@ public partial class MainWindow : Window
 
     public void NavigateToPortScan(NetworkDevice device)
     {
-        PortScanViewPage.SetTarget(device.IpAddress ?? "");
+        PortScanPage.SetTarget(device.IpAddress ?? "");
         SetActiveNav(NavPorts);
     }
 
     public void NavigateToMonitor(NetworkDevice device)
     {
-        MonitorViewPage.AddDeviceExternal(device);
+        // The monitor view binds to App.MonitorVm when it is created/loaded
+        App.MonitorVm.AddDevice(device);
         SetActiveNav(NavMonitor);
     }
 
@@ -64,7 +99,7 @@ public partial class MainWindow : Window
     {
         // Pass the latest scan result to the report view
         if (App.ScanVm.LastScanResult != null)
-            ReportViewPage.SetCurrentScan(App.ScanVm.LastScanResult);
+            ReportPage.SetCurrentScan(App.ScanVm.LastScanResult);
         SetActiveNav(NavReport);
     }
 
@@ -74,12 +109,18 @@ public partial class MainWindow : Window
 
     private void SetupNavigation()
     {
-        _navMap[NavScan]     = ScanViewPage;
-        _navMap[NavPorts]    = PortScanViewPage;
-        _navMap[NavInfo]     = NetworkInfoViewPage;
-        _navMap[NavMonitor]  = MonitorViewPage;
-        _navMap[NavReport]   = ReportViewPage;
-        _navMap[NavSettings] = SettingsViewPage;
+        _hosts[NavScan]     = ScanViewPage;
+        _hosts[NavPorts]    = PortScanHost;
+        _hosts[NavInfo]     = NetworkInfoHost;
+        _hosts[NavMonitor]  = MonitorHost;
+        _hosts[NavReport]   = ReportHost;
+        _hosts[NavSettings] = SettingsHost;
+
+        _ensurePage[NavPorts]    = () => _ = PortScanPage;
+        _ensurePage[NavInfo]     = () => _ = NetworkInfoPage;
+        _ensurePage[NavMonitor]  = () => _ = MonitorPage;
+        _ensurePage[NavReport]   = () => _ = ReportPage;
+        _ensurePage[NavSettings] = () => _ = SettingsPage;
     }
 
     private void NavButton_Click(object sender, RoutedEventArgs e)
@@ -88,7 +129,7 @@ public partial class MainWindow : Window
         {
             // When navigating to Report, always pass latest scan
             if (btn == NavReport && App.ScanVm.LastScanResult != null)
-                ReportViewPage.SetCurrentScan(App.ScanVm.LastScanResult);
+                ReportPage.SetCurrentScan(App.ScanVm.LastScanResult);
 
             SetActiveNav(btn);
         }
@@ -99,29 +140,17 @@ public partial class MainWindow : Window
         if (_activeNavButton != null)
             _activeNavButton.Tag = null;
 
-        foreach (var view in _navMap.Values)
-            view.Visibility = Visibility.Collapsed;
+        foreach (var host in _hosts.Values)
+            host.Visibility = Visibility.Collapsed;
 
         _activeNavButton = target;
         target.Tag = "Active";
 
-        if (_navMap.TryGetValue(target, out var page))
-            page.Visibility = Visibility.Visible;
-    }
+        if (_ensurePage.TryGetValue(target, out var ensure))
+            ensure();
 
-    // Update nav button icons to reflect active state
-    private void UpdateNavIcons()
-    {
-        var icons = new Dictionary<Button, string>
-        {
-            [NavScan]     = "⬡",
-            [NavPorts]    = "⬡",
-            [NavInfo]     = "⬡",
-            [NavMonitor]  = "⬡",
-            [NavReport]   = "⬡",
-            [NavSettings] = "⬡"
-        };
-        // Active button uses accent-colored icon (handled via Tag trigger in XAML)
+        if (_hosts.TryGetValue(target, out var page))
+            page.Visibility = Visibility.Visible;
     }
 
     // ══════════════════════════════════════════════
@@ -150,17 +179,21 @@ public partial class MainWindow : Window
     {
         try
         {
+            var exe = Environment.ProcessPath
+                      ?? throw new InvalidOperationException("Process path unavailable");
             var psi = new System.Diagnostics.ProcessStartInfo
             {
-                FileName = System.Diagnostics.Process.GetCurrentProcess().MainModule!.FileName,
+                FileName = exe,
                 UseShellExecute = true,
                 Verb = "runas"
             };
-            System.Diagnostics.Process.Start(psi);
+            using (System.Diagnostics.Process.Start(psi)) { }
             Application.Current.Shutdown();
         }
         catch (Exception ex)
         {
+            // Includes the user cancelling the UAC prompt (Win32Exception 1223)
+            Log.Warn("Restart as admin", ex);
             var L = Localization.LocalizationManager.Instance;
             MessageBox.Show(string.Format(L.T("Msg_AdminRestartFail"), ex.Message),
                 L.T("Msg_Error"), MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -201,7 +234,7 @@ public partial class MainWindow : Window
         _lastStatus      = status;
         _lastDeviceCount = deviceCount;
 
-        Dispatcher.Invoke(() =>
+        void Apply()
         {
             StatusText.Text  = status;
             DeviceCount.Text = $"{deviceCount} {Localization.LocalizationManager.Instance.T("Footer_Devices")}";
@@ -217,6 +250,9 @@ public partial class MainWindow : Window
                 ScanDuration.Text       = $"Scan: {duration}";
                 ScanDuration.Visibility = Visibility.Visible;
             }
-        });
+        }
+
+        if (Dispatcher.CheckAccess()) Apply();
+        else Dispatcher.InvokeAsync(Apply);
     }
 }

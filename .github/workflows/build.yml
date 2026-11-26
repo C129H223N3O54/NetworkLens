@@ -6,6 +6,10 @@ on:
       - 'v*'
   workflow_dispatch:
 
+# Least privilege: only what's needed to create the release
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Build NetworkLens
@@ -20,12 +24,41 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
+      - name: Check translation keys
+        shell: pwsh
+        run: ./tools/check-translations.ps1
+
+      - name: Download full IEEE OUI database (manufacturer lookup)
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          # The repo only ships a small fallback list. Release builds embed the official
+          # IEEE list (~30 000 vendors). If the download fails, the fallback is used.
+          $target = "NetworkLens/Resources/oui.txt"
+          try {
+            Invoke-WebRequest -Uri "https://standards-oui.ieee.org/oui/oui.txt" `
+              -OutFile oui.download.txt -UserAgent "Mozilla/5.0 (NetworkLens CI)" -TimeoutSec 120
+            $size = (Get-Item oui.download.txt).Length
+            $entries = (Select-String -Path oui.download.txt -Pattern '\(hex\)').Count
+            if ($size -gt 1MB -and $entries -gt 10000) {
+              Move-Item oui.download.txt $target -Force
+              Write-Host "OUI database updated: $entries vendors"
+            } else {
+              Write-Warning "OUI download looks incomplete ($size bytes, $entries entries) - keeping fallback"
+            }
+          } catch {
+            Write-Warning "OUI download failed: $_ - keeping fallback list"
+          }
+
       - name: Restore dependencies
         run: dotnet restore NetworkLens/NetworkLens.csproj
 
       - name: Build (Debug check)
         run: dotnet build NetworkLens/NetworkLens.csproj -c Debug --no-restore
 
+      # No single-file compression: a compressed bundle has to be unpacked on every
+      # start. Measured on windows-latest (median first frame): 873 ms compressed vs
+      # 486 ms uncompressed — at the cost of a larger exe (72.5 MB → 170.6 MB).
       - name: Publish self-contained single-file exe
         run: |
           dotnet publish NetworkLens/NetworkLens.csproj `
@@ -35,14 +68,15 @@ jobs:
             -p:PublishSingleFile=true `
             -p:IncludeNativeLibrariesForSelfExtract=true `
             -p:PublishReadyToRun=true `
-            -p:EnableCompressionInSingleFile=true `
+            -p:EnableCompressionInSingleFile=false `
             --no-restore `
             -o ./publish
 
       - name: Create self-signed certificate and sign exe
         shell: pwsh
         run: |
-          # Create self-signed code signing certificate
+          # Ephemeral self-signed code signing certificate (lives only on this runner).
+          # Note: self-signed signatures do not establish trust with SmartScreen.
           $cert = New-SelfSignedCertificate `
             -Type CodeSigningCert `
             -Subject "CN=NetworkLens, O=Jan Erik Mueller, C=DE" `
@@ -52,9 +86,10 @@ jobs:
             -TextExtension @("2.5.29.37={text}1.3.6.1.5.5.7.3.3") `
             -NotAfter (Get-Date).AddYears(5)
 
-          # Export to PFX
-          $pwd = ConvertTo-SecureString -String "NetworkLens2024!" -Force -AsPlainText
-          Export-PfxCertificate -Cert $cert -FilePath cert.pfx -Password $pwd
+          # Random one-time password instead of a hardcoded one
+          $plain = [Convert]::ToBase64String([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(24))
+          $pwd = ConvertTo-SecureString -String $plain -Force -AsPlainText
+          Export-PfxCertificate -Cert $cert -FilePath cert.pfx -Password $pwd | Out-Null
 
           # Find signtool.exe - prefer x64 version explicitly
           $signtool = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" `
@@ -72,13 +107,21 @@ jobs:
 
           if ($signtool) {
             Write-Host "Using signtool: $signtool"
-            & $signtool sign /f cert.pfx /p "NetworkLens2024!" `
+            & $signtool sign /f cert.pfx /p $plain `
               /fd SHA256 /t http://timestamp.digicert.com `
               ./publish/NetworkLens.exe
             Write-Host "Signed successfully"
           } else {
             Write-Host "signtool not found, skipping signing"
           }
+          Remove-Item cert.pfx -Force
+
+      - name: Create SHA-256 checksum
+        shell: pwsh
+        run: |
+          $hash = (Get-FileHash ./publish/NetworkLens.exe -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$hash  NetworkLens.exe" | Set-Content -Path ./publish/NetworkLens.exe.sha256 -Encoding ascii
+          Write-Host "SHA256: $hash"
 
       - name: List publish output
         run: dir ./publish
@@ -87,55 +130,50 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: NetworkLens-win-x64
-          path: ./publish/NetworkLens.exe
+          path: |
+            ./publish/NetworkLens.exe
+            ./publish/NetworkLens.exe.sha256
           retention-days: 30
 
       - name: Create GitHub Release
         if: startsWith(github.ref, 'refs/tags/v')
         shell: pwsh
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ github.ref_name }}
         run: |
-          $headers = @{
-            Authorization = "Bearer $env:GITHUB_TOKEN"
-            Accept        = "application/vnd.github+json"
-            "X-GitHub-Api-Version" = "2022-11-28"
+          $hash = (Get-Content ./publish/NetworkLens.exe.sha256).Split(' ')[0]
+          $notes = @"
+          ## NetworkLens $env:TAG
+
+          **DE** — Portabler Netzwerk-Scanner für Windows: Netzwerk-Scan, Port-Scanner, Netzwerk-Info, Live-Monitor (Ping/Jitter/Paketverlust) und Reports (HTML, CSV, JSON). Oberfläche auf Deutsch und Englisch.
+          Alle Änderungen: *Einstellungen → Changelog* in der App.
+
+          **EN** — Portable network scanner for Windows: network scan, port scanner, network info, live monitor (ping/jitter/packet loss) and reports (HTML, CSV, JSON). UI in German and English.
+          All changes: *Settings → Changelog* in the app.
+
+          ### Installation
+          1. Download ``NetworkLens.exe`` — no installation, no .NET required
+          2. Run it (as administrator for the full feature set)
+
+          ### SHA-256
+          ``$hash``
+
+          ---
+          *Idee & Konzept: Jan Erik Müller · Entwicklung: Claude (Anthropic)*
+          "@
+          $notes | Set-Content -Path release-notes.md -Encoding utf8
+
+          # Replace an existing release for this tag (re-runs)
+          gh release view $env:TAG *> $null
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "Deleting existing release $env:TAG"
+            gh release delete $env:TAG --yes
           }
-          $repo = "${{ github.repository }}"
-          $tag  = $env:TAG
 
-          # Delete existing release for this tag if it exists
-          $existing = Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/releases/tags/$tag" `
-            -Headers $headers -Method Get -ErrorAction SilentlyContinue
-          if ($existing) {
-            Write-Host "Deleting existing release id=$($existing.id)"
-            Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/releases/$($existing.id)" `
-              -Headers $headers -Method Delete
-          }
-
-          # Create new release
-          $body = @{
-            tag_name   = $tag
-            name       = "NetworkLens $tag"
-            body       = "## NetworkLens $tag`n`n### Features`n- Netzwerk-Scan, Port-Scanner, Netzwerk-Info`n- Live-Monitor mit Ping/Jitter/Packet Loss Graph`n- Kontextmenu: HTTP/HTTPS/FTP/SSH/Telnet/Traceroute/GeoLocate`n- Reports: HTML, CSV, JSON`n- Dark Theme, Self-Contained .exe`n`n### Installation`n1. NetworkLens.exe herunterladen`n2. Direkt starten - kein .NET erforderlich`n3. Als Administrator starten fur vollen Funktionsumfang`n`n---`n*Idee and Konzept: Jan Erik Mueller | Entwicklung: Claude (Anthropic)*"
-            draft      = $false
-            prerelease = $false
-            make_latest = "true"
-          } | ConvertTo-Json
-
-          $release = Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/releases" `
-            -Headers $headers -Method Post -Body $body -ContentType "application/json"
-          Write-Host "Created release id=$($release.id)"
-
-          # Upload exe asset
-          $uploadUrl = $release.upload_url -replace '\{.*\}', ''
-          $exePath   = "./publish/NetworkLens.exe"
-          $exeBytes  = [System.IO.File]::ReadAllBytes($exePath)
-
-          $uploadHeaders = $headers.Clone()
-          $uploadHeaders["Content-Type"] = "application/octet-stream"
-
-          Invoke-RestMethod -Uri "${uploadUrl}?name=NetworkLens.exe" `
-            -Headers $uploadHeaders -Method Post -Body $exeBytes
-          Write-Host "Uploaded NetworkLens.exe successfully"
+          gh release create $env:TAG `
+            ./publish/NetworkLens.exe `
+            ./publish/NetworkLens.exe.sha256 `
+            --title "NetworkLens $env:TAG" `
+            --notes-file release-notes.md `
+            --latest

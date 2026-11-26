@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Net.NetworkInformation;
 using NetworkLens.Models;
 using NetworkLens.Services;
 
@@ -6,6 +7,8 @@ namespace NetworkLens.ViewModels;
 
 public class MonitorEntry : BaseViewModel
 {
+    public const int HistoryLength = 60;
+
     public NetworkDevice Device { get; set; } = null!;
     public ObservableCollection<long> PingHistory { get; } = new();
 
@@ -35,8 +38,11 @@ public class MonitorEntry : BaseViewModel
     public long MinPing
     {
         get => _minPing;
-        set => Set(ref _minPing, value);
+        set { Set(ref _minPing, value); OnPropertyChanged(nameof(MinPingText)); }
     }
+
+    /// <summary>"—" until the first successful ping (instead of 9223372036854775807).</summary>
+    public string MinPingText => MinPing == long.MaxValue ? "—" : MinPing.ToString();
 
     private long _maxPing = 0;
     public long MaxPing
@@ -87,6 +93,7 @@ public class MonitorEntry : BaseViewModel
         set => Set(ref _lostPings, value);
     }
 
+    /// <summary>Records one ping result. Must be called on the UI thread.</summary>
     public void AddPingResult(long ms)
     {
         TotalPings++;
@@ -103,23 +110,22 @@ public class MonitorEntry : BaseViewModel
             if (ms < MinPing) MinPing = ms;
             if (ms > MaxPing) MaxPing = ms;
 
-            var history = PingHistory.ToList();
-            history.Add(ms);
-            if (history.Count > 60) history = history.TakeLast(60).ToList();
+            // Rolling window: one remove + one add instead of clearing and
+            // re-adding all 60 values (= 61 collection events) per ping.
+            if (PingHistory.Count >= HistoryLength) PingHistory.RemoveAt(0);
+            PingHistory.Add(ms);
+            OnPropertyChanged(nameof(PingHistory)); // triggers graph redraw
 
-            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            if (PingHistory.Count > 1)
             {
-                PingHistory.Clear();
-                foreach (var h in history) PingHistory.Add(h);
-                // Notify graph to redraw
-                OnPropertyChanged(nameof(PingHistory));
-            });
-
-            if (history.Count > 1)
-            {
-                AvgPing = history.Average();
-                var diffs = history.Skip(1).Zip(history, (a, b) => Math.Abs(a - b));
-                Jitter = diffs.Any() ? diffs.Average() : 0;
+                double sum = 0, jitterSum = 0;
+                for (int i = 0; i < PingHistory.Count; i++)
+                {
+                    sum += PingHistory[i];
+                    if (i > 0) jitterSum += Math.Abs(PingHistory[i] - PingHistory[i - 1]);
+                }
+                AvgPing = sum / PingHistory.Count;
+                Jitter = jitterSum / (PingHistory.Count - 1);
             }
         }
 
@@ -131,13 +137,14 @@ public class MonitorViewModel : BaseViewModel
 {
     public ObservableCollection<MonitorEntry> Entries { get; } = new();
 
-    private readonly AlertService _alerts =
-        new AlertService(SettingsViewModel.LoadStatic());
+    private const int PingTimeoutMs = 2000;
+
+    private readonly AlertService _alerts = new();
 
     // Track previous online state for change detection
     private readonly Dictionary<string, bool> _previousOnline = new();
 
-    private int _intervalSeconds = 10;
+    private int _intervalSeconds = SettingsStore.Current.MonitorIntervalSeconds;
     public int IntervalSeconds
     {
         get => _intervalSeconds;
@@ -164,7 +171,8 @@ public class MonitorViewModel : BaseViewModel
 
     public void AddDevice(NetworkDevice device)
     {
-        if (Entries.Any(e => e.Device.IpAddress == device.IpAddress)) return;
+        if (string.IsNullOrWhiteSpace(device.IpAddress)) return;
+        if (Entries.Any(e => string.Equals(e.Device.IpAddress, device.IpAddress, StringComparison.OrdinalIgnoreCase))) return;
         Entries.Add(new MonitorEntry { Device = device, Status = device.Status });
     }
 
@@ -182,7 +190,7 @@ public class MonitorViewModel : BaseViewModel
                 if (IntervalSeconds > 0)
                     await Task.Delay(TimeSpan.FromSeconds(IntervalSeconds), _cts.Token);
                 else
-                    await Task.Yield(); // Dauerhaft: yield to UI thread between pings
+                    await Task.Delay(250, _cts.Token); // "continuous": short pause so the UI stays responsive
             }
         }
         catch (OperationCanceledException) { }
@@ -194,35 +202,35 @@ public class MonitorViewModel : BaseViewModel
 
     private async Task PingAllAsync(CancellationToken ct)
     {
-        var tasks = Entries.Select(async entry =>
+        // Snapshot: the user may add/remove entries while pings are in flight.
+        var tasks = Entries.ToList().Select(async entry =>
         {
             var ip = entry.Device.IpAddress ?? "";
             bool wasOnline = _previousOnline.GetValueOrDefault(ip, true);
 
+            long ms;
             try
             {
-                using var ping = new System.Net.NetworkInformation.Ping();
-                var reply = await ping.SendPingAsync(ip, 2000);
-                long ms = reply.Status == System.Net.NetworkInformation.IPStatus.Success
-                    ? reply.RoundtripTime : -1;
-
-                bool isOnline = ms >= 0;
-                entry.AddPingResult(ms);
-
-                // Fire alerts on state change
-                if (wasOnline && !isOnline)
-                    _alerts.NotifyDeviceOffline(entry.Device);
-                else if (!wasOnline && isOnline)
-                    _alerts.NotifyDeviceOnline(entry.Device);
-
-                _previousOnline[ip] = isOnline;
+                using var ping = new Ping();
+                var reply = await ping.SendPingAsync(ip, PingTimeoutMs);
+                ms = reply.Status == IPStatus.Success ? reply.RoundtripTime : -1;
             }
             catch
             {
-                entry.AddPingResult(-1);
-                if (wasOnline) _alerts.NotifyDeviceOffline(entry.Device);
-                _previousOnline[ip] = false;
+                ms = -1;
             }
+            ct.ThrowIfCancellationRequested();
+
+            // Continuation runs on the UI thread (captured context).
+            bool isOnline = ms >= 0;
+            entry.AddPingResult(ms);
+
+            if (wasOnline && !isOnline)
+                _alerts.NotifyDeviceOffline(entry.Device);
+            else if (!wasOnline && isOnline)
+                _alerts.NotifyDeviceOnline(entry.Device);
+
+            _previousOnline[ip] = isOnline;
         });
         await Task.WhenAll(tasks);
     }

@@ -1,12 +1,9 @@
-using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Net;
+using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Runtime.InteropServices;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
+using NetworkLens.Helpers;
+using NetworkLens.Localization;
 using NetworkLens.Services;
 
 namespace NetworkLens.Views;
@@ -22,8 +19,9 @@ public class AdapterInfo
     public string AdapterType { get; set; } = "";
     public string StatusText { get; set; } = "";
     public string Icon { get; set; } = "🔌";
-    public Brush StatusBg { get; set; } = new SolidColorBrush(Color.FromArgb(0x20, 0x4A, 0x55, 0x68));
-    public Brush StatusFg { get; set; } = new SolidColorBrush(Color.FromRgb(0x8A, 0x9B, 0xB0));
+    public bool IsUp { get; set; }
+    public Brush StatusBg { get; set; } = UiBrushes.InactiveBadgeBg;
+    public Brush StatusFg { get; set; } = UiBrushes.Neutral;
 }
 
 public class ConnectionInfo
@@ -38,16 +36,43 @@ public class ConnectionInfo
 
 public partial class NetworkInfoView : UserControl
 {
+    private const int MaxConnections = 500;
+
+    // One shared client for the app lifetime (avoids socket exhaustion).
+    private static readonly HttpClient Http = new() { Timeout = TimeSpan.FromSeconds(5) };
+
     private string? _publicIp;
+    private bool _loadedOnce;
+    private bool _isLoading;
+
+    private static LocalizationManager L => LocalizationManager.Instance;
+
+    private sealed record LocalInfo(
+        string? Ip, string? Mask, bool IsDhcp, string? Gateway,
+        List<string> DnsServers, string? Ssid, string? WlanAdapter);
 
     public NetworkInfoView()
     {
         InitializeComponent();
+
+        // All views are created at app start but this one is hidden. Loading it eagerly ran
+        // netstat/netsh/Process.GetProcesses on the UI thread and contacted api.ipify.org
+        // on every launch. Now it loads the first time the tab becomes visible.
+        IsVisibleChanged += async (_, e) =>
+        {
+            if (e.NewValue is true && !_loadedOnce)
+                await LoadAllAsync();
+        };
+
+        LocalizationManager.Instance.LanguageChanged += async (_, _) =>
+        {
+            if (_loadedOnce) await LoadAllAsync();
+        };
     }
 
-    private async void UserControl_Loaded(object sender, RoutedEventArgs e)
+    private void UserControl_Loaded(object sender, RoutedEventArgs e)
     {
-        await LoadAllAsync();
+        // Intentionally empty — see IsVisibleChanged in the constructor.
     }
 
     private async void BtnRefresh_Click(object sender, RoutedEventArgs e)
@@ -57,114 +82,134 @@ public partial class NetworkInfoView : UserControl
 
     private async Task LoadAllAsync()
     {
-        LoadLocalNetworkInfo();
-        LoadAdapters();
-        LoadConnections();
-        await LoadPublicIpAsync();
-        await PingGatewayAsync();
-    }
-
-    // ── Local IP / Gateway / DNS ───────────────────
-    private void LoadLocalNetworkInfo()
-    {
+        if (_isLoading) return;
+        _isLoading = true;
+        _loadedOnce = true;
         try
         {
-            var dnsServers = new List<string>();
+            var localTask       = Task.Run(() => CollectLocalInfo());
+            var adaptersTask    = Task.Run(() => CollectAdapters());
+            var connectionsTask = Task.Run(() => GetActiveConnections());
 
-            foreach (var nic in NetworkInterface.GetAllNetworkInterfaces())
+            ApplyLocalInfo(await localTask);
+            ApplyAdapters(await adaptersTask);
+            ApplyConnections(await connectionsTask);
+
+            await Task.WhenAll(LoadPublicIpAsync(), PingGatewayAsync());
+        }
+        catch (Exception ex)
+        {
+            Log.Warn("NetworkInfo.LoadAll", ex);
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    // ── Local IP / Gateway / DNS (background) ──────
+    private static LocalInfo CollectLocalInfo()
+    {
+        string? ip = null, mask = null, gateway = null;
+        bool dhcp = false;
+
+        var primary = IpHelper.GetPrimaryInterface();
+        if (primary.HasValue)
+        {
+            var (nic, addr) = primary.Value;
+            ip   = addr.Address.ToString();
+            mask = addr.IPv4Mask?.ToString();
+            dhcp = addr.PrefixOrigin == PrefixOrigin.Dhcp;
+            gateway = nic.GetIPProperties().GatewayAddresses
+                .FirstOrDefault(g => g.Address.AddressFamily == AddressFamily.InterNetwork)
+                ?.Address.ToString();
+        }
+
+        var dns = new List<string>();
+        bool hasWlan = false;
+        try
+        {
+            foreach (var n in NetworkInterface.GetAllNetworkInterfaces())
             {
-                if (nic.OperationalStatus != OperationalStatus.Up) continue;
-                if (nic.NetworkInterfaceType is NetworkInterfaceType.Loopback
-                    or NetworkInterfaceType.Tunnel) continue;
+                if (n.OperationalStatus != OperationalStatus.Up) continue;
+                if (n.NetworkInterfaceType is NetworkInterfaceType.Loopback or NetworkInterfaceType.Tunnel) continue;
 
-                var props = nic.GetIPProperties();
-
-                foreach (var addr in props.UnicastAddresses)
+                foreach (var d in n.GetIPProperties().DnsAddresses)
                 {
-                    if (addr.Address.AddressFamily != AddressFamily.InterNetwork) continue;
-                    var ip = addr.Address.ToString();
-                    if (ip.StartsWith("169.254.")) continue;
-
-                    TxtLocalIp.Text = ip;
-                    TxtSubnetMask.Text = $"{Localization.LocalizationManager.Instance.T("Net_MaskLabel")}: {addr.IPv4Mask}";
-                    TxtDhcp.Text = addr.PrefixOrigin == PrefixOrigin.Dhcp
-                        ? "DHCP"
-                        : Localization.LocalizationManager.Instance.T("Net_Static");
-
-                    // Gateway
-                    var gw = props.GatewayAddresses
-                        .FirstOrDefault(g => g.Address.AddressFamily == AddressFamily.InterNetwork);
-                    if (gw != null)
-                        TxtGateway.Text = gw.Address.ToString();
-
-                    break;
-                }
-
-                // Collect DNS
-                foreach (var dns in props.DnsAddresses)
-                {
-                    if (dns.AddressFamily == AddressFamily.InterNetwork ||
-                        dns.AddressFamily == AddressFamily.InterNetworkV6)
+                    if (d.AddressFamily is AddressFamily.InterNetwork or AddressFamily.InterNetworkV6)
                     {
-                        var s = dns.ToString();
-                        if (!dnsServers.Contains(s)) dnsServers.Add(s);
+                        var s = d.ToString();
+                        if (!dns.Contains(s)) dns.Add(s);
                     }
                 }
 
-                // WLAN SSID detection
-                if (nic.NetworkInterfaceType == NetworkInterfaceType.Wireless80211)
-                {
-                    TryGetWlanInfo(nic);
-                }
-            }
-
-            // DNS list
-            if (dnsServers.Count > 0)
-            {
-                DnsList.ItemsSource = dnsServers;
-                TxtNoDns.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                TxtNoDns.Visibility = Visibility.Visible;
+                if (n.NetworkInterfaceType == NetworkInterfaceType.Wireless80211) hasWlan = true;
             }
         }
-        catch { }
+        catch (Exception ex)
+        {
+            Log.Warn("NetworkInfo.Dns", ex);
+        }
+
+        var (ssid, wlanAdapter) = hasWlan ? TryGetWlanInfo() : ((string?)null, (string?)null);
+        return new LocalInfo(ip, mask, dhcp, gateway, dns, ssid, wlanAdapter);
     }
 
-    private void TryGetWlanInfo(NetworkInterface nic)
+    private void ApplyLocalInfo(LocalInfo info)
+    {
+        if (info.Ip != null)
+        {
+            TxtLocalIp.Text    = info.Ip;
+            TxtSubnetMask.Text = $"{L.T("Net_MaskLabel")}: {info.Mask}";
+            TxtDhcp.Text       = info.IsDhcp ? "DHCP" : L.T("Net_Static");
+        }
+        TxtGateway.Text = info.Gateway ?? "—";
+
+        if (info.DnsServers.Count > 0)
+        {
+            DnsList.ItemsSource = info.DnsServers;
+            TxtNoDns.Visibility = Visibility.Collapsed;
+        }
+        else
+        {
+            TxtNoDns.Visibility = Visibility.Visible;
+        }
+
+        bool hasSsid = !string.IsNullOrEmpty(info.Ssid);
+        if (hasSsid)
+        {
+            TxtSsid.Text        = info.Ssid;
+            TxtWlanAdapter.Text = info.WlanAdapter ?? "";
+        }
+        WlanPanel.Visibility   = hasSsid ? Visibility.Visible : Visibility.Collapsed;
+        NoWlanPanel.Visibility = hasSsid ? Visibility.Collapsed : Visibility.Visible;
+    }
+
+    private static (string? Ssid, string? Adapter) TryGetWlanInfo()
     {
         try
         {
-            // Use netsh to get SSID
-            var psi = new ProcessStartInfo("netsh", "wlan show interfaces")
-            {
-                RedirectStandardOutput = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-            using var proc = Process.Start(psi);
-            if (proc == null) return;
-            var output = proc.StandardOutput.ReadToEnd();
-            proc.WaitForExit(2000);
+            var output = RunTool("netsh.exe", "wlan show interfaces", 2000);
+            string? adapter = null;
 
-            foreach (var line in output.Split('\n'))
+            foreach (var raw in output.Split('\n'))
             {
-                if (line.TrimStart().StartsWith("SSID") && !line.Contains("BSSID"))
-                {
-                    var ssid = line.Split(':').LastOrDefault()?.Trim();
-                    if (!string.IsNullOrEmpty(ssid))
-                    {
-                        TxtSsid.Text = ssid;
-                        TxtWlanAdapter.Text = nic.Name;
-                        WlanPanel.Visibility = Visibility.Visible;
-                        NoWlanPanel.Visibility = Visibility.Collapsed;
-                    }
-                    break;
-                }
+                var line = raw.Trim();
+                int colon = line.IndexOf(':');
+                if (colon < 0) continue;
+
+                var label = line[..colon].Trim();
+                var value = line[(colon + 1)..].Trim(); // SSIDs may contain ':'
+
+                if (label is "Name") adapter = value;
+                if (label == "SSID" && value.Length > 0) return (value, adapter);
             }
         }
-        catch { }
+        catch (Exception ex)
+        {
+            Log.Warn("NetworkInfo.Wlan", ex);
+        }
+        return (null, null);
     }
 
     // ── Gateway ping ──────────────────────────────
@@ -178,9 +223,12 @@ public partial class NetworkInfoView : UserControl
             var reply = await ping.SendPingAsync(gw, 1000);
             TxtGatewayPing.Text = reply.Status == IPStatus.Success
                 ? $"Ping: {reply.RoundtripTime} ms"
-                : Localization.LocalizationManager.Instance.T("Net_NoReply");
+                : L.T("Net_NoReply");
         }
-        catch { TxtGatewayPing.Text = Localization.LocalizationManager.Instance.T("Stat_PingError"); }
+        catch
+        {
+            TxtGatewayPing.Text = L.T("Stat_PingError");
+        }
     }
 
     // ── Public IP ─────────────────────────────────
@@ -188,14 +236,15 @@ public partial class NetworkInfoView : UserControl
     {
         try
         {
-            using var http = new System.Net.Http.HttpClient();
-            http.Timeout = TimeSpan.FromSeconds(5);
-            _publicIp = (await http.GetStringAsync("https://api.ipify.org")).Trim();
-            TxtPublicIp.Text = _publicIp;
+            var text = (await Http.GetStringAsync("https://api.ipify.org")).Trim();
+            // Only accept something that actually is an IP address
+            _publicIp = ShellHelper.NormalizeIp(text);
+            TxtPublicIp.Text = _publicIp ?? L.T("Net_Unavailable");
         }
         catch
         {
-            TxtPublicIp.Text = Localization.LocalizationManager.Instance.T("Net_Unavailable");
+            _publicIp = null;
+            TxtPublicIp.Text = L.T("Net_Unavailable");
         }
     }
 
@@ -205,11 +254,10 @@ public partial class NetworkInfoView : UserControl
             Clipboard.SetText(_publicIp);
     }
 
-    // ── Adapter List ──────────────────────────────
-    private void LoadAdapters()
+    // ── Adapter List (background) ─────────────────
+    private static List<AdapterInfo> CollectAdapters()
     {
         var adapters = new List<AdapterInfo>();
-        int active = 0;
 
         foreach (var nic in NetworkInterface.GetAllNetworkInterfaces()
                      .OrderBy(n => n.OperationalStatus != OperationalStatus.Up)
@@ -218,10 +266,8 @@ public partial class NetworkInfoView : UserControl
             if (nic.NetworkInterfaceType == NetworkInterfaceType.Loopback) continue;
 
             var isUp = nic.OperationalStatus == OperationalStatus.Up;
-            if (isUp) active++;
 
-            var props = nic.GetIPProperties();
-            var ipv4 = props.UnicastAddresses
+            var ipv4 = nic.GetIPProperties().UnicastAddresses
                 .FirstOrDefault(a => a.Address.AddressFamily == AddressFamily.InterNetwork)
                 ?.Address.ToString() ?? "—";
 
@@ -250,36 +296,35 @@ public partial class NetworkInfoView : UserControl
                 MacAddress  = mac,
                 SpeedText   = speedText,
                 AdapterType = nic.NetworkInterfaceType.ToString(),
-                StatusText  = isUp ? "AKTIV" : "INAKTIV",
+                StatusText  = L.T(isUp ? "NetInfo_BadgeActive" : "NetInfo_BadgeInactive"),
                 Icon        = icon,
-                StatusBg    = isUp
-                    ? new SolidColorBrush(Color.FromArgb(0x20, 0x74, 0xA7, 0x32))
-                    : new SolidColorBrush(Color.FromArgb(0x18, 0x4A, 0x55, 0x68)),
-                StatusFg    = isUp
-                    ? new SolidColorBrush(Color.FromRgb(0x74, 0xA7, 0x32))
-                    : new SolidColorBrush(Color.FromRgb(0x4A, 0x55, 0x68))
+                IsUp        = isUp,
+                // Frozen brushes: safe to create on a background thread
+                StatusBg    = isUp ? UiBrushes.ActiveBadgeBg : UiBrushes.InactiveBadgeBg,
+                StatusFg    = isUp ? UiBrushes.Online : UiBrushes.Neutral
             });
         }
 
+        return adapters;
+    }
+
+    private void ApplyAdapters(List<AdapterInfo> adapters)
+    {
         AdapterList.ItemsSource = adapters;
-        TxtAdapterCount.Text = string.Format(Localization.LocalizationManager.Instance.T("Net_AdapterStatsFmt"), active, adapters.Count);
+        int active = adapters.Count(a => a.IsUp);
+        TxtAdapterCount.Text = string.Format(L.T("Net_AdapterStatsFmt"), active, adapters.Count);
     }
 
-    // ── Active Connections (netstat) ──────────────
-    private void BtnRefreshConnections_Click(object sender, RoutedEventArgs e)
+    // ── Active Connections (netstat, background) ──
+    private async void BtnRefreshConnections_Click(object sender, RoutedEventArgs e)
     {
-        LoadConnections();
+        ApplyConnections(await Task.Run(() => GetActiveConnections()));
     }
 
-    private void LoadConnections()
+    private void ApplyConnections(List<ConnectionInfo> connections)
     {
-        try
-        {
-            var connections = GetActiveConnections();
-            ConnectionGrid.ItemsSource = connections;
-            TxtConnCount.Text = connections.Count.ToString();
-        }
-        catch { }
+        ConnectionGrid.ItemsSource = connections;
+        TxtConnCount.Text = connections.Count.ToString();
     }
 
     private static List<ConnectionInfo> GetActiveConnections()
@@ -288,54 +333,24 @@ public partial class NetworkInfoView : UserControl
 
         try
         {
-            // Parse netstat output
-            var psi = new ProcessStartInfo("netstat", "-ano")
-            {
-                RedirectStandardOutput = true,
-                UseShellExecute = false,
-                CreateNoWindow = true,
-                StandardOutputEncoding = System.Text.Encoding.GetEncoding(
-                    System.Globalization.CultureInfo.CurrentCulture.TextInfo.OEMCodePage)
-            };
+            var output = RunTool("netstat.exe", "-ano", 5000,
+                System.Text.Encoding.GetEncoding(
+                    System.Globalization.CultureInfo.CurrentCulture.TextInfo.OEMCodePage));
 
-            using var proc = Process.Start(psi);
-            if (proc == null) return result;
-
-            var output = proc.StandardOutput.ReadToEnd();
-            proc.WaitForExit(3000);
-
-            // Build PID → process name map
+            // PID → process name map (Process objects hold OS handles → dispose them)
             var pidMap = new Dictionary<int, string>();
-            try
+            foreach (var p in Process.GetProcesses())
             {
-                foreach (var p in Process.GetProcesses())
+                using (p)
                 {
                     try { pidMap[p.Id] = p.ProcessName; }
-                    catch { }
+                    catch { /* process exited meanwhile */ }
                 }
-            }
-            catch { }
-
-            // Localized state -> normalized translation key
-            string LocalizeState(string s)
-            {
-                var L = Localization.LocalizationManager.Instance;
-                // Recognize German + English + various netstat variants
-                var u = s.ToUpperInvariant();
-                if (u.Contains("LISTEN") || u.Contains("ABH") || u == "ABHÖREN")
-                    return L.T("Conn_Listen");
-                if (u.Contains("ESTABLISHED") || u.Contains("HERGESTELLT") || u.Contains("VERBUNDEN"))
-                    return L.T("Conn_Established");
-                if (u.Contains("TIME_WAIT") || u.Contains("WARTEZEIT") || u.Contains("WARTET"))
-                    return L.T("Conn_TimeWait");
-                if (u.Contains("CLOSE_WAIT") || u.Contains("SCHLIESSWARTE") || u.Contains("SCHLIESST"))
-                    return L.T("Conn_CloseWait");
-                return s;
             }
 
             foreach (var line in output.Split('\n'))
             {
-                var parts = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                var parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
                 if (parts.Length < 4) continue;
                 if (parts[0] is not "TCP" and not "UDP") continue;
 
@@ -347,7 +362,7 @@ public partial class NetworkInfoView : UserControl
                     state = LocalizeState(parts[3]);
                     int.TryParse(parts[4], out pid);
                 }
-                else if (parts[0] == "UDP" && parts.Length >= 4)
+                else if (parts[0] == "UDP")
                 {
                     int.TryParse(parts[3], out pid);
                 }
@@ -361,10 +376,55 @@ public partial class NetworkInfoView : UserControl
                     Pid           = pid,
                     ProcessName   = pidMap.TryGetValue(pid, out var pname) ? pname : ""
                 });
+
+                if (result.Count >= MaxConnections) break;
             }
         }
-        catch { }
+        catch (Exception ex)
+        {
+            Log.Warn("NetworkInfo.Netstat", ex);
+        }
 
-        return result.Take(500).ToList(); // cap at 500 rows
+        return result;
+    }
+
+    /// <summary>Maps localized netstat states (German / English) to a translated label.</summary>
+    private static string LocalizeState(string s)
+    {
+        var u = s.ToUpperInvariant();
+        if (u.Contains("LISTEN") || u.Contains("ABH"))
+            return L.T("Conn_Listen");
+        if (u.Contains("ESTABLISHED") || u.Contains("HERGESTELLT") || u.Contains("VERBUNDEN"))
+            return L.T("Conn_Established");
+        if (u.Contains("TIME_WAIT") || u.Contains("WARTEZEIT") || u.Contains("WARTET"))
+            return L.T("Conn_TimeWait");
+        if (u.Contains("CLOSE_WAIT") || u.Contains("SCHLIESSWARTE") || u.Contains("SCHLIESST"))
+            return L.T("Conn_CloseWait");
+        return s;
+    }
+
+    /// <summary>
+    /// Runs a System32 tool by absolute path (no PATH / app-directory search) and returns stdout.
+    /// </summary>
+    private static string RunTool(string exe, string args, int timeoutMs, System.Text.Encoding? encoding = null)
+    {
+        var psi = new ProcessStartInfo(ShellHelper.SystemExe(exe), args)
+        {
+            RedirectStandardOutput = true,
+            UseShellExecute        = false,
+            CreateNoWindow         = true,
+            WorkingDirectory       = Environment.SystemDirectory
+        };
+        if (encoding != null) psi.StandardOutputEncoding = encoding;
+
+        using var proc = Process.Start(psi);
+        if (proc == null) return "";
+
+        var outputTask = proc.StandardOutput.ReadToEndAsync();
+        if (!proc.WaitForExit(timeoutMs))
+        {
+            try { proc.Kill(entireProcessTree: true); } catch { }
+        }
+        return outputTask.Wait(timeoutMs) ? outputTask.Result : "";
     }
 }

@@ -4,54 +4,25 @@ using NetworkLens.Models;
 namespace NetworkLens.Services;
 
 /// <summary>
-/// Delivers notifications via Windows system sounds and debug output.
-/// No external dependencies required.
+/// Delivers notifications via a Windows system sound (if enabled) and the log.
+/// Note: real Windows toast notifications are not implemented yet (see ROADMAP.md).
 /// </summary>
-public sealed class ToastService : IDisposable
+public sealed class ToastService
 {
-    private AppSettings _settings;
-
-    public ToastService(AppSettings settings)
-    {
-        _settings = settings;
-    }
-
-    public void UpdateSettings(AppSettings s) => _settings = s;
-
     private void Show(string title, string message)
     {
-        if (!_settings.NotificationsEnabled) return;
-        if (_settings.Alerts.PlaySound)
+        if (SettingsStore.Current.Alerts.PlaySound)
             System.Media.SystemSounds.Exclamation.Play();
-        System.Diagnostics.Debug.WriteLine($"[NetworkLens] {title}: {message}");
+        Helpers.Log.Info($"Notification: {title}: {message}");
     }
 
-    public void AlertNewDevice(NetworkDevice device)
-    {
-        if (!_settings.Alerts.NewDeviceAlert) return;
+    public void AlertNewDevice(NetworkDevice device) =>
         Show(LocalizationManager.Instance.T("Toast_NewDeviceTitle"),
             $"{device.IpAddress}  {device.Hostname ?? ""}  {device.MacAddress ?? ""}");
-    }
 
-    public void AlertDeviceOffline(NetworkDevice device)
-    {
-        if (!_settings.Alerts.DeviceOfflineAlert) return;
+    public void AlertDeviceOffline(NetworkDevice device) =>
         Show(LocalizationManager.Instance.T("Toast_OfflineTitle"), $"{device.DisplayName} ({device.IpAddress})");
-    }
 
-    public void AlertDeviceOnline(NetworkDevice device)
-    {
-        if (!_settings.Alerts.DeviceOnlineAlert) return;
+    public void AlertDeviceOnline(NetworkDevice device) =>
         Show(LocalizationManager.Instance.T("Toast_OnlineTitle"), $"{device.DisplayName} ({device.IpAddress})");
-    }
-
-    public void AlertNewPort(NetworkDevice device, PortResult port)
-    {
-        if (!_settings.Alerts.NewOpenPortAlert) return;
-        Show(LocalizationManager.Instance.T("Toast_NewPortTitle"),
-            $"{device.DisplayName}: Port {port.Port} ({port.DisplayService})");
-    }
-
-    public void Dispose() { }
 }
-

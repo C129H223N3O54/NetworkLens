@@ -1,10 +1,7 @@
-using System.IO;
-using System.Windows;
-using System.Windows.Controls;
+using System.Text.Json;
+using NetworkLens.Helpers;
 using NetworkLens.Models;
 using NetworkLens.Services;
-using NetworkLens.Helpers;
-using NetworkLens.ViewModels;
 
 namespace NetworkLens.Views;
 
@@ -19,56 +16,77 @@ public partial class ReportView : UserControl
         InitializeComponent();
     }
 
-    private void UserControl_Loaded(object sender, RoutedEventArgs e)
+    private async void UserControl_Loaded(object sender, RoutedEventArgs e)
     {
-        LoadHistory();
+        await LoadHistoryAsync();
     }
 
-    // ── Called by ScanView after scan completes ──
-    public void SetCurrentScan(ScanResult scan)
+    // ── Called by MainWindow when navigating to the report tab ──
+    public async void SetCurrentScan(ScanResult scan)
     {
         _currentScan = scan;
-        TxtNoScan.Visibility    = Visibility.Collapsed;
+        TxtNoScan.Visibility     = Visibility.Collapsed;
         ExportButtons.Visibility = Visibility.Visible;
+
+        // Previously the history was only read once at app start, so scans made
+        // during the session never showed up in history / compare.
+        await LoadHistoryAsync();
     }
 
     // ── History ───────────────────────────────────
-    private void LoadHistory()
+    private bool _historyLoading;
+
+    private async Task LoadHistoryAsync()
     {
+        if (_historyLoading) return; // coalesce Loaded + SetCurrentScan on first open
+        _historyLoading = true;
         try
         {
-            _history.Clear();
+            // Reading and deserializing up to 50 scan files happens off the UI thread.
+            _history = await Task.Run(() => ReadHistory());
 
-            if (!Directory.Exists(App.ScansPath)) return;
-
-            foreach (var file in Directory.GetFiles(App.ScansPath, "*.json")
-                         .OrderByDescending(f => f))
+            bool any = _history.Count > 0;
+            TxtNoHistory.Visibility = any ? Visibility.Collapsed : Visibility.Visible;
+            HistoryGrid.Visibility  = any ? Visibility.Visible : Visibility.Collapsed;
+            HistoryGrid.ItemsSource = _history;
+            ComparePanel.Visibility = _history.Count >= 2 ? Visibility.Visible : Visibility.Collapsed;
+            CmbBefore.ItemsSource   = _history;
+            CmbAfter.ItemsSource    = _history;
+            if (_history.Count >= 2)
             {
-                try
-                {
-                    var json = File.ReadAllText(file);
-                    var scan = System.Text.Json.JsonSerializer.Deserialize<ScanResult>(json);
-                    if (scan != null) _history.Add(scan);
-                }
-                catch { }
-            }
-
-            if (_history.Count > 0)
-            {
-                TxtNoHistory.Visibility = Visibility.Collapsed;
-                HistoryGrid.Visibility  = Visibility.Visible;
-                HistoryGrid.ItemsSource = _history;
-                ComparePanel.Visibility = _history.Count >= 2 ? Visibility.Visible : Visibility.Collapsed;
-                CmbBefore.ItemsSource   = _history;
-                CmbAfter.ItemsSource    = _history;
-                if (_history.Count >= 2)
-                {
-                    CmbBefore.SelectedIndex = 1; // older
-                    CmbAfter.SelectedIndex  = 0; // newer
-                }
+                CmbBefore.SelectedIndex = 1; // older
+                CmbAfter.SelectedIndex  = 0; // newer
             }
         }
-        catch { }
+        catch (Exception ex)
+        {
+            Log.Warn("ReportView.LoadHistory", ex);
+        }
+        finally
+        {
+            _historyLoading = false;
+        }
+    }
+
+    private static List<ScanResult> ReadHistory()
+    {
+        var list = new List<ScanResult>();
+        if (!Directory.Exists(App.ScansPath)) return list;
+
+        foreach (var file in Directory.GetFiles(App.ScansPath, "scan_*.json")
+                     .OrderByDescending(f => f, StringComparer.Ordinal))
+        {
+            try
+            {
+                var scan = JsonSerializer.Deserialize<ScanResult>(File.ReadAllText(file));
+                if (scan != null) list.Add(scan);
+            }
+            catch (Exception ex)
+            {
+                Log.Warn($"Read scan {Path.GetFileName(file)}", ex);
+            }
+        }
+        return list;
     }
 
     private void HistoryGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
@@ -77,16 +95,17 @@ public partial class ReportView : UserControl
     private async void BtnExportHtml_Click(object sender, RoutedEventArgs e)
     {
         if (_currentScan == null) return;
-        var path = GetOutputPath();
         try
         {
+            var path = SettingsStore.ResolveReportPath();
             var file = await _generator.GenerateHtmlAsync(_currentScan, path);
             TxtLastExport.Text = string.Format(Localization.LocalizationManager.Instance.T("Rpt_SavedFmt"), file);
             TxtLastExport.Visibility = Visibility.Visible;
-            ExportHelper.OpenFile(file);
+            ShellHelper.OpenFile(file);
         }
         catch (Exception ex)
         {
+            Log.Warn("Export HTML", ex);
             var L1 = Localization.LocalizationManager.Instance;
             MessageBox.Show(string.Format(L1.T("Msg_ExportError"), ex.Message), L1.T("Msg_Error"),
                 MessageBoxButton.OK, MessageBoxImage.Error);
@@ -96,13 +115,13 @@ public partial class ReportView : UserControl
     private async void BtnExportCsv_Click(object sender, RoutedEventArgs e)
     {
         if (_currentScan == null) return;
-        var path = GetOutputPath();
         try
         {
+            var path = SettingsStore.ResolveReportPath();
             var file = await _generator.GenerateCsvAsync(_currentScan, path);
             TxtLastExport.Text = string.Format(Localization.LocalizationManager.Instance.T("Rpt_SavedFmt"), file);
             TxtLastExport.Visibility = Visibility.Visible;
-            ExportHelper.OpenFolder(path);
+            ShellHelper.OpenFolder(path);
         }
         catch (Exception ex)
         {
@@ -114,9 +133,9 @@ public partial class ReportView : UserControl
     private async void BtnExportJson_Click(object sender, RoutedEventArgs e)
     {
         if (_currentScan == null) return;
-        var path = GetOutputPath();
         try
         {
+            var path = SettingsStore.ResolveReportPath();
             var file = await _generator.GenerateJsonAsync(_currentScan, path);
             TxtLastExport.Text = string.Format(Localization.LocalizationManager.Instance.T("Rpt_SavedFmt"), file);
             TxtLastExport.Visibility = Visibility.Visible;
@@ -128,14 +147,6 @@ public partial class ReportView : UserControl
         }
     }
 
-    private string GetOutputPath()
-    {
-        var settings = SettingsViewModel.LoadStatic();
-        var path = settings.ReportOutputPath;
-        ExportHelper.EnsureDir(path);
-        return path;
-    }
-
     // ── Scan Comparison ───────────────────────────
     private void BtnCompare_Click(object sender, RoutedEventArgs e)
     {
@@ -145,7 +156,7 @@ public partial class ReportView : UserControl
         if (before == null || after == null)
         {
             var L2 = Localization.LocalizationManager.Instance;
-        MessageBox.Show(L2.T("Msg_SelectTwoScans"), L2.T("Msg_CompareTitle"),
+            MessageBox.Show(L2.T("Msg_SelectTwoScans"), L2.T("Msg_CompareTitle"),
                 MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
@@ -184,7 +195,7 @@ public partial class ReportView : UserControl
         }
     }
 
-    private void BtnClearHistory_Click(object sender, RoutedEventArgs e)
+    private async void BtnClearHistory_Click(object sender, RoutedEventArgs e)
     {
         var r = MessageBox.Show(Localization.LocalizationManager.Instance.T("Rep_ConfirmClear"), Localization.LocalizationManager.Instance.T("Rep_ClearTitle"),
             MessageBoxButton.YesNo, MessageBoxImage.Question);
@@ -192,10 +203,13 @@ public partial class ReportView : UserControl
 
         try
         {
-            foreach (var f in Directory.GetFiles(App.ScansPath, "*.json"))
+            foreach (var f in Directory.GetFiles(App.ScansPath, "scan_*.json"))
                 File.Delete(f);
-            LoadHistory();
         }
-        catch { }
+        catch (Exception ex)
+        {
+            Log.Warn("Clear history", ex);
+        }
+        await LoadHistoryAsync();
     }
 }

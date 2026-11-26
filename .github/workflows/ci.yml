@@ -1,0 +1,40 @@
+name: CI
+
+# Builds every push to main and every pull request, so broken code is caught
+# before a release tag is created (build.yml only runs on tags).
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build & checks
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Check translation keys
+        shell: pwsh
+        run: ./tools/check-translations.ps1
+
+      - name: Restore
+        run: dotnet restore NetworkLens/NetworkLens.csproj
+
+      - name: Build (Release)
+        run: dotnet build NetworkLens/NetworkLens.csproj -c Release --no-restore

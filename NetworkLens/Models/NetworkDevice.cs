@@ -1,7 +1,8 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Net;
 using System.Text.Json.Serialization;
-using System.Windows.Media;
+using NetworkLens.Helpers;
 
 namespace NetworkLens.Models;
 
@@ -12,10 +13,17 @@ public class NetworkDevice : INotifyPropertyChanged
 {
     // ── Core ────────────────────────────────────────
     private string? _ipAddress;
+    private long _ipSort;
     public string? IpAddress
     {
         get => _ipAddress;
-        set { _ipAddress = value; OnPropertyChanged(); OnPropertyChanged(nameof(IpSort)); }
+        set
+        {
+            _ipAddress = value;
+            _ipSort = ComputeIpSort(value);
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(IpSort));
+        }
     }
 
     private string? _hostname;
@@ -136,26 +144,26 @@ public class NetworkDevice : INotifyPropertyChanged
 
     [JsonIgnore] public Brush StatusColor => Status switch
     {
-        DeviceStatus.Online  => new SolidColorBrush(Color.FromRgb(0x74, 0xA7, 0x32)),
-        DeviceStatus.Slow    => new SolidColorBrush(Color.FromRgb(0xBA, 0x75, 0x17)),
-        DeviceStatus.Offline => new SolidColorBrush(Color.FromRgb(0xDC, 0x26, 0x26)),
-        _                    => new SolidColorBrush(Color.FromRgb(0x4A, 0x55, 0x68))
+        DeviceStatus.Online  => UiBrushes.Online,
+        DeviceStatus.Slow    => UiBrushes.Warn,
+        DeviceStatus.Offline => UiBrushes.Offline,
+        _                    => UiBrushes.Neutral
     };
 
     [JsonIgnore] public Color StatusColorRaw => Status switch
     {
-        DeviceStatus.Online  => Color.FromRgb(0x74, 0xA7, 0x32),
-        DeviceStatus.Slow    => Color.FromRgb(0xBA, 0x75, 0x17),
-        DeviceStatus.Offline => Color.FromRgb(0xDC, 0x26, 0x26),
-        _                    => Color.FromRgb(0x4A, 0x55, 0x68)
+        DeviceStatus.Online  => UiBrushes.OnlineColor,
+        DeviceStatus.Slow    => UiBrushes.WarnColor,
+        DeviceStatus.Offline => UiBrushes.OfflineColor,
+        _                    => UiBrushes.NeutralColor
     };
 
     [JsonIgnore] public Brush PingColor => ResponseTime switch
     {
-        < 0    => new SolidColorBrush(Color.FromRgb(0x4A, 0x55, 0x68)),
-        < 50   => new SolidColorBrush(Color.FromRgb(0x74, 0xA7, 0x32)),
-        < 200  => new SolidColorBrush(Color.FromRgb(0xBA, 0x75, 0x17)),
-        _      => new SolidColorBrush(Color.FromRgb(0xDC, 0x26, 0x26))
+        < 0    => UiBrushes.Neutral,
+        < 50   => UiBrushes.Online,
+        < 200  => UiBrushes.Warn,
+        _      => UiBrushes.Offline
     };
 
     // For sorting
@@ -167,21 +175,15 @@ public class NetworkDevice : INotifyPropertyChanged
         _                    => 3
     };
 
-    /// <summary>Numeric sort key for IP (e.g. 192.168.1.10 → 3232235786)</summary>
-    [JsonIgnore] public long IpSort
+    /// <summary>Numeric sort key for IP (e.g. 192.168.1.10 → 3232235786). Cached on assignment.</summary>
+    [JsonIgnore] public long IpSort => _ipSort;
+
+    private static long ComputeIpSort(string? ip)
     {
-        get
-        {
-            if (string.IsNullOrEmpty(IpAddress)) return 0;
-            try
-            {
-                var parts = IpAddress.Split('.');
-                if (parts.Length != 4) return 0;
-                return (long.Parse(parts[0]) << 24) | (long.Parse(parts[1]) << 16)
-                     | (long.Parse(parts[2]) << 8) | long.Parse(parts[3]);
-            }
-            catch { return 0; }
-        }
+        if (string.IsNullOrEmpty(ip) || !IPAddress.TryParse(ip, out var addr)) return 0;
+        var b = addr.GetAddressBytes();
+        if (b.Length != 4) return 0;
+        return ((long)b[0] << 24) | ((long)b[1] << 16) | ((long)b[2] << 8) | b[3];
     }
 
     // ── INotifyPropertyChanged ─────────────────────
