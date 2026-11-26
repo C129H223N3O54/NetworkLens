@@ -1,0 +1,62 @@
+name: Size & startup benchmark (temporary)
+
+on:
+  push:
+    branches: [ 'bench/**' ]
+
+permissions:
+  contents: read
+
+jobs:
+  bench:
+    runs-on: windows-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Publish variants
+        shell: pwsh
+        run: |
+          $p = 'NetworkLens/NetworkLens.csproj'
+          $sf = @('-c','Release','-r','win-x64','-p:PublishSingleFile=true')
+          dotnet publish $p @sf --self-contained true  -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishReadyToRun=true  -p:EnableCompressionInSingleFile=false -o bench/sc-plain
+          dotnet publish $p @sf --self-contained true  -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishReadyToRun=true  -p:EnableCompressionInSingleFile=true  -o bench/sc-compressed
+          dotnet publish $p @sf --self-contained false -p:PublishReadyToRun=true  -o bench/fd-r2r
+          dotnet publish $p @sf --self-contained false -p:PublishReadyToRun=false -o bench/fd-jit
+          Get-ChildItem bench -Recurse -File | Select-Object @{n='File';e={$_.FullName.Substring($PWD.Path.Length+1)}}, @{n='MB';e={[math]::Round($_.Length/1MB,2)}} | Format-Table -AutoSize | Out-String | Write-Host
+          dotnet --list-runtimes | Write-Host
+
+      - name: Measure startup
+        shell: pwsh
+        run: |
+          $log = Join-Path $env:APPDATA 'NetworkLens\networklens.log'
+          $runs = 8
+          function Measure-Exe([string]$label, [string]$dir) {
+            $exe = Join-Path $dir 'NetworkLens.exe'
+            $totalMb = [math]::Round(((Get-ChildItem $dir -File | Measure-Object Length -Sum).Sum) / 1MB, 1)
+            $ff = @()
+            for ($i = 1; $i -le $runs; $i++) {
+              if (Test-Path $log) { Remove-Item $log -Force }
+              $proc = Start-Process $exe -ArgumentList '--startup-benchmark' -PassThru
+              $null = $proc.WaitForExit(60000)
+              if (-not $proc.HasExited) { Stop-Process -Id $proc.Id -Force }
+              Start-Sleep -Milliseconds 800
+              $line = if (Test-Path $log) { Select-String -Path $log -Pattern 'Startup:' | Select-Object -Last 1 }
+              if ($line -and $line.Line -match 'FirstFrame=(\d+)ms') { if ($i -gt 1) { $ff += [int]$Matches[1] } }
+              if ($i -eq 2 -and $line) { Write-Host "$label sample: $(($line.Line -split 'Startup: ')[1])" }
+            }
+            $s = $ff | Sort-Object
+            $median = if ($s) { $s[[int][math]::Floor(($s.Count - 1) / 2)] } else { 'n/a' }
+            "RESULT | $label | folder $totalMb MB | warm median first frame $median ms" | Tee-Object -FilePath summary.txt -Append | Write-Host
+          }
+          Measure-Exe 'self-contained, uncompressed (current)' 'bench/sc-plain'
+          Measure-Exe 'self-contained, compressed'             'bench/sc-compressed'
+          Measure-Exe 'framework-dependent, ReadyToRun'        'bench/fd-r2r'
+          Measure-Exe 'framework-dependent, JIT only'          'bench/fd-jit'
+          Measure-Exe 'self-contained, uncompressed (repeat)'  'bench/sc-plain'
+          Write-Host "`n===== SUMMARY ====="
+          Get-Content summary.txt | Write-Host
