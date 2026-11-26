@@ -34,8 +34,12 @@ public partial class ReportView : UserControl
     }
 
     // ── History ───────────────────────────────────
+    private bool _historyLoading;
+
     private async Task LoadHistoryAsync()
     {
+        if (_historyLoading) return; // coalesce Loaded + SetCurrentScan on first open
+        _historyLoading = true;
         try
         {
             // Reading and deserializing up to 50 scan files happens off the UI thread.
@@ -57,6 +61,10 @@ public partial class ReportView : UserControl
         catch (Exception ex)
         {
             Log.Warn("ReportView.LoadHistory", ex);
+        }
+        finally
+        {
+            _historyLoading = false;
         }
     }
 

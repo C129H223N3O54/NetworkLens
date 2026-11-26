@@ -13,6 +13,15 @@ public partial class App : Application
     public static string ConfigPath  { get; } = Path.Combine(AppDataPath, "config.json");
     public static string DevicesPath { get; } = Path.Combine(AppDataPath, "devices.json");
 
+    /// <summary>"v1.3.8" — taken from the assembly version (csproj), never hardcoded in XAML.</summary>
+    public static string VersionText { get; } = GetVersionText();
+
+    private static string GetVersionText()
+    {
+        var v = typeof(App).Assembly.GetName().Version;
+        return v == null ? "" : $"v{v.Major}.{v.Minor}.{v.Build}";
+    }
+
     // Created in OnStartup — after the language is known and the data folders exist.
     // (As static initializers they ran before OnStartup, so initial texts were always German.)
     public static ScanViewModel    ScanVm    { get; private set; } = null!;
@@ -42,6 +51,9 @@ public partial class App : Application
 
     protected override void OnStartup(StartupEventArgs e)
     {
+        StartupTimer.Mark("OnStartup"); // time until our code runs = .NET runtime + single-file start
+        StartupTimer.BenchmarkMode = e.Args.Contains("--startup-benchmark", StringComparer.OrdinalIgnoreCase);
+
         RegisterGlobalExceptionHandlers();
 
         base.OnStartup(e);
@@ -60,6 +72,7 @@ public partial class App : Application
 
         ScanVm    = new ScanViewModel();
         MonitorVm = new MonitorViewModel();
+        StartupTimer.Mark("Services");
     }
 
     private void RegisterGlobalExceptionHandlers()

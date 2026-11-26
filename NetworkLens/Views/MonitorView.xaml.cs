@@ -105,12 +105,6 @@ public partial class MonitorView : UserControl
         if (e.Key == Key.Enter) BtnAddDevice_Click(sender, new RoutedEventArgs());
     }
 
-    public void AddDeviceExternal(NetworkDevice device)
-    {
-        _vm.AddDevice(device);
-        UpdateVisibility();
-    }
-
     private void BtnRemoveDevice_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button btn && btn.Tag is MonitorEntry entry)

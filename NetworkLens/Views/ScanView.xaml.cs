@@ -40,13 +40,12 @@ public partial class ScanView : UserControl
     {
         _wired = true;
 
-        // Auto-detect subnet on startup
-        var detected = IpHelper.GetLocalSubnetCidr();
-        if (!string.IsNullOrEmpty(detected))
-            _vm.Subnet = detected;
         TxtSubnet.Text = _vm.Subnet;
-
         TxtSubnet.TextChanged += (_, _) => _vm.Subnet = TxtSubnet.Text;
+
+        // Auto-detect the subnet in the background — enumerating all network
+        // adapters can be slow (e.g. Hyper-V hosts) and must not delay app start.
+        _ = DetectSubnetAsync(TxtSubnet.Text);
 
         DeviceGrid.ItemsSource = _vm.DevicesView;
 
@@ -63,6 +62,21 @@ public partial class ScanView : UserControl
         };
 
         _vm.PropertyChanged += Vm_PropertyChanged;
+    }
+
+    private async Task DetectSubnetAsync(string initialText)
+    {
+        try
+        {
+            var detected = await Task.Run(() => IpHelper.GetLocalSubnetCidr());
+            // Don't overwrite what the user typed in the meantime
+            if (!string.IsNullOrEmpty(detected) && TxtSubnet.Text == initialText)
+                TxtSubnet.Text = detected;
+        }
+        catch (Exception ex)
+        {
+            Log.Warn("Subnet auto-detect", ex);
+        }
     }
 
     private void Vm_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)

@@ -18,6 +18,8 @@ public partial class SettingsView : UserControl
         _settings = SettingsStore.Load();
         PopulateUi();
 
+        TxtVersion.Text = $"{App.VersionText} — .NET 8 / WPF / Windows x64";
+
         // Show app data paths
         TxtPathConfig.Text  = App.ConfigPath;
         TxtPathDevices.Text = App.DevicesPath;

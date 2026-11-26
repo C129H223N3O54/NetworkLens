@@ -343,7 +343,7 @@
                                                VerticalAlignment="Center" Margin="6,2,0,0"/>
                                 </StackPanel>
                                 <TextBlock x:Name="TxtVersion"
-                                           Text="v1.3.6 — .NET 8 / WPF / Windows x64"
+                                           Text=".NET 8 / WPF / Windows x64"
                                            FontFamily="Verdana" FontSize="12"
                                            Foreground="{DynamicResource AccentBrush}" Margin="0,2,0,0"/>
                             </StackPanel>
